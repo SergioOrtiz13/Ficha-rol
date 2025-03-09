@@ -5,7 +5,12 @@ document.getElementById('login-form').addEventListener('submit', function(event)
     var password = document.getElementById('password').value;
 
     fetch('config.json')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al cargar el archivo de configuración');
+            }
+            return response.json();
+        })
         .then(config => {
             var predefinedUsername = config.username;
             var predefinedPassword = config.password;
