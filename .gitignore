@@ -1,5 +1,6 @@
 # Ignorar el archivo .env
 .env
+config.json
 
 # Otros archivos y directorios que quieres ignorar
 node_modules/
