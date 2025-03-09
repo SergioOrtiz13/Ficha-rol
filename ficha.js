@@ -27,7 +27,7 @@ function restar(caracteristica) {
 }
 
 function cargarCaracteristicas() {
-    var caracteristicas = ['carisma', 'economia', 'torpeza', 'inteligencia', 'social'];
+    var caracteristicas = ['carisma', 'economia', 'torpeza', 'inteligencia', 'social', 'habilidad-inteligencia', 'habilidad-forma-fisica', 'habilidad-zero', 'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate'];
     caracteristicas.forEach(function(caracteristica) {
         var valor = localStorage.getItem(caracteristica);
         if (valor) {
