@@ -4,6 +4,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "mongoose": "^8.12.1",
+    "node": "^23.9.0",
     "socket.io": "^4.8.1"
   },
   "name": "ficha-rol",

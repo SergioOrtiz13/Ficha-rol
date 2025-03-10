@@ -1,12 +1,12 @@
 function actualizarHabilidades() {
-    var habilidadesAdquiridas = document.getElementById('habilidades-adquiridas').value;
-    localStorage.setItem('habilidadesAdquiridas', habilidadesAdquiridas);
+    var habilidadesAdquiridas = document.getElementById('habilidades-adquiridas-carlos').value;
+    localStorage.setItem('habilidadesAdquiridasCarlos', habilidadesAdquiridas);
 }
 
 function cargarHabilidades() {
-    var habilidadesAdquiridas = localStorage.getItem('habilidadesAdquiridas');
+    var habilidadesAdquiridas = localStorage.getItem('habilidadesAdquiridasCarlos');
     if (habilidadesAdquiridas) {
-        document.getElementById('habilidades-adquiridas').value = habilidadesAdquiridas;
+        document.getElementById('habilidades-adquiridas-carlos').value = habilidadesAdquiridas;
     }
 }
 
@@ -27,19 +27,17 @@ function restar(caracteristica) {
 }
 
 function cargarCaracteristicas() {
-    var caracteristicas = ['carisma', 'economia', 'torpeza', 'inteligencia', 'social', 'habilidad-inteligencia', 'habilidad-forma-fisica', 'habilidad-zero', 'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate'];
+    var caracteristicas = ['carisma-carlos', 'economia-carlos', 'torpeza-carlos', 'inteligencia-carlos', 'social-carlos', 'habilidad-inteligencia-carlos', 'habilidad-forma-fisica-carlos', 'habilidad-zero-carlos', 'habilidad-sigilo-carlos', 'habilidad-reflejos-carlos', 'habilidad-combate-carlos'];
     caracteristicas.forEach(function(caracteristica) {
         var valor = localStorage.getItem(caracteristica);
-        if (valor) {
+        if (valor !== null) {
             document.getElementById(caracteristica).textContent = valor;
         }
     });
 }
 
-
 document.addEventListener('DOMContentLoaded', function() {
     cargarCaracteristicas();
     cargarHabilidades();
-    cargarDados();
-    document.getElementById('habilidades-adquiridas').addEventListener('input', actualizarHabilidades);
+    document.getElementById('habilidades-adquiridas-carlos').addEventListener('input', actualizarHabilidades);
 });
