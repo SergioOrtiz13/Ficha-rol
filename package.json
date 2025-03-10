@@ -3,7 +3,8 @@
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "mongoose": "^8.12.1"
+    "mongoose": "^8.12.1",
+    "socket.io": "^4.8.1"
   },
   "name": "ficha-rol",
   "description": "",

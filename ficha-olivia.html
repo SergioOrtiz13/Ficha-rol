@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Rol</title>
+    <link rel="stylesheet" href="ficha.css">
+    <style>
+        .dados {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .dado {
+            width: 50px;
+            height: 50px;
+            margin: 0 5px;
+            background: url('img/dado.png') no-repeat center center;
+            background-size: cover;
+            animation: girar 1s infinite;
+        }
+        @keyframes girar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <video class="video-background" autoplay muted loop>
+        <source src="vid\mylivewallpapers-com-Magical-Purple-Rose-4K.mp4" type="video/mp4">
+        Tu navegador no soporta el elemento de video.
+    </video>
+    <div class="ficha">
+        <div class="header">
+            <h1>Nombre del Personaje: Olivia</h1>
+            <img src="img\Olivia.jpeg" alt="Imagen de Olivia" class="imagen-circular">
+        </div>
+        <button onclick="tirarDados()">Tirar Dados</button>
+            <div id="resultado-dados"></div>
+        <div class="caracteristicas">
+            <h2>Características de Conquista</h2>
+            <div class="caracteristica">
+                <label>Carisma: <span id="carisma">3</span>*</label>
+                <button onclick="sumar('carisma')">+</button>
+                <button onclick="restar('carisma')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Economía: <span id="economia">4</span>*</label>
+                <button onclick="sumar('economia')">+</button>
+                <button onclick="restar('economia')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Torpeza: <span id="torpeza">3</span>*</label>
+                <button onclick="sumar('torpeza')">+</button>
+                <button onclick="restar('torpeza')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Belleza: <span id="inteligencia">5</span>*</label>
+                <button onclick="sumar('inteligencia')">+</button>
+                <button onclick="restar('inteligencia')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Social: <span id="social">3</span>*</label>
+                <button onclick="sumar('social')">+</button>
+                <button onclick="restar('social')">-</button>
+            </div>
+        </div>
+        <div class="habilidades">
+            <h2>Habilidades</h2>
+            <div class="caracteristica">
+                <label>Inteligencia: <span id="habilidad-inteligencia">0</span>*</label>
+                <button onclick="sumar('habilidad-inteligencia')">+</button>
+                <button onclick="restar('habilidad-inteligencia')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Forma Física: <span id="habilidad-forma-fisica">0</span>*</label>
+                <button onclick="sumar('habilidad-forma-fisica')">+</button>
+                <button onclick="restar('habilidad-forma-fisica')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Habilidad Zero: <span id="habilidad-zero">0</span>*</label>
+                <button onclick="sumar('habilidad-zero')">+</button>
+                <button onclick="restar('habilidad-zero')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Sigilo: <span id="habilidad-sigilo">0</span>*</label>
+                <button onclick="sumar('habilidad-sigilo')">+</button>
+                <button onclick="restar('habilidad-sigilo')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Reflejos: <span id="habilidad-reflejos">0</span>*</label>
+                <button onclick="sumar('habilidad-reflejos')">+</button>
+                <button onclick="restar('habilidad-reflejos')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Combate: <span id="habilidad-combate">0</span>*</label>
+                <button onclick="sumar('habilidad-combate')">+</button>
+                <button onclick="restar('habilidad-combate')">-</button>
+            </div>
+        </div>
+        <div class="historia">
+            <h2>Historia</h2>
+            <p>Olivia pasó su infancia en el pintoresco pueblo de Arroyo de la Luna, un lugar conocido por sus noches estrelladas y su comunidad unida. Creció rodeada del amor y el cuidado de sus dos madres, Ariel y Monica, quienes siempre la apoyaron en sus sueños y aspiraciones. Desde pequeña, Olivia mostró un gran interés por el bienestar de los demás, lo que la llevó a desarrollar una pasión por la medicina.</p>
+            <p>Al alcanzar la mayoría de edad, Olivia decidió seguir su vocación y se matriculó en la prestigiosa Imperial College School of Medicine. Durante sus años universitarios, se destacó por su dedicación y habilidades excepcionales, ganándose el respeto de sus profesores y compañeros. Su tiempo en la universidad no solo le permitió adquirir conocimientos médicos avanzados, sino también desarrollar una profunda empatía y comprensión hacia sus pacientes.</p>
+            <p>Tras graduarse, Olivia sintió la necesidad de servir a su país y decidió unirse al ejército como doctora militar. Durante su servicio, enfrentó numerosos desafíos y situaciones de alta presión, lo que la ayudó a fortalecer su carácter y habilidades. Su tiempo en el ejército le enseñó la importancia de la resiliencia y la capacidad de tomar decisiones rápidas y efectivas en momentos críticos.</p>
+            <p>Después de varios años de servicio, Olivia decidió que era hora de buscar un entorno más tranquilo y estable. Así, se trasladó a la universidad Noctua, donde comenzó a trabajar como profesora y mentora para jóvenes estudiantes de medicina. En Noctua, Olivia encontró un nuevo propósito al guiar y apoyar a las futuras generaciones de médicos.</p>
+            <p>Fue en Noctua donde Olivia se reencontró con una persona de su infancia, alguien a quien nunca esperó volver a ver pero que siempre había ocupado un lugar especial en su corazón. Este reencuentro despertó en Olivia sentimientos profundos y un deseo de reconectar y construir una relación significativa.</p>
+        </div>
+        <div class="personalidad">
+            <h2>Personalidad</h2>
+            <p>Racional, Coqueta, Amable, Comprensiva, Inteligente, Celosa, Directa.</p>
+        </div>
+        <div class="habilidades">
+            <h2>Habilidades y Efectos</h2>
+            <p><strong>Estratega:</strong> Si el jugador usa esta habilidad en una tirada normal o de conquista, podrá escoger qué rasgo usar en la tirada independientemente del tema de conversación o la situación.</p>
+            <h2>Habilidades adquiridas</h2>
+            <textarea id="habilidades-adquiridas" rows="4" placeholder="Se irán viendo durante la partida"></textarea>
+        </div>
+        <div class="arbol-genealogico">
+            <h2>Árbol Genealógico</h2>
+            <ul>
+                <li>Madre: Ariel</li>
+                <li>Madre: Monica</li>
+            </ul>
+        </div>
+    </div>
+    <script src="Olivia.js"></script>
+    <script src="tiradas.js"></script>
+</body>
+</html>
