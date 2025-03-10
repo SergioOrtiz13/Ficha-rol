@@ -3,7 +3,6 @@
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "json": "^11.0.0",
     "mongoose": "^8.12.1"
   },
   "name": "ficha-rol",
@@ -11,9 +10,7 @@
   "version": "1.0.0",
   "main": "ficha.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run build"
-
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
