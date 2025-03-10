@@ -4,6 +4,9 @@ document.getElementById('login-form').addEventListener('submit', function(event)
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
 
+    console.log('Username:', username);
+    console.log('Password:', password);
+
     // Usuarios y contraseñas predefinidos
     var predefinedUsers = {
         'Kike': 'Kike1111',
