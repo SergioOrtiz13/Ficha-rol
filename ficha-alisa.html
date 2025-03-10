@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Rol</title>
+    <link rel="stylesheet" href="ficha.css">
+</head>
+<body>
+    <video class="video-background" autoplay muted loop>
+        <source src="vid\mylivewallpapers-com-Freedom-Wolf-4K.mp4" type="video/mp4">
+        Tu navegador no soporta el elemento de video.
+    </video>
+    <div class="ficha">
+        <div class="header">
+            <h1>Nombre del Personaje: Alisa</h1>
+            <img src="img\Alisa2.PNG" alt="Imagen de Alisa" class="imagen-circular">
+        </div>
+        <div class="caracteristicas">
+            <h2>Características de Conquista</h2>
+            <div class="caracteristica">
+                <label>Carisma: <span id="carisma">4</span>*</label>
+                <button onclick="sumar('carisma')">+</button>
+                <button onclick="restar('carisma')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Economía: <span id="economia">3</span>*</label>
+                <button onclick="sumar('economia')">+</button>
+                <button onclick="restar('economia')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Torpeza: <span id="torpeza">1</span>*</label>
+                <button onclick="sumar('torpeza')">+</button>
+                <button onclick="restar('torpeza')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Inteligencia: <span id="inteligencia">3</span>*</label>
+                <button onclick="sumar('inteligencia')">+</button>
+                <button onclick="restar('inteligencia')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Social: <span id="social">5</span>*</label>
+                <button onclick="sumar('social')">+</button>
+                <button onclick="restar('social')">-</button>
+            </div>
+        </div>
+        <div class="habilidades">
+            <h2>Habilidades</h2>
+            <div class="caracteristica">
+                <label>Inteligencia: <span id="habilidad-inteligencia">0</span>*</label>
+                <button onclick="sumar('habilidad-inteligencia')">+</button>
+                <button onclick="restar('habilidad-inteligencia')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Forma Física: <span id="habilidad-forma-fisica">0</span>*</label>
+                <button onclick="sumar('habilidad-forma-fisica')">+</button>
+                <button onclick="restar('habilidad-forma-fisica')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Habilidad Zero: <span id="habilidad-zero">0</span>*</label>
+                <button onclick="sumar('habilidad-zero')">+</button>
+                <button onclick="restar('habilidad-zero')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Sigilo: <span id="habilidad-sigilo">0</span>*</label>
+                <button onclick="sumar('habilidad-sigilo')">+</button>
+                <button onclick="restar('habilidad-sigilo')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Reflejos: <span id="habilidad-reflejos">0</span>*</label>
+                <button onclick="sumar('habilidad-reflejos')">+</button>
+                <button onclick="restar('habilidad-reflejos')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Combate: <span id="habilidad-combate">0</span>*</label>
+                <button onclick="sumar('habilidad-combate')">+</button>
+                <button onclick="restar('habilidad-combate')">-</button>
+            </div>
+        </div>
+        <div class="historia">
+            <h2>Historia</h2>
+            <p>Alisa pasó toda su infancia en el taller de su familia, un lugar lleno de herramientas, piezas de maquinaria y el constante sonido de motores en funcionamiento. Su madre, Irina, era una mecánica talentosa y apasionada, y desde muy pequeña, Alisa la acompañaba en sus tareas diarias, observando y aprendiendo. Irina siempre alentaba a Alisa a explorar y experimentar, enseñándole los fundamentos de la mecánica y la importancia de la precisión y la dedicación.</p>
+
+            <p>A medida que crecía, Alisa se convirtió en una presencia constante en el taller, ayudando a su madre con reparaciones y proyectos. Aunque nunca estuvo segura de si su pasión por la mecánica era innata o resultado de sus experiencias en el taller, sabía que quería seguir los pasos de su madre. Cuando alcanzó la mayoría de edad, decidió estudiar ingeniería mecánica en la universidad Noctua, donde su padre, Edward, trabajaba como profesor.</p>
+                
+            <p>Sin embargo, el destino tenía otros planes para Alisa. Poco antes de cumplir los 18 años, sufrió un grave accidente que la dejó en coma. Durante un año, estuvo inducida en un estado de inconsciencia, mientras su familia y amigos esperaban ansiosamente su recuperación. Finalmente, Alisa despertó, pero su camino hacia la recuperación fue largo y arduo. Pasó otro año en rehabilitación, trabajando incansablemente para recuperar su fuerza y habilidades motoras.</p>
+                
+            <p>A pesar de los desafíos, Alisa nunca perdió su determinación. Con el apoyo de su madre y su padre, logró superar las dificultades y, a los 20 años, finalmente pudo ingresar en la universidad Noctua. Allí, se destacó rápidamente, demostrando su habilidad y pasión por la ingeniería mecánica. Su experiencia en el taller de su familia, combinada con su educación formal, la convirtió en una estudiante excepcional.</p>
+            </div>
+        <div class="personalidad">
+            <h2>Personalidad</h2>
+            <p>Lógica, Extrovertida, Amable, Soñadora, Inteligente, Fiel.</p>
+        </div>
+        <div class="habilidades">
+            <h2>Habilidades adquiridas</h2>
+            <textarea id="habilidades-adquiridas" rows="4" placeholder="Se irán viendo durante la partida"></textarea>
+        </div>
+        <div class="arbol-genealogico">
+            <h2>Árbol Genealógico</h2>
+            <ul>
+                <li>Madre: Irina</li>
+                <li>Padre: Edward</li>
+                <li>Hermano: Leon (fallecido)</li>
+            </ul>
+        </div>
+    </div>
+    <script src="alisa.js"></script>
+</body>
+</html>

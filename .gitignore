@@ -1,6 +1,5 @@
 # Ignorar el archivo .env
-.env
-server.js
+
 # Otros archivos y directorios que quieres ignorar
 node_modules/
 dist/

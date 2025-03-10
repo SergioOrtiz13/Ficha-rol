@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Rol</title>
+    <link rel="stylesheet" href="ficha.css">
+</head>
+<body>
+    <video class="video-background" autoplay muted loop>
+        <source src="vid\mylivewallpapers.com-Moon-Glow.mp4" type="video/mp4">
+        Tu navegador no soporta el elemento de video.
+    </video>
+<div id="ficha-luna" class="ficha">
+    <div class="header">
+        <h1>Nombre del Personaje: Luna</h1>
+        <img src="img\Luna_Amiga_Oliver.jpg" alt="Imagen de Luna" class="imagen-circular">
+    </div>
+    <div class="caracteristicas">
+        <h2>Características de Conquista</h2>
+        <div class="caracteristica">
+            <label>Carisma: <span id="carisma-luna">0</span>*</label>
+            <button onclick="sumar('carisma-luna')">+</button>
+            <button onclick="restar('carisma-luna')">-</button>
+        </div>
+        <div class="caracteristica">
+            <label>Economía: <span id="economia-luna">0</span>*</label>
+            <button onclick="sumar('economia-luna')">+</button>
+            <button onclick="restar('economia-luna')">-</button>
+        </div>
+        <div class="caracteristica">
+            <label>Torpeza: <span id="torpeza-luna">0</span>*</label>
+            <button onclick="sumar('torpeza-luna')">+</button>
+            <button onclick="restar('torpeza-luna')">-</button>
+        </div>
+        <div class="caracteristica">
+            <label>Belleza: <span id="inteligencia-luna">0</span>*</label>
+            <button onclick="sumar('inteligencia-luna')">+</button>
+            <button onclick="restar('inteligencia-luna')">-</button>
+        </div>
+        <div class="caracteristica">
+            <label>Social: <span id="social-luna">0</span>*</label>
+            <button onclick="sumar('social-luna')">+</button>
+            <button onclick="restar('social-luna')">-</button>
+        </div>
+    </div>
+    <div class="habilidades">
+        <h2>Habilidades</h2>
+        <div class="caracteristica">
+            <label>Inteligencia: <span id="habilidad-inteligencia-luna">1</span>*</label>
+            <button onclick="sumar('habilidad-inteligencia-luna')">+</button>
+            <button onclick="restar('habilidad-inteligencia-luna')">-</button>
+        </div>
+        <div class="caracteristica">
+            <label>Forma Física: <span id="habilidad-forma-fisica-luna">2</span>*</label>
+            <button onclick="sumar('habilidad-forma-fisica-luna')">+</button>
+            <button onclick="restar('habilidad-forma-fisica-luna')">-</button>
+        </div>
+        <div class="caracteristica">
+            <label>Habilidad Zero: <span id="habilidad-zero-luna">0</span>*</label>
+            <button onclick="sumar('habilidad-zero-luna')">+</button>
+            <button onclick="restar('habilidad-zero-luna')">-</button>
+        </div>
+        <div class="caracteristica">
+            <label>Sigilo: <span id="habilidad-sigilo-luna">3</span>*</label>
+            <button onclick="sumar('habilidad-sigilo-luna')">+</button>
+            <button onclick="restar('habilidad-sigilo-luna')">-</button>
+        </div>
+        <div class="caracteristica">
+            <label>Reflejos: <span id="habilidad-reflejos-luna">2</span>*</label>
+            <button onclick="sumar('habilidad-reflejos-luna')">+</button>
+            <button onclick="restar('habilidad-reflejos-luna')">-</button>
+        </div>
+        <div class="caracteristica">
+            <label>Combate: <span id="habilidad-combate-luna">1</span>*</label>
+            <button onclick="sumar('habilidad-combate-luna')">+</button>
+            <button onclick="restar('habilidad-combate-luna')">-</button>
+        </div>
+    </div>
+    <div class="historia">
+        <h2>Historia</h2>
+        <p>Luna nació en el mismo pueblo que Oliver, Arroyo de la Luna. Desde pequeña, mostró una gran inteligencia y curiosidad por el mundo que la rodeaba. Sus padres, ambos profesores, la alentaron a explorar y aprender y,ante todo, a hacer lo que ma le gustara lo que la llevo a estudiar diseño y moda.</p>
+        <p>Durante su adolescencia, Luna se convirtió en la mejor amiga de Oliver. Juntos, exploraban, jugaban y compartían sus sueños y aspiraciones. Luna siempre apoyó a Oliver en su deseo de convertirse en policía, mientras ella soñaba con ser una diseñadora reconocida.</p>
+        <p>A los 19 años, Luna decidió mudarse a la ciudad junto con Oliver para perseguir sus sueños. Encontraron un pequeño apartamento y comenzaron a adaptarse a la vida urbana. Luna se inscribió en la Universidad de Noctua, donde estudió Diseño y moda.</p>
+        <p>Con el tiempo, Luna se destacó en su campo, demostrando su habilidad para resolver problemas complejos y su capacidad para innovar. Su amistad con Oliver se fortaleció, y juntos enfrentaron los desafíos de la vida en la ciudad.</p>
+    </div>
+    <div class="personalidad">
+        <h2>Personalidad</h2>
+        <p>Inteligente, Curiosa, Amable, Decidida, Leal.</p>
+    </div>
+    <div class="habilidades">
+        <h2>Habilidades adquiridas</h2>
+        <textarea id="habilidades-adquiridas-luna" rows="4" placeholder="Se irán viendo durante la partida"></textarea>
+    </div>
+    <div class="arbol-genealogico">
+        <h2>Árbol Genealógico</h2>
+        <ul>
+            <li>Padre: Carlos</li>
+            <li>Madre: Ana</li>
+            <li>Amigo: Oliver</li>
+        </ul>
+    </div>
+</div>
+<script src="luna.js"></script>
+</body>
+</html>
