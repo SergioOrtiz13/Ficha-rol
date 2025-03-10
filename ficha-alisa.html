@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha de Rol</title>
     <link rel="stylesheet" href="ficha.css">
+    <style>
+        .dados {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .dado {
+            width: 50px;
+            height: 50px;
+            margin: 0 5px;
+            background: url('img/dado.png') no-repeat center center;
+            background-size: cover;
+            animation: girar 1s infinite;
+        }
+        @keyframes girar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
     <video class="video-background" autoplay muted loop>
@@ -16,6 +35,8 @@
             <h1>Nombre del Personaje: Alisa</h1>
             <img src="img\Alisa2.PNG" alt="Imagen de Alisa" class="imagen-circular">
         </div>
+        <button onclick="tirarDados()">Tirar Dados</button>
+            <div id="resultado-dados"></div>
         <div class="caracteristicas">
             <h2>Características de Conquista</h2>
             <div class="caracteristica">
@@ -34,7 +55,7 @@
                 <button onclick="restar('torpeza')">-</button>
             </div>
             <div class="caracteristica">
-                <label>Inteligencia: <span id="inteligencia">3</span>*</label>
+                <label>Belleza: <span id="inteligencia">3</span>*</label>
                 <button onclick="sumar('inteligencia')">+</button>
                 <button onclick="restar('inteligencia')">-</button>
             </div>
@@ -105,5 +126,6 @@
         </div>
     </div>
     <script src="alisa.js"></script>
+    <script src="tiradas.js"></script>
 </body>
 </html>
