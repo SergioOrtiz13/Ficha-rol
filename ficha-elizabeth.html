@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Rol - Elizabeth</title>
+    <link rel="stylesheet" href="ficha.css">
+    <style>
+        .dados {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .dado {
+            width: 50px;
+            height: 50px;
+            margin: 0 5px;
+            background: url('img/dado.png') no-repeat center center;
+            background-size: cover;
+            animation: girar 1s infinite;
+        }
+        @keyframes girar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <video class="video-background" autoplay muted loop>
+        <source src="vid\mylivewallpapers-com-Night-City-Lake-4K.mp4" type="video/mp4">
+        Tu navegador no soporta el elemento de video.
+    </video>
+    <div class="ficha">
+        <div class="header">
+            <h1>Nombre del Personaje: Elizabeth</h1>
+            <img src="img\Elizabet.jpg" alt="Imagen de Elizabeth" class="imagen-circular">
+        </div>
+        <button onclick="tirarDados()">Tirar Dados</button>
+            <div id="resultado-dados"></div>
+        <div class="caracteristicas">
+            <h2>Características de Conquista</h2>
+            <div class="caracteristica">
+                <label>Carisma: <span id="carisma-elizabeth">5</span>*</label>
+                <button onclick="sumar('carisma-elizabeth')">+</button>
+                <button onclick="restar('carisma-elizabeth')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Economía: <span id="economia-elizabeth">3</span>*</label>
+                <button onclick="sumar('economia-elizabeth')">+</button>
+                <button onclick="restar('economia-elizabeth')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Torpeza: <span id="torpeza-elizabeth">4</span>*</label>
+                <button onclick="sumar('torpeza-elizabeth')">+</button>
+                <button onclick="restar('torpeza-elizabeth')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Belleza: <span id="inteligencia-elizabeth">2</span>*</label>
+                <button onclick="sumar('inteligencia-elizabeth')">+</button>
+                <button onclick="restar('inteligencia-elizabeth')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Social: <span id="social-elizabeth">3</span>*</label>
+                <button onclick="sumar('social-elizabeth')">+</button>
+                <button onclick="restar('social-elizabeth')">-</button>
+            </div>
+        </div>
+        <div class="habilidades">
+            <h2>Habilidades</h2>
+            <div class="caracteristica">
+                <label>Inteligencia: <span id="habilidad-inteligencia-elizabeth">0</span>*</label>
+                <button onclick="sumar('habilidad-inteligencia-elizabeth')">+</button>
+                <button onclick="restar('habilidad-inteligencia-elizabeth')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Forma Física: <span id="habilidad-forma-fisica-elizabeth">0</span>*</label>
+                <button onclick="sumar('habilidad-forma-fisica-elizabeth')">+</button>
+                <button onclick="restar('habilidad-forma-fisica-elizabeth')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Habilidad Zero: <span id="habilidad-zero-elizabeth">0</span>*</label>
+                <button onclick="sumar('habilidad-zero-elizabeth')">+</button>
+                <button onclick="restar('habilidad-zero-elizabeth')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Sigilo: <span id="habilidad-sigilo-elizabeth">0</span>*</label>
+                <button onclick="sumar('habilidad-sigilo-elizabeth')">+</button>
+                <button onclick="restar('habilidad-sigilo-elizabeth')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Reflejos: <span id="habilidad-reflejos-elizabeth">0</span>*</label>
+                <button onclick="sumar('habilidad-reflejos-elizabeth')">+</button>
+                <button onclick="restar('habilidad-reflejos-elizabeth')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Combate: <span id="habilidad-combate-elizabeth">0</span>*</label>
+                <button onclick="sumar('habilidad-combate-elizabeth')">+</button>
+                <button onclick="restar('habilidad-combate-elizabeth')">-</button>
+            </div>
+        </div>
+        <div class="historia">
+            <h2>Historia</h2>
+            <p>Elizabeth vive en la zona rica conocida como <strong>Villas Esmeralda</strong>, un lugar exclusivo y lleno de lujos. Su padre es un exitoso empresario y su madre es ama de casa, dedicándose al cuidado del hogar y de la familia. Desde pequeña, Elizabeth ha tenido acceso a una educación de calidad y a numerosas oportunidades para desarrollar sus intereses.</p>
+            <p>Le encanta leer, ver películas y salir con sus amigas. Estas actividades le permiten relajarse y disfrutar de su tiempo libre, además de mantener una vida social activa. Elizabeth es una persona curiosa y siempre está buscando aprender cosas nuevas.</p>
+            <p>Actualmente, Elizabeth estudia en la <strong>Universidad Solana</strong>, donde se está preparando para ser maestra. Su pasión por la enseñanza y su deseo de ayudar a los demás la han llevado a elegir esta carrera. Además, está realizando prácticas en la propia universidad, lo que le permite ganar experiencia y aplicar lo que ha aprendido en sus clases.</p>
+        </div>
+        <div class="personalidad">
+            <h2>Personalidad</h2>
+            <p>Bondadosa, Exloradora, Amigable, Creativa, Dedicada.</p>
+        </div>
+        <div class="habilidades">
+            <h2>Habilidades y Efectos</h2>
+            <p><strong>Maestra:</strong> Si el jugador usa esta habilidad en una tirada normal o de conquista, podrá escoger qué rasgo usar en la tirada independientemente del tema de conversación o la situación.</p>
+            <h2>Habilidades adquiridas</h2>
+            <textarea id="habilidades-adquiridas-elizabeth" rows="4" placeholder="Se irán viendo durante la partida"></textarea>
+        </div>
+        <div class="arbol-genealogico">
+            <h2>Árbol Genealógico</h2>
+            <ul>
+                <li>Padre: Michael</li>
+                <li>Madre: Johana</li>
+            </ul>
+        </div>
+    </div>
+    <script src="ficha.js"></script>
+    <script src="tiradas.js"></script>
+</body>
+</html>
