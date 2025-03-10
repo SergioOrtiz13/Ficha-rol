@@ -1,10 +1,11 @@
 function tirarDados() {
     var resultados = [];
     for (var i = 0; i < 3; i++) {
-        resultados.push(Math.floor(Math.random() * 6) + 1); // Genera un número aleatorio entre 1 y 6
+        resultados.push(Math.floor(Math.random() * 6) + 1);
     }
     document.getElementById('resultado-dados').textContent = 'Resultados de los dados: ' + resultados.join(', ');
-    localStorage.setItem('resultadoDados', JSON.stringify(resultados)); // Guarda los resultados en localStorage
+    localStorage.setItem('resultadoDados', JSON.stringify(resultados));
+    window.dispatchEvent(new Event('storage'));
 }
 
 function cargarDados() {
@@ -15,6 +16,9 @@ function cargarDados() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    cargarDados(); // Carga los resultados cuando la página se haya cargado completamente
-    setInterval(cargarDados, 1000); // Verifica cambios en localStorage cada segundo
+    cargarDados();
+});
+
+window.addEventListener('storage', function() {
+    cargarDados();
 });
