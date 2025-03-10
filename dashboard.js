@@ -17,3 +17,4 @@ function inicializarFicha() {
     script.src = 'ficha.js';
     document.body.appendChild(script);
 }
+

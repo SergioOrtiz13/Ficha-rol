@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Rol - Carlos</title>
+    <link rel="stylesheet" href="ficha.css">
+    <style>
+        .dados {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .dado {
+            width: 50px;
+            height: 50px;
+            margin: 0 5px;
+            background: url('img/dado.png') no-repeat center center;
+            background-size: cover;
+            animation: girar 1s infinite;
+        }
+        @keyframes girar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <video class="video-background" autoplay muted loop>
+        <source src="vid\mylivewallpapers-com-Raining-Stars-QHD.mp4" type="video/mp4">
+        Tu navegador no soporta el elemento de video.
+    </video>
+    <div class="ficha">
+        <div class="header">
+            <h1>Nombre del Personaje: Carlos</h1>
+            <img src="img/Carlos-rol.jpeg" alt="Imagen de Carlos" class="imagen-circular">
+        </div>
+        <button onclick="tirarDados()">Tirar Dados</button>
+            <div id="resultado-dados"></div>
+        <div class="caracteristicas">
+            <h2>Características de Conquista</h2>
+            <div class="caracteristica">
+                <label>Carisma: <span id="carisma-carlos">2</span>*</label>
+                <button onclick="sumar('carisma-carlos')">+</button>
+                <button onclick="restar('carisma-carlos')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Economía: <span id="economia-carlos">0</span>*</label>
+                <button onclick="sumar('economia-carlos')">+</button>
+                <button onclick="restar('economia-carlos')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Torpeza: <span id="torpeza-carlos">2</span>*</label>
+                <button onclick="sumar('torpeza-carlos')">+</button>
+                <button onclick="restar('torpeza-carlos')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Belleza: <span id="inteligencia-carlos">3</span>*</label>
+                <button onclick="sumar('inteligencia-carlos')">+</button>
+                <button onclick="restar('inteligencia-carlos')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Social: <span id="social-carlos">3</span>*</label>
+                <button onclick="sumar('social-carlos')">+</button>
+                <button onclick="restar('social-carlos')">-</button>
+            </div>
+        </div>
+        <div class="habilidades">
+            <h2>Habilidades</h2>
+            <div class="caracteristica">
+                <label>Inteligencia: <span id="habilidad-inteligencia-carlos">0</span>*</label>
+                <button onclick="sumar('habilidad-inteligencia-carlos')">+</button>
+                <button onclick="restar('habilidad-inteligencia-carlos')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Forma Física: <span id="habilidad-forma-fisica-carlos">0</span>*</label>
+                <button onclick="sumar('habilidad-forma-fisica-carlos')">+</button>
+                <button onclick="restar('habilidad-forma-fisica-carlos')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Habilidad Zero: <span id="habilidad-zero-carlos">0</span>*</label>
+                <button onclick="sumar('habilidad-zero-carlos')">+</button>
+                <button onclick="restar('habilidad-zero-carlos')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Sigilo: <span id="habilidad-sigilo-carlos">0</span>*</label>
+                <button onclick="sumar('habilidad-sigilo-carlos')">+</button>
+                <button onclick="restar('habilidad-sigilo-carlos')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Reflejos: <span id="habilidad-reflejos-carlos">0</span>*</label>
+                <button onclick="sumar('habilidad-reflejos-carlos')">+</button>
+                <button onclick="restar('habilidad-reflejos-carlos')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Combate: <span id="habilidad-combate-carlos">0</span>*</label>
+                <button onclick="sumar('habilidad-combate-carlos')">+</button>
+                <button onclick="restar('habilidad-combate-carlos')">-</button>
+            </div>
+        </div>
+        <div class="historia">
+            <h2>Historia</h2>
+            <p>Carlos nació y se crió en <strong>Villa del Prado</strong>, un lugar conocido por su tranquilidad y belleza natural. Desde pequeño, mostró una gran habilidad para resolver problemas y una curiosidad insaciable por el mundo que lo rodeaba. Sus padres, ambos ingenieros, fomentaron su interés por la ciencia y la tecnología, proporcionándole libros y herramientas para experimentar.</p>
+            <p>Durante su adolescencia, Carlos se destacó en la escuela por su inteligencia y su capacidad para liderar proyectos. Formó parte del club de robótica y ganó varios concursos de ciencia. A pesar de su éxito académico, siempre encontró tiempo para sus amigos y para disfrutar de actividades al aire libre, como el senderismo y el ciclismo. Además, Carlos desarrolló una pasión por la mitología, pasando horas leyendo sobre dioses y héroes de diferentes culturas.</p>
+            <p>A los 18 años, Carlos decidió estudiar ingeniería en la prestigiosa <strong>Universidad de Noctua</strong>. Durante sus estudios, se mudó a la residencia universitaria conocida como <strong>El Solitario</strong>, un lugar que, a pesar de su nombre, estaba lleno de vida y actividades. Allí, Carlos trabajó en varios proyectos innovadores y realizó prácticas en empresas tecnológicas de renombre. Su dedicación y talento le valieron varias ofertas de trabajo antes de graduarse. Sin embargo, su verdadero sueño siempre fue convertirse en <strong>inspector de policía</strong>, inspirado por las historias de justicia y valentía que escuchaba de su abuelo, quien había sido un respetado policía.</p>
+            <p>Carlos tenía una pasión especial por hacer ejercicio, dedicando gran parte de su tiempo libre a entrenar físicamente para prepararse para su futuro como policía. Le encantaba correr, levantar pesas y participar en actividades deportivas que lo mantuvieran en excelente forma física.</p>
+            <p>Después de graduarse, Carlos se unió a una startup tecnológica, donde rápidamente se convirtió en un miembro clave del equipo. Su capacidad para resolver problemas complejos y su enfoque innovador lo hicieron destacar entre sus colegas. A pesar de su éxito profesional, Carlos siempre se mantuvo humilde y dispuesto a ayudar a los demás. En su tiempo libre, le encanta quedar con sus amigos, ligar y hacer ejercicio, manteniéndose en forma para cumplir su sueño de ser inspector de policía.</p>
+        </div>
+        <div class="personalidad">
+            <h2>Personalidad</h2>
+            <p>Inteligente, Curioso, Amigable, Innovador, Humilde.</p>
+        </div>
+        <div class="habilidades">
+            <h2>Habilidades y Efectos</h2>
+            <p><strong>Ingeniero:</strong> Si el jugador usa esta habilidad en una tirada normal o de conquista, podrá escoger qué rasgo usar en la tirada independientemente del tema de conversación o la situación.</p>
+            <h2>Habilidades adquiridas</h2>
+            <textarea id="habilidades-adquiridas-carlos" rows="4" placeholder="Se irán viendo durante la partida"></textarea>
+        </div>
+        <div class="arbol-genealogico">
+            <h2>Árbol Genealógico</h2>
+            <ul>
+                <li>Padre: Juan</li>
+                <li>Madre: María</li>
+            </ul>
+        </div>
+    </div>
+    <script src="carlos.js"></script>
+    <script src="tiradas.js"></script>
+</body>
+</html>
