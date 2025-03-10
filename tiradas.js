@@ -5,6 +5,7 @@ function tirarDados() {
     }
     document.getElementById('resultado-dados').textContent = 'Resultados de los dados: ' + resultados.join(', ');
     localStorage.setItem('resultadoDados', JSON.stringify(resultados)); // Guarda los resultados en localStorage
+    window.dispatchEvent(new Event('storage')); // Dispara el evento 'storage' para actualizar otras pestañas
 }
 
 function cargarDados() {
@@ -16,5 +17,10 @@ function cargarDados() {
 
 document.addEventListener('DOMContentLoaded', function() {
     cargarDados(); // Carga los resultados cuando la página se haya cargado completamente
-    setInterval(cargarDados, 1000); // Verifica cambios en localStorage cada segundo
+});
+
+window.addEventListener('storage', function(event) {
+    if (event.key === 'resultadoDados') {
+        cargarDados(); // Actualiza los resultados si localStorage cambia en otra pestaña
+    }
 });
