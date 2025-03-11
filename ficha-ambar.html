@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Rol</title>
+    <link rel="stylesheet" href="ficha.css">
+    <style>
+        .dados {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .dado {
+            width: 50px;
+            height: 50px;
+            margin: 0 5px;
+            background: url('img/dado.png') no-repeat center center;
+            background-size: cover;
+            animation: girar 1s infinite;
+        }
+        @keyframes girar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <video class="video-background" autoplay muted loop>
+        <source src="vid\mylivewallpapers-com-Kitten-with-Headphones-4K.mp4" type="video/mp4">
+        Tu navegador no soporta el elemento de video.
+    </video>
+    <div class="ficha">
+        <div class="header">
+            <h1>Nombre del Personaje: Ambar</h1>
+            <img src="img\Ambar.jpeg" alt="Imagen de Ambar" class="imagen-circular">
+        </div>
+        <button onclick="tirarDados()">Tirar Dados</button>
+            <div id="resultado-dados"></div>
+        <div class="caracteristicas">
+            <h2>Características de Conquista</h2>
+            <div class="caracteristica">
+                <label>Carisma: <span id="carisma">4</span>*</label>
+                <button onclick="actualizarCaracteristica('carisma', 'sumar')">+</button>
+                <button onclick="actualizarCaracteristica('carisma', 'restar')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Economía: <span id="economia">3</span>*</label>
+                <button onclick="actualizarCaracteristica('economia', 'sumar')">+</button>
+                <button onclick="actualizarCaracteristica('economia', 'restar')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Torpeza: <span id="torpeza">1</span>*</label>
+                <button onclick="actualizarCaracteristica('torpeza', 'sumar')">+</button>
+                <button onclick="actualizarCaracteristica('torpeza', 'restar')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Belleza: <span id="inteligencia">3</span>*</label>
+                <button onclick="actualizarCaracteristica('inteligencia', 'sumar')">+</button>
+                <button onclick="actualizarCaracteristica('inteligencia', 'restar')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Social: <span id="social">5</span>*</label>
+                <button onclick="actualizarCaracteristica('social', 'sumar')">+</button>
+                <button onclick="actualizarCaracteristica('social', 'restar')">-</button>
+            </div>
+        </div>
+        <div class="habilidades">
+            <h2>Habilidades</h2>
+            <div class="caracteristica">
+                <label>Inteligencia: <span id="habilidad-inteligencia">0</span>*</label>
+                <button onclick="actualizarCaracteristica('habilidad-inteligencia', 'sumar')">+</button>
+                <button onclick="actualizarCaracteristica('habilidad-inteligencia', 'restar')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Forma Física: <span id="habilidad-forma-fisica">0</span>*</label>
+                <button onclick="actualizarCaracteristica('habilidad-forma-fisica', 'sumar')">+</button>
+                <button onclick="actualizarCaracteristica('habilidad-forma-fisica', 'restar')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Habilidad Zero: <span id="habilidad-zero">0</span>*</label>
+                <button onclick="actualizarCaracteristica('habilidad-zero', 'sumar')">+</button>
+                <button onclick="actualizarCaracteristica('habilidad-zero', 'restar')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Sigilo: <span id="habilidad-sigilo">0</span>*</label>
+                <button onclick="actualizarCaracteristica('habilidad-sigilo', 'sumar')">+</button>
+                <button onclick="actualizarCaracteristica('habilidad-sigilo', 'restar')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Reflejos: <span id="habilidad-reflejos">0</span>*</label>
+                <button onclick="actualizarCaracteristica('habilidad-reflejos', 'sumar')">+</button>
+                <button onclick="actualizarCaracteristica('habilidad-reflejos', 'restar')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Combate: <span id="habilidad-combate">0</span>*</label>
+                <button onclick="actualizarCaracteristica('habilidad-combate', 'sumar')">+</button>
+                <button onclick="actualizarCaracteristica('habilidad-combate', 'restar')">-</button>
+            </div>
+        </div>
+        <div class="historia">
+            <h2>Historia</h2>
+            <p>Ambar se crió en Villaverde, un barrio lleno de vida y diversidad. Sus padres, Marcos y Jennefer, siempre la apoyaron en su pasión por la informática. Desde pequeña, Ambar mostró un gran interés por las computadoras y la programación, pasando horas frente a la pantalla aprendiendo y experimentando.</p>
+
+            <p>Cuando llegó el momento de elegir una carrera, Ambar decidió estudiar programación en la universidad Noctua, conocida por su excelente programa de informática. Aunque su personalidad introvertida y seria la hacía destacar por su dedicación y concentración, también le costaba socializar con sus compañeros.</p>
+                
+            <p>A lo largo de su vida, Ambar ha sido una persona racional y metódica, siempre buscando la lógica en cada situación. Su pasión por la programación la ha llevado a desarrollar habilidades excepcionales, convirtiéndose en una estudiante destacada en la universidad.</p>
+                
+            <p>Con el apoyo de sus padres, Ambar ha logrado superar los desafíos y se ha convertido en una programadora talentosa, lista para enfrentar cualquier reto que se le presente.</p>
+        </div>
+        <div class="personalidad">
+            <h2>Personalidad</h2>
+            <p>Introvertida, Seria, Racional.</p>
+        </div>
+        <div class="habilidades">
+            <h2>Habilidades adquiridas</h2>
+            <textarea id="habilidades-adquiridas" rows="4" placeholder="Se irán viendo durante la partida"></textarea>
+        </div>
+        <div class="arbol-genealogico">
+            <h2>Árbol Genealógico</h2>
+            <ul>
+                <li>Madre: Jennefer</li>
+                <li>Padre: Marcos</li>
+                <li>Alisa: Mejor amiga</li>
+            </ul>
+        </div>
+    </div>
+    <script src="ambar.js"></script>
+    <script src="tiradas.js"></script>
+</body>
+</html>
