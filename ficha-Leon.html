@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Rol - Leon</title>
+    <link rel="stylesheet" href="ficha.css">
+    <style>
+        .dados {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .dado {
+            width: 50px;
+            height: 50px;
+            margin: 0 5px;
+            background: url('img/dado.png') no-repeat center center;
+            background-size: cover;
+            animation: girar 1s infinite;
+        }
+        @keyframes girar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <video class="video-background" autoplay muted loop>
+        <source src="vid\mylivewallpapers-com-Full-Moon-Ryuk-4K.mp4" type="video/mp4">
+        Tu navegador no soporta el elemento de video.
+    </video>
+    <div class="ficha">
+        <div class="header">
+            <h1>Nombre del Personaje: Leon</h1>
+            <img src="img\Jack.jpeg" alt="Imagen de Leon" class="imagen-circular">
+        </div>
+        <button onclick="tirarDados()">Tirar Dados</button>
+            <div id="resultado-dados"></div>
+        <div class="caracteristicas">
+            <h2>Características de Conquista</h2>
+            <div class="caracteristica">
+                <label>Carisma: <span id="carisma">4</span>*</label>
+                <button onclick="sumar('carisma')">+</button>
+                <button onclick="restar('carisma')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Economía: <span id="economia">3</span>*</label>
+                <button onclick="sumar('economia')">+</button>
+                <button onclick="restar('economia')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Torpeza: <span id="torpeza">1</span>*</label>
+                <button onclick="sumar('torpeza')">+</button>
+                <button onclick="restar('torpeza')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Belleza: <span id="belleza">3</span>*</label>
+                <button onclick="sumar('belleza')">+</button>
+                <button onclick="restar('belleza')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Social: <span id="social">5</span>*</label>
+                <button onclick="sumar('social')">+</button>
+                <button onclick="restar('social')">-</button>
+            </div>
+        </div>
+        <div class="habilidades">
+            <h2>Habilidades</h2>
+            <div class="caracteristica">
+                <label>Inteligencia: <span id="habilidad-inteligencia">0</span>*</label>
+                <button onclick="sumar('habilidad-inteligencia')">+</button>
+                <button onclick="restar('habilidad-inteligencia')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Forma Física: <span id="habilidad-forma-fisica">0</span>*</label>
+                <button onclick="sumar('habilidad-forma-fisica')">+</button>
+                <button onclick="restar('habilidad-forma-fisica')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Habilidad Zero: <span id="habilidad-zero">0</span>*</label>
+                <button onclick="sumar('habilidad-zero')">+</button>
+                <button onclick="restar('habilidad-zero')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Sigilo: <span id="habilidad-sigilo">0</span>*</label>
+                <button onclick="sumar('habilidad-sigilo')">+</button>
+                <button onclick="restar('habilidad-sigilo')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Reflejos: <span id="habilidad-reflejos">0</span>*</label>
+                <button onclick="sumar('habilidad-reflejos')">+</button>
+                <button onclick="restar('habilidad-reflejos')">-</button>
+            </div>
+            <div class="caracteristica">
+                <label>Combate: <span id="habilidad-combate">0</span>*</label>
+                <button onclick="sumar('habilidad-combate')">+</button>
+                <button onclick="restar('habilidad-combate')">-</button>
+            </div>
+        </div>
+        <div class="historia">
+            <h2>Historia</h2>
+            <p>Leon siempre fue un espíritu libre, apasionado por la velocidad y la adrenalina. Desde joven, se sintió atraído por las carreras ilegales, donde podía demostrar su habilidad al volante y su valentía. Su familia, especialmente su hermana Alisa, lo admiraba por su destreza y su carácter decidido, aunque también se preocupaban por los riesgos que corría.</p>
+
+            <p>Una noche, durante una carrera particularmente peligrosa, Leon sufrió un accidente devastador. Su coche se salió de la pista y se estrelló, dejando a todos los presentes convencidos de que no había sobrevivido. La noticia de su muerte se extendió rápidamente, sumiendo a su familia en un profundo dolor. Alisa, que siempre había sido cercana a su hermano, quedó especialmente afectada.</p>
+
+            <p>Sin embargo, lo que nadie sabía era que Leon había sobrevivido al accidente. Rescatado por un equipo de emergencia, fue llevado a un hospital en estado crítico. Durante su recuperación, Leon fue abordado por un oficial de policía que le ofreció una oportunidad única: trabajar encubierto para un departamento policial especializado en desmantelar redes de carreras ilegales y otros crímenes relacionados con el mundo del motor.</p>
+
+            <p>Leon aceptó la oferta, viendo en ella una forma de redimirse y utilizar sus habilidades para un propósito mayor. Bajo una nueva identidad, comenzó a infiltrarse en las organizaciones criminales, recopilando información y ayudando a la policía a realizar arrestos y operaciones. Su vida se convirtió en una constante lucha entre su pasado y su presente, manteniendo su existencia en secreto incluso para su familia.</p>
+
+            <p>A pesar de los desafíos y el peligro constante, Leon nunca perdió su determinación. Sabía que su trabajo era crucial para proteger a otros y evitar que más jóvenes cayeran en el mismo mundo peligroso que casi lo destruyó. Su habilidad al volante y su conocimiento del mundo de las carreras ilegales lo convirtieron en un agente invaluable.</p>
+
+            <p>Con el tiempo, Leon comenzó a cuestionar su decisión de mantener su supervivencia en secreto. Extrañaba a su familia y deseaba poder reunirse con ellos, pero sabía que revelar la verdad podría ponerlos en peligro. Así, continuó su trabajo, esperando el día en que pudiera regresar a casa y explicarles todo.</p>
+        </div>
+        <div class="personalidad">
+            <h2>Personalidad</h2>
+            <p>Valiente, Inteligente, Reservado, Leal, Determinado.</p>
+        </div>
+        <div class="habilidades">
+            <h2>Habilidades adquiridas</h2>
+            <textarea id="habilidades-adquiridas" rows="4" placeholder="Se irán viendo durante la partida"></textarea>
+        </div>
+        <div class="arbol-genealogico">
+            <h2>Árbol Genealógico</h2>
+            <ul>
+                <li>Madre: Irina</li>
+                <li>Padre: Edward</li>
+                <li>Hermana: Alisa</li>
+            </ul>
+        </div>
+    </div>
+    <script src="leon.js"></script>
+    <script src="tiradas.js"></script>
+</body>
+</html>
