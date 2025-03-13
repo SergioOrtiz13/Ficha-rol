@@ -1,31 +1,34 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Content-Type: application/json");
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "rol";
 
-include 'conexion.php';
+// Crear conexión
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-$username = $_POST['username'];
-$password = $_POST['password'];
-
-$sql = "SELECT * FROM usuarios WHERE nombre='$username' AND contraseña='$password'";
-$result = $conn->query($sql);
-
-$response = [];
-
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    if ($username === 'Sergio') {
-        $response = ['success' => true, 'redirect' => 'dashboard.html'];
-    } else {
-        $response = ['success' => true, 'redirect' => 'ficha.html'];
-    }
-} else {
-    $response = ['success' => false, 'message' => 'Usuario o contraseña incorrectos.'];
+// Verificar conexión
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
 }
 
-echo json_encode($response);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $sql = "SELECT * FROM usuarios WHERE username='$username' AND password='$password'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        if ($username == 'Sergio') {
+            header("Location: dashboard.html");
+        } else {
+            header("Location: ficha.html");
+        }
+    } else {
+        echo "Usuario o contraseña incorrectos.";
+    }
+}
 
 $conn->close();
 ?>
