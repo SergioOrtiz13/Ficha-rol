@@ -4,22 +4,19 @@ document.getElementById('login-form').addEventListener('submit', function(event)
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
 
-    console.log('Username:', username);
-    console.log('Password:', password);
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "login.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-    // Usuarios y contraseñas predefinidos
-    var predefinedUsers = {
-        'Kike': 'Kike1111',
-        'Sergio': 'Sergio12345'
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            if (xhr.responseText.includes("Usuario o contraseña incorrectos.")) {
+                document.getElementById('error-message').textContent = xhr.responseText;
+            } else {
+                window.location.href = xhr.responseText;
+            }
+        }
     };
 
-    if (predefinedUsers[username] && predefinedUsers[username] === password) {
-        if (username === 'Sergio') {
-            window.location.href = 'dashboard.html';
-        } else {
-            window.location.href = 'ficha.html';
-        }
-    } else {
-        document.getElementById('error-message').textContent = 'Usuario o contraseña incorrectos.';
-    }
+    xhr.send("username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password));
 });
