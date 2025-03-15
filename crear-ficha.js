@@ -1,7 +1,6 @@
 document.getElementById('crear-ficha-form').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    // Obtener los valores del formulario
     const nombrePersonaje = document.getElementById('nombre-personaje').value;
     const imagenPersonaje = document.getElementById('imagen-personaje').files[0];
     const videoFondo = document.getElementById('video-fondo').files[0];
@@ -14,16 +13,13 @@ document.getElementById('crear-ficha-form').addEventListener('submit', function(
     const personalidad = document.getElementById('personalidad').value;
     const habilidadesAdquiridas = document.getElementById('habilidades-adquiridas').value;
 
-    // Validación de campos obligatorios
     if (!nombrePersonaje || !imagenPersonaje || !videoFondo || !historia || !personalidad) {
         alert('Por favor, completa todos los campos obligatorios.');
         return;
     }
 
-    // Obtener los miembros del árbol genealógico
     const miembrosArbol = Array.from(document.querySelectorAll('[name="miembro-arbol[]"]')).map(input => input.value);
 
-    // Obtener las habilidades desde el formulario
     const habilidadInteligencia = document.getElementById('habilidad-inteligencia').value;
     const habilidadFormaFisica = document.getElementById('habilidad-forma-fisica').value;
     const habilidadZero = document.getElementById('habilidad-zero').value;
@@ -31,11 +27,9 @@ document.getElementById('crear-ficha-form').addEventListener('submit', function(
     const habilidadReflejos = document.getElementById('habilidad-reflejos').value;
     const habilidadCombate = document.getElementById('habilidad-combate').value;
 
-    // Crear los FileReaders para leer los archivos
     const readerImagen = new FileReader();
     const readerVideo = new FileReader();
 
-    // Procesar los archivos de imagen y video
     Promise.all([
         new Promise((resolve, reject) => {
             readerImagen.onload = function(e) {
@@ -52,7 +46,6 @@ document.getElementById('crear-ficha-form').addEventListener('submit', function(
             readerVideo.readAsDataURL(videoFondo);
         })
     ]).then(([imagenData, videoData]) => {
-        // Generar el contenido de la ficha HTML con el estilo incluido
         const contenidoFicha = `
 <!DOCTYPE html>
 <html lang="es">
@@ -285,7 +278,6 @@ document.getElementById('crear-ficha-form').addEventListener('submit', function(
 </html>
 `;
 
-        // Descargar la ficha como un archivo HTML
         const blob = new Blob([contenidoFicha], { type: 'text/html' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
