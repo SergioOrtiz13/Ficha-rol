@@ -10,14 +10,17 @@ document.getElementById('login-form').addEventListener('submit', function(event)
     // Usuarios y contraseñas predefinidos
     var predefinedUsers = {
         'Kike': 'Kike1111',
-        'Sergio': 'Sergio12345'
+        'Sergio': 'Sergio12345',
+        'Maria' : 'Maria2121'
     };
 
     if (predefinedUsers[username] && predefinedUsers[username] === password) {
         if (username === 'Sergio') {
             window.location.href = 'dashboard.html';
-        } else {
+        } else if (username === 'Kike') {
             window.location.href = 'ficha.html';
+        } else {
+            window.location.href = 'ficha-ambar.html';
         }
     } else {
         document.getElementById('error-message').textContent = 'Usuario o contraseña incorrectos.';

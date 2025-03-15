@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Nueva Ficha</title>
+    <link rel="stylesheet" href="ficha.css">
+    <link rel="stylesheet" href="crear-ficha.css">
+</head>
+<body>
+    <video class="video-background" autoplay muted loop>
+        <source src="vid/mylivewallpapers-com-Raining-Stars-QHD.mp4" type="video/mp4">
+        Tu navegador no soporta el elemento de video.
+    </video>
+    <div class="ficha">
+        <div class="header">
+            <h1>Crear Nueva Ficha</h1>
+            <form id="crear-ficha-form" class="form-container">
+                <label for="nombre-personaje">Nombre del Personaje:</label>
+                <input type="text" id="nombre-personaje" name="nombre-personaje" required>
+                <label for="imagen-personaje">Imagen del Personaje:</label>
+                <input type="file" id="imagen-personaje" name="imagen-personaje" accept="image/*" required>
+                <label for="video-fondo">Video de Fondo:</label>
+                <input type="file" id="video-fondo" name="video-fondo" accept="video/*" required>
+                <label for="carisma">Carisma:</label>
+                <input type="number" id="carisma" name="carisma" required>
+                <label for="economia">Economía:</label>
+                <input type="number" id="economia" name="economia" required>
+                <label for="torpeza">Torpeza:</label>
+                <input type="number" id="torpeza" name="torpeza" required>
+                <label for="belleza">Belleza:</label>
+                <input type="number" id="belleza" name="belleza" required>
+                <label for="social">Social:</label>
+                <input type="number" id="social" name="social" required>
+                <label for="habilidad-inteligencia">Inteligencia:</label>
+                <input type="number" id="habilidad-inteligencia" name="habilidad-inteligencia" value="0" required>
+                <label for="habilidad-forma-fisica">Forma Física:</label>
+                <input type="number" id="habilidad-forma-fisica" name="habilidad-forma-fisica" value="0" required>
+                <label for="habilidad-zero">Habilidad Zero:</label>
+                <input type="number" id="habilidad-zero" name="habilidad-zero" value="0" required>
+                <label for="habilidad-sigilo">Sigilo:</label>
+                <input type="number" id="habilidad-sigilo" name="habilidad-sigilo" value="0" required>
+                <label for="habilidad-reflejos">Reflejos:</label>
+                <input type="number" id="habilidad-reflejos" name="habilidad-reflejos" value="0" required>
+                <label for="habilidad-combate">Combate:</label>
+                <input type="number" id="habilidad-combate" name="habilidad-combate" value="0" required>
+                <label for="historia">Historia:</label>
+                <textarea id="historia" name="historia" rows="4" required></textarea>
+                <label for="personalidad">Personalidad:</label>
+                <textarea id="personalidad" name="personalidad" rows="2" required></textarea>
+                <label for="habilidades-adquiridas">Habilidades adquiridas:</label>
+                <textarea id="habilidades-adquiridas" name="habilidades-adquiridas" rows="4" placeholder="Se irán viendo durante la partida"></textarea>
+                <label for="arbol-genealogico">Árbol Genealógico:</label>
+                <div id="arbol-genealogico-container">
+            <div class="arbol-genealogico-item">
+                <input type="text" name="miembro-arbol[]" placeholder="Miembro del árbol genealógico" required>
+                <button type="button" class="eliminar-arbol" onclick="eliminarMiembro(this)">Eliminar</button>
+            </div>
+        </div>
+                <button type="button" onclick="agregarMiembro()">Añadir</button>
+                <button type="submit">Crear Ficha</button>
+            </form>
+        </div>
+    </div>
+    <script src="crear-ficha.js"></script>
+</body>
+</html>
