@@ -4,7 +4,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
 
-    const response = await fetch('https://mi-backend.onrender.com/login', {
+    const response = await fetch('/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
