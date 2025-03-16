@@ -20,4 +20,18 @@ async function authenticateUser(username, password) {
     }
 }
 
-module.exports = { authenticateUser };
+async function saveFicha(fichaData) {
+    try {
+        await client.connect();
+        const database = client.db('Fichas');
+        const collection = database.collection('fichas');
+
+        const result = await collection.insertOne(fichaData);
+        return result.insertedId; 
+    } finally {
+        await client.close();
+    }
+}
+
+
+module.exports = { authenticateUser, saveFicha };

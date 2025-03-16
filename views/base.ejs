@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Rol</title>
+    <link rel="stylesheet" href="ficha.css">
+    <style>
+        .dados {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .dado {
+            width: 50px;
+            height: 50px;
+            margin: 0 5px;
+            background: url('img/dado.png') no-repeat center center;
+            background-size: cover;
+            animation: girar 1s infinite;
+        }
+        @keyframes girar {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <% if (personaje.videoFondo && personaje.videoFondo.url) { %>
+        <video class="video-background" autoplay muted loop>
+            <source src="/<%= personaje.videoFondo %>" type="video/mp4">
+            Tu navegador no soporta el elemento de video.
+        </video>
+    <% } else { %>
+        <p>No hay video de fondo disponible.</p>
+    <% } %>
+
+    <div class="ficha">
+        <div class="header">
+            <h1>Nombre del Personaje: <%= personaje.nombrePersonaje %></h1>
+
+            <% if (personaje.imagenPersonaje && personaje.imagenPersonaje.url) { %>
+                <img src="/<%= personaje.imagenPersonaje %>" alt="Imagen de <%= personaje.nombrePersonaje %>" class="imagen-circular">
+            <% } else { %>
+                <p>No hay imagen disponible.</p>
+            <% } %>
+        </div>
+
+        <button onclick="tirarDados()">Tirar Dados</button>
+        <div id="resultado-dados"></div>
+
+        <!-- Características -->
+        <div class="caracteristicas">
+            <h2>Características de Conquista</h2>
+            
+            <!-- Carisma -->
+            <div class="caracteristica">
+                <label>Carisma: <span id="carisma"><%= personaje.carisma || '0' %></span>*</label>
+                <button onclick="sumar('carisma')">+</button>
+                <button onclick="restar('carisma')">-</button>
+            </div>
+        
+            <!-- Economía -->
+            <div class="caracteristica">
+                <label>Economía: <span id="economia"><%= personaje.economia || '0' %></span>*</label>
+                <button onclick="sumar('economia')">+</button>
+                <button onclick="restar('economia')">-</button>
+            </div>
+        
+            <!-- Torpeza -->
+            <div class="caracteristica">
+                <label>Torpeza: <span id="torpeza"><%= personaje.torpeza || '0' %></span>*</label>
+                <button onclick="sumar('torpeza')">+</button>
+                <button onclick="restar('torpeza')">-</button>
+            </div>
+        
+            <!-- Belleza -->
+            <div class="caracteristica">
+                <label>Belleza: <span id="belleza"><%= personaje.belleza || '0' %></span>*</label>
+                <button onclick="sumar('belleza')">+</button>
+                <button onclick="restar('belleza')">-</button>
+            </div>
+        
+            <!-- Social -->
+            <div class="caracteristica">
+                <label>Social: <span id="social"><%= personaje.social || '0' %></span>*</label>
+                <button onclick="sumar('social')">+</button>
+                <button onclick="restar('social')">-</button>
+            </div>
+        </div>
+        
+        <!-- Habilidades -->
+        <div class="habilidades">
+            <h2>Habilidades</h2>
+        
+            <!-- Inteligencia -->
+            <div class="caracteristica">
+                <label>Inteligencia: <span id="habilidad-inteligencia"><%= personaje.habilidades.inteligencia || '0' %></span>*</label>
+                <button onclick="sumar('habilidad-inteligencia')">+</button>
+                <button onclick="restar('habilidad-inteligencia')">-</button>
+            </div>
+        
+            <!-- Forma Física -->
+            <div class="caracteristica">
+                <label>Forma Física: <span id="habilidad-forma-fisica"><%= personaje.habilidades.formaFisica || '0' %></span>*</label>
+                <button onclick="sumar('habilidad-forma-fisica')">+</button>
+                <button onclick="restar('habilidad-forma-fisica')">-</button>
+            </div>
+        
+            <!-- Habilidad Zero -->
+            <div class="caracteristica">
+                <label>Habilidad Zero: <span id="habilidad-zero"><%= personaje.habilidades.habilidadZero || '0' %></span>*</label>
+                <button onclick="sumar('habilidad-zero')">+</button>
+                <button onclick="restar('habilidad-zero')">-</button>
+            </div>
+        
+            <!-- Sigilo -->
+            <div class="caracteristica">
+                <label>Sigilo: <span id="habilidad-sigilo"><%= personaje.habilidades.sigilo || '0' %></span>*</label>
+                <button onclick="sumar('habilidad-sigilo')">+</button>
+                <button onclick="restar('habilidad-sigilo')">-</button>
+            </div>
+        
+            <!-- Reflejos -->
+            <div class="caracteristica">
+                <label>Reflejos: <span id="habilidad-reflejos"><%= personaje.habilidades.reflejos || '0' %></span>*</label>
+                <button onclick="sumar('habilidad-reflejos')">+</button>
+                <button onclick="restar('habilidad-reflejos')">-</button>
+            </div>
+        
+            <!-- Combate -->
+            <div class="caracteristica">
+                <label>Combate: <span id="habilidad-combate"><%= personaje.habilidades.combate || '0' %></span>*</label>
+                <button onclick="sumar('habilidad-combate')">+</button>
+                <button onclick="restar('habilidad-combate')">-</button>
+            </div>
+        </div>
+
+        <!-- Historia -->
+        <div class="historia">
+            <h2>Historia</h2>
+            <p><%= personaje.historia || 'Historia no disponible.' %></p>
+        </div>
+
+        <!-- Personalidad -->
+        <div class="personalidad">
+            <h2>Personalidad</h2>
+            <p><%= personaje.personalidad || 'Personalidad no disponible.' %></p>
+        </div>
+
+        <div class="habilidades-adquiridas">
+            <h2>Habilidades adquiridas</h2>
+            <textarea id="habilidades-adquiridas" rows="4" placeholder="Se irán viendo durante la partida"><%= personaje.habilidadesAdquiridas || '' %></textarea>
+        </div>
+
+        <!-- Árbol Genealógico -->
+        <div class="arbol-genealogico">
+            <h2>Árbol Genealógico</h2>
+            <% if (personaje.miembrosArbol && personaje.miembrosArbol.length > 0) { %>
+                <ul>
+                    <% personaje.miembrosArbol.forEach(function(miembro) { %>
+                        <li><%= miembro %></li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p>No hay miembros en el árbol genealógico.</p>
+            <% } %>
+        </div>
+    </div>
+
+    <script src="ficha.js"></script>
+    <script src="tiradas.js"></script>
+</body>
+</html>
