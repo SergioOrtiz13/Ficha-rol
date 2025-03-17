@@ -1,0 +1,183 @@
+/* Estilos generales para la página */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Coloca el video detrás del contenido */
+    object-fit: cover; /* Asegura que el video cubra toda la pantalla */
+}
+
+.login-container {
+    background-color:  rgba(0, 0, 0, 0.7);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+label {
+    font-size: 1rem;
+    color: #fd4ca1; /* Rosa neón para el cyberpunk */
+    text-align: left;
+    position: relative;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+}
+
+label:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #fd4ca1;
+    opacity: 0.3;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: all 0.3s ease;
+}
+
+
+input[type="text"],
+input[type="password"] {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #4c9dfd;
+}
+
+button {
+    padding: 10px;
+    font-size: 1rem;
+    color: white;
+    background-color: #fd4ca1;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #357ab7;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 10px;
+}
+
+/* Estilo adicional para el título Roleplay */
+.title-roleplay {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #fd4ca1;
+    margin-bottom: 40px;
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.8rem; /* Reducir tamaño del título */
+    }
+
+    .title-roleplay {
+        font-size: 2.5rem; /* Reducir tamaño del título Roleplay */
+        margin-bottom: 30px;
+    }
+
+    .login-container {
+        padding: 20px;
+        width: 90%; /* Ajustar el contenedor */
+        max-width: 350px; /* Limitar el tamaño máximo */
+    }
+
+    label {
+        font-size: 0.9rem; /* Reducir el tamaño de las etiquetas */
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        padding: 8px;
+        font-size: 0.9rem; /* Reducir el tamaño del texto */
+    }
+
+    button {
+        padding: 8px;
+        font-size: 0.9rem; /* Reducir tamaño del botón */
+    }
+}
+
+/* Para pantallas medianas (tabletas en orientación vertical) */
+@media (max-width: 768px) {
+    .login-container {
+        padding: 25px;
+        width: 80%; /* Ajustar el tamaño en tabletas */
+        max-width: 380px;
+    }
+
+    .title-roleplay {
+        font-size: 2.8rem; /* Ajustar tamaño del título */
+        margin-bottom: 35px;
+    }
+
+    h1 {
+        font-size: 2.2rem; /* Ajustar tamaño del título */
+    }
+
+    button {
+        padding: 9px;
+        font-size: 1rem;
+    }
+}
+
+/* Para pantallas grandes (escritorio) */
+@media (min-width: 1024px) {
+    .login-container {
+        width: 350px; /* Ancho fijo en escritorio */
+        max-width: 400px;
+    }
+    
+    .title-roleplay {
+        font-size: 3rem; /* Mantener tamaño en escritorio */
+        margin-bottom: 40px;
+    }
+
+    h1 {
+        font-size: 2.5rem; /* Mantener tamaño en escritorio */
+    }
+}
