@@ -15,13 +15,7 @@ async function connectDB() {
     }
 }
 
-async function closeDB() {
-    try {
-        await client.close();
-    } catch (error) {
-        console.error('Error al cerrar la conexión a MongoDB:', error);
-    }
-}
+
 
 async function authenticateUser(username, password) {
     try {
@@ -81,4 +75,35 @@ async function actualizarTiradas(username, nuevasTiradas) {
     }
 }
 
-module.exports = { authenticateUser, saveFicha, actualizarTiradas };
+async function getTiradasDeOtrosJugadores(username) {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('usuario');
+
+        // Obtener todos los usuarios excepto el que se está logeando
+        const otrosJugadores = await collection.find({ username: { $ne: username } }).toArray();
+
+        // Mapear solo los datos de las tiradas y el nombre de los jugadores
+        const tiradasOtrosJugadores = otrosJugadores.map(usuario => ({
+            username: usuario.username,
+            tiradas: usuario.tiradas
+        }));
+
+        return tiradasOtrosJugadores;
+    } catch (error) {
+        console.error('Error al obtener las tiradas de otros jugadores:', error);
+        throw error;
+    } finally {
+        await closeDB();
+    }
+}
+
+async function closeDB() {
+    try {
+        await client.close();
+    } catch (error) {
+        console.error('Error al cerrar la conexión a MongoDB:', error);
+    }
+}
+
+module.exports = { authenticateUser, saveFicha, actualizarTiradas, getTiradasDeOtrosJugadores };

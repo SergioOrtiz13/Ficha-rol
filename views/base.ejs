@@ -46,8 +46,12 @@
             <% } %>
         </div>
 
-        <button onclick="tirarDados()">Tirar Dados</button>
-        <div id="resultado-dados"></div>
+        
+        <button onclick="tirarDadosOtrosJugadores()">Tirar Dados</button>
+        <div class="resultado-tirada">
+            <div id="resultado-dados">Resultado de tus dados</div>
+            <div id="tirada-otros-jugadores">Resultado de otros jugadores</div>
+        </div>
 
         <!-- Características -->
         <div class="caracteristicas">
@@ -170,5 +174,6 @@
 
     <script src="ficha.js"></script>
     <script src="tiradas.js"></script>
+    <script src="tiradas-master.js"></script>
 </body>
 </html>

@@ -1,11 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const { authenticateUser, actualizarTiradas } = require('./db');
+const { authenticateUser, actualizarTiradas, getTiradasDeOtrosJugadores } = require('./db');
 const { saveFicha, getFichas, getFichaPorNombre } = require('./fichaModel');
 
 const app = express();
 const port = 3000;
+
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
@@ -109,6 +110,8 @@ app.post('/actualizar-tiradas', async (req, res) => {
         res.status(500).json({ success: false, message: 'Error al actualizar las tiradas.' });
     }
 });
+
+
 
 
 function getRedirectUrl(username) {
