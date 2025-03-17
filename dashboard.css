@@ -16,32 +16,26 @@ body {
     object-fit: cover; /* Asegura que el video cubra toda la pantalla */
 }
 
-.dashboard-container {
-    background-color: rgba(0, 0, 0, 0.7);
+.dashboard-container, .dashboard-container1 {
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.9); /* Sombra más fuerte */
     max-width: 1200px;
     margin: auto;
+    margin-bottom: 20px;
 }
 
-.dashboard-container1 {
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-    max-width: 1200px;
-    margin: auto;
-}
-
-.user-fichas h2 {
+.user-fichas h2, .dashboard-container1 h1, .dashboard-container h1 {
     color: #ffffff;
+    font-size: 2rem;
 }
 
 .fichas-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Responsividad */
     gap: 20px;
+    padding: 10px;
 }
 
 .fichas-grid a {
@@ -51,9 +45,62 @@ body {
     color: #00ffdd;
     text-decoration: none;
     text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .fichas-grid a:hover {
     background-color: #0045e6;
     color: #ffffff;
+}
+
+button {
+    background-color: #333;;
+    border: none;
+    color: #00ffdd;;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #00ffdd;
+}
+
+button:focus {
+    outline: none;
+}
+
+#resultado-dados,
+#tirada-otros-jugadores {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48%; /* Ambos divs ocupan el 48% del espacio disponible */
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+    margin-bottom: 10px;
+}
+
+/* Estilo específico para los divs */
+#resultado-dados {
+    border: 2px solid #00ffdd; /* Estilo específico para el div de resultados */
+}
+
+#tirada-otros-jugadores {
+    border: 2px solid #ff00ff; /* Estilo específico para el div de otros jugadores */
+}
+
+@media (max-width: 768px) {
+    .fichas-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Ajustar para pantallas más pequeñas */
+    }
+
+    .dashboard-container, .dashboard-container1 {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
 }

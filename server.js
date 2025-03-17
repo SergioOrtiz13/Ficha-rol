@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const { authenticateUser } = require('./db');
+const { authenticateUser, actualizarTiradas } = require('./db');
 const { saveFicha, getFichas, getFichaPorNombre } = require('./fichaModel');
 
 const app = express();
@@ -87,7 +87,28 @@ app.get('/ficha/:id', (req, res) => {
     });
 });
 
+app.post('/actualizar-tiradas', async (req, res) => {
+    const { username, tiradas } = req.body;  // Recibimos el nombre de usuario y las tiradas
 
+    if (!Array.isArray(tiradas)) {
+        return res.status(400).json({ success: false, message: 'Las tiradas deben ser un array.' });
+    }
+
+    try {
+        // Actualizar las tiradas del usuario
+        const result = await actualizarTiradas(username, tiradas);
+
+        // Asegúrate de que 'result' siempre sea un objeto antes de acceder a sus propiedades
+        if (result && result.matchedCount > 0) {
+            res.json({ success: true, message: 'Tiradas actualizadas correctamente.' });
+        } else {
+            res.status(404).json({ success: false, message: 'Usuario no encontrado.' });
+        }
+    } catch (error) {
+        console.error('Error al actualizar las tiradas:', error);
+        res.status(500).json({ success: false, message: 'Error al actualizar las tiradas.' });
+    }
+});
 
 
 function getRedirectUrl(username) {

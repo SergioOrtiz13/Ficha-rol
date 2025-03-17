@@ -15,6 +15,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
     const result = await response.json();
 
     if (result.success) {
+        localStorage.setItem('username', username);
         window.location.href = result.redirectUrl;
     } else {
         document.getElementById('error-message').textContent = result.message;

@@ -4,8 +4,8 @@ body {
     color: #e0e0e0;
     margin: 0;
     padding: 20px;
-
 }
+
 .video-background {
     position: fixed;
     top: 0;
@@ -15,6 +15,7 @@ body {
     z-index: -1; /* Coloca el video detrás del contenido */
     object-fit: cover; /* Asegura que el video cubra toda la pantalla */
 }
+
 .ficha {
     background-color: rgba(0, 0, 0, 0.7);
     padding: 20px;
@@ -23,15 +24,18 @@ body {
     max-width: 800px;
     margin: auto;
 }
+
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
+
 .header h1 {
     flex: 1;
     color: #ffffff;
 }
+
 .header img {
     width: 200px;
     height: 200px;
@@ -39,17 +43,21 @@ body {
     border: 3px solid #00ffdd;
     margin-left: 20px;
 }
+
 .caracteristicas {
     margin-top: 20px;
 }
+
 .caracteristica {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
 }
+
 .caracteristica label {
     flex: 1;
 }
+
 .caracteristica button {
     margin-left: 10px;
     padding: 5px 10px;
@@ -58,16 +66,21 @@ body {
     color: #0d0d0d;
     border-radius: 4px;
     cursor: pointer;
+    white-space: nowrap; /* Asegura que el texto en los botones no se divida */
 }
+
 .caracteristica button:hover {
     background-color: #0045e6;
 }
+
 .historia, .personalidad, .habilidades {
     margin-top: 20px;
 }
+
 .habilidades p {
     margin: 5px 0;
 }
+
 .habilidades textarea {
     width: 95%;
     padding: 10px;
@@ -76,16 +89,133 @@ body {
     background-color: #333;
     color: #e0e0e0;
 }
+
 .arbol-genealogico {
     margin-top: 20px;
 }
+
 .arbol-genealogico ul {
     list-style-type: none;
     padding: 0;
 }
+
 .arbol-genealogico li {
     margin: 5px 0;
     padding: 5px;
     background-color: #333;
     border-radius: 4px;
+}
+
+.resultado-tirada {
+    display: flex;
+    justify-content: space-between; /* Alinea los divs en la misma línea horizontal */
+    gap: 20px; /* Espacio entre los divs */
+    margin-top: 20px;
+}
+
+#resultado-dados,
+#tirada-otros-jugadores {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48%; /* Ambos divs ocupan el 48% del espacio disponible */
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+    margin-bottom: 10px;
+}
+
+/* Estilo específico para los divs */
+#resultado-dados {
+    border: 2px solid #00ffdd; /* Estilo específico para el div de resultados */
+}
+
+#tirada-otros-jugadores {
+    border: 2px solid #ff00ff; /* Estilo específico para el div de otros jugadores */
+}
+
+/* Responsividad: Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    .ficha {
+        padding: 10px;
+    }
+
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .header h1 {
+        font-size: 1.8em;
+        margin-bottom: 10px;
+    }
+
+    .header img {
+        width: 150px;
+        height: 150px;
+        margin: 10px 0;
+    }
+
+    .caracteristicas .caracteristica,
+    .habilidades .caracteristica {
+        flex-wrap: wrap; /* Permite que los botones se ajusten mejor en filas */
+    }
+
+    .caracteristica {
+        justify-content: space-between; /* Mantiene los elementos separados y evita que se apilen */
+    }
+
+    .caracteristica button {
+        width: auto;
+        margin-top: 0; /* Elimina el margen superior para que no se mueva debajo */
+    }
+
+    .habilidades textarea {
+        width: 100%;
+    }
+
+    h2 {
+        font-size: 1.3em;
+    }
+}
+
+@media (max-width: 480px) {
+    .ficha {
+        padding: 5px;
+    }
+
+    .header h1 {
+        font-size: 1.5em;
+    }
+
+    .header img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .caracteristicas .caracteristica,
+    .habilidades .caracteristica {
+        flex-wrap: wrap; /* Los botones pueden ajustarse en una fila sin apilarse */
+    }
+
+    .caracteristica {
+        justify-content: space-between; /* Espacio entre la etiqueta y los botones */
+    }
+
+    .caracteristica button {
+        padding: 8px 10px;
+        font-size: 14px;
+        width: auto;
+        margin-top: 0; /* Asegura que no se apilen debajo */
+    }
+
+    .habilidades textarea {
+        width: 100%;
+        font-size: 14px;
+    }
+
+    h2 {
+        font-size: 1.2em;
+    }
 }
