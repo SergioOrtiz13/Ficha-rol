@@ -98,6 +98,30 @@ async function getTiradasDeOtrosJugadores(username) {
     }
 }
 
+async function actualizarHabilidades(username, habilidades_adquiridas) {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('usuario');
+        
+        // Actualizar las habilidades adquiridas del usuario
+        const result = await collection.updateOne(
+            { username: username },  // Buscar por el username del usuario
+            { $set: { habilidadesAdquiridas: habilidades_adquiridas } } // Actualizar las habilidades
+        );
+
+        if (result.modifiedCount > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('Error al actualizar habilidades:', error);
+        throw error;
+    } finally {
+        await closeDB();
+    }
+}
+
 async function closeDB() {
     try {
         await client.close();
@@ -106,4 +130,4 @@ async function closeDB() {
     }
 }
 
-module.exports = { authenticateUser, saveFicha, actualizarTiradas, getTiradasDeOtrosJugadores };
+module.exports = {connectDB, authenticateUser, saveFicha, actualizarTiradas, getTiradasDeOtrosJugadores, actualizarHabilidades };

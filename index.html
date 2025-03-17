@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="login.css">
 </head>
 <body>
+    <audio id="audio-background" loop>
+        <source src="music/Trails_of_Cold_Steel_III_Start_Line.mp3" type="audio/mp3">
+        <source src="music/Trails_of_Cold_Steel_III_Start_Line.ogg" type="audio/ogg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
     <video class="video-background" autoplay muted loop>
         <source src="vid\mylivewallpapers-com-Sakura-Village-4K.mp4" type="video/mp4">
         Tu navegador no soporta el elemento de video.
@@ -22,6 +27,15 @@
         </form>
         <p id="error-message" class="error-message"></p>
     </div>
+        <script>
+            let myAudio = document.getElementById('audio-background');
+
+            myAudio.volume = 0.2;
+
+            document.body.addEventListener('click', function() {
+                myAudio.play(); 
+            });
+        </script>
     <script src="login.js"></script>
 </body>
 </html>

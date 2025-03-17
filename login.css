@@ -9,6 +9,10 @@ body {
     margin: 0;
 }
 
+.audio-background {
+    display: none;
+}
+
 .video-background {
     position: fixed;
     top: 0;

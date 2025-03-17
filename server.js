@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const { authenticateUser, actualizarTiradas, getTiradasDeOtrosJugadores } = require('./db');
+const { connectDB , authenticateUser, actualizarTiradas, actualizarHabilidades } = require('./db');
 const { saveFicha, getFichas, getFichaPorNombre } = require('./fichaModel');
 
 const app = express();
@@ -113,6 +113,71 @@ app.post('/actualizar-tiradas', async (req, res) => {
 
 
 
+// Ruta para actualizar las habilidades adquiridas de un usuario
+app.post('/actualizar-habilidades', async (req, res) => {
+    const { username, habilidades_adquiridas } = req.body;
+
+    if (!username || !habilidades_adquiridas) {
+        return res.status(400).json({ success: false, message: 'Faltan datos: username o habilidades.' });
+    }
+
+    try {
+        // Actualizar las habilidades del usuario en la base de datos
+        const result = await actualizarHabilidades(username, habilidades_adquiridas);
+
+        if (result) {
+            res.json({ success: true, message: 'Habilidades actualizadas correctamente.' });
+        } else {
+            res.status(404).json({ success: false, message: 'Usuario no encontrado.' });
+        }
+    } catch (error) {
+        console.error('Error al actualizar las habilidades:', error);
+        res.status(500).json({ success: false, message: 'Error al actualizar las habilidades.' });
+    }
+});
+
+// Ruta para obtener las habilidades adquiridas de un usuario
+app.get('/get-habilidades/:username', async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        const database = await connectDB();
+        const collection = database.collection('usuario');
+        const user = await collection.findOne({ username });
+
+        if (user) {
+            // Usar el campo correcto 'habilidadesAdquiridas'
+            console.log('Habilidades adquiridas:', user.habilidadesAdquiridas);
+            res.json({ success: true, habilidades_adquiridas: user.habilidadesAdquiridas || '' });
+        } else {
+            console.log('Usuario no encontrado:', username);
+            res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+        }
+    } catch (error) {
+        console.error('Error al obtener las habilidades adquiridas:', error);
+        res.status(500).json({ success: false, message: 'Error al obtener las habilidades adquiridas' });
+    }
+});
+
+app.get('/habilidades/:username', async (req, res) => {
+    const { username } = req.params;
+    try {
+        const database = await connectDB();
+        const collection = database.collection('usuario');
+        
+        // Buscar el usuario por el nombre de usuario
+        const user = await collection.findOne({ username: username });
+
+        if (user) {
+            res.json({ success: true, habilidadesAdquiridas: user.habilidadesAdquiridas });
+        } else {
+            res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+        }
+    } catch (error) {
+        console.error('Error al obtener las habilidades:', error);
+        res.status(500).json({ success: false, message: 'Error al obtener las habilidades' });
+    }
+});
 
 function getRedirectUrl(username) {
     if (username === 'Sergio') {
