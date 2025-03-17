@@ -5,16 +5,24 @@ function tirarDados() {
     }
     document.getElementById('resultado-dados').textContent = 'Resultados de tus dados: ' + resultados.join(', ');
 
-    // Aquí enviamos los resultados al backend para actualizar las tiradas en la base de datos
-    const username = 'Kike';  // O el username del usuario que está jugando
+    // Obtener el username desde localStorage
+    const username = localStorage.getItem('username'); 
+
+    // Si no hay username guardado, significa que no hay usuario logeado
+    if (!username) {
+        console.log('Error: No se encontró el username. El usuario no está logeado.');
+        return;  // O podrías redirigir al login
+    }
+
+    // Enviar las tiradas al backend para actualizar las tiradas del usuario logeado
     fetch('/actualizar-tiradas', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            username: username,
-            tiradas: resultados,  // Enviamos el array de números al backend
+            username: username,  // Aquí pasamos el username dinámico
+            tiradas: resultados,  // Enviamos el array de tiradas
         }),
     })
     .then(response => response.json())
