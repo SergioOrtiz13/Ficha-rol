@@ -179,6 +179,89 @@ app.get('/habilidades/:username', async (req, res) => {
     }
 });
 
+app.get('/get-caracteristicas/:username', async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        const database = await connectDB();
+        const collection = database.collection('usuario');
+
+        const user = await collection.findOne({ username });
+
+        if (user) {
+            // Asumiendo que las características están en el campo 'caracteristicasPersonaje'
+            res.json({ success: true, caracteristicas: user.caracteristicasPersonaje });
+        } else {
+            res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+        }
+    } catch (error) {
+        console.error('Error al obtener las características:', error);
+        res.status(500).json({ success: false, message: 'Error al obtener las características' });
+    }
+});
+
+app.post('/actualizar-caracteristica', async (req, res) => {
+    const { username, caracteristicas } = req.body;
+
+    console.log('Datos recibidos:', { username, caracteristicas });
+
+    // Verificar si los datos requeridos están presentes
+    if (!username || !Array.isArray(caracteristicas) || caracteristicas.length === 0) {
+        console.log('Faltan datos:', { username, caracteristicas });
+        return res.status(400).json({ success: false, message: 'Faltan datos: username o caracteristicas.' });
+    }
+
+    try {
+        // Conectar a la base de datos
+        const database = await connectDB();
+        const collection = database.collection('usuario');
+
+        // Buscar el usuario por el nombre de usuario
+        const user = await collection.findOne({ username });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+        }
+
+        // Obtener las características del usuario
+        let caracteristicasPersonaje = user.caracteristicasPersonaje || [];
+
+        // Iterar sobre el array de características recibidas y actualizar los valores
+        for (const nuevaCaracteristica of caracteristicas) {
+            const { nombre, valor } = nuevaCaracteristica;
+
+            // Verificar si la característica existe en el array
+            const caracteristicaEncontrada = caracteristicasPersonaje.find(c => c.nombre === nombre);
+
+            if (caracteristicaEncontrada) {
+                // Si la característica existe, actualizamos su valor
+                caracteristicaEncontrada.valor = valor;
+            } else {
+                // Si no existe, agregamos una nueva característica
+                caracteristicasPersonaje.push({ nombre, valor });
+            }
+        }
+
+        // Actualizar las características en la base de datos
+        const result = await collection.updateOne(
+            { username: username },
+            { $set: { caracteristicasPersonaje: caracteristicasPersonaje } }
+        );
+
+        if (result.modifiedCount > 0) {
+            res.json({ success: true, message: 'Características actualizadas correctamente.' });
+        } else {
+            res.status(500).json({ success: false, message: 'Hubo un problema al actualizar las características.' });
+        }
+    } catch (error) {
+        console.error('Error al actualizar la característica:', error);
+        res.status(500).json({ success: false, message: 'Hubo un error al actualizar la característica.' });
+    }
+});
+
+
+
+
 function getRedirectUrl(username) {
     if (username === 'Sergio') {
         return 'dashboard.html';

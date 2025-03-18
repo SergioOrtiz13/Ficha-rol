@@ -122,6 +122,38 @@ async function actualizarHabilidades(username, habilidades_adquiridas) {
     }
 }
 
+async function actualizarCaracteristica(username, caracteristicas) {
+    try {
+        // Verificar que los datos estén correctamente definidos antes de enviarlos
+        if (!username || !Array.isArray(caracteristicas) || caracteristicas.length === 0) {
+            console.error("Faltan datos:", { username, caracteristicas });
+            return;
+        }
+
+        const response = await fetch('http://localhost:3000/actualizar-caracteristica', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                caracteristicas: caracteristicas  // Enviamos un array de características
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            console.log('Características actualizadas correctamente');
+        } else {
+            console.error('Error al actualizar las características:', data.message);
+        }
+    } catch (error) {
+        console.error('Error al hacer la solicitud:', error);
+    }
+}
+
+
 async function closeDB() {
     try {
         await client.close();
@@ -130,4 +162,4 @@ async function closeDB() {
     }
 }
 
-module.exports = {connectDB, authenticateUser, saveFicha, actualizarTiradas, getTiradasDeOtrosJugadores, actualizarHabilidades };
+module.exports = {connectDB, authenticateUser, saveFicha, actualizarTiradas, getTiradasDeOtrosJugadores, actualizarHabilidades, actualizarCaracteristica };
