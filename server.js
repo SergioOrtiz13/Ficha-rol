@@ -260,8 +260,6 @@ app.post('/actualizar-caracteristica', async (req, res) => {
 });
 
 
-
-
 function getRedirectUrl(username) {
     if (username === 'Sergio') {
         return 'dashboard.html';
