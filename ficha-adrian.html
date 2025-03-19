@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ficha de Rol - Elizabeth</title>
+    <title>Ficha de Rol</title>
     <link rel="stylesheet" href="ficha.css">
     <style>
         .dados {
@@ -27,19 +27,20 @@
 </head>
 <body>
     <video class="video-background" autoplay muted loop>
-        <source src="vid\mylivewallpapers-com-Night-City-Lake-4K.mp4" type="video/mp4">
+        <source src="vid\1686584477-1686584477-fluorescent-sea-live-wallpaper.mp4" type="video/mp4">
         Tu navegador no soporta el elemento de video.
     </video>
     <div class="ficha">
         <div class="header">
-            <h1>Nombre del Personaje: Elizabeth</h1>
-            <img src="img\Elizabet.jpg" alt="Imagen de Elizabeth" class="imagen-circular">
+            <h1>Nombre del Personaje: Adrian</h1>
+            <img src="img\fotos\Adrian.png" alt="Imagen de Adrian" class="imagen-circular">
         </div>
         <button onclick="tirarDadosOtrosJugadores()">Tirar Dados</button>
         <div class="resultado-tirada">
             <div id="resultado-dados">Resultado de tus dados</div>
             <div id="tirada-otros-jugadores">Resultado de otros jugadores</div>
         </div>
+
         <div class="caracteristicas">
             <h2>Características de Conquista</h2>
             <div class="caracteristica">
@@ -101,31 +102,37 @@
                 <button onclick="actualizarCaracteristica('habilidad-combate', 'restar')">-</button>
             </div>
         </div>
-        <div class="historia">
-            <h2>Historia</h2>
-            <p>Elizabeth vive en la zona rica conocida como <strong>Villas Esmeralda</strong>, un lugar exclusivo y lleno de lujos. Su padre es un exitoso empresario y su madre es ama de casa, dedicándose al cuidado del hogar y de la familia. Desde pequeña, Elizabeth ha tenido acceso a una educación de calidad y a numerosas oportunidades para desarrollar sus intereses.</p>
-            <p>Le encanta leer, ver películas y salir con sus amigas. Estas actividades le permiten relajarse y disfrutar de su tiempo libre, además de mantener una vida social activa. Elizabeth es una persona curiosa y siempre está buscando aprender cosas nuevas.</p>
-            <p>Actualmente, Elizabeth estudia en la <strong>Universidad Solana</strong>, donde se está preparando para ser maestra. Su pasión por la enseñanza y su deseo de ayudar a los demás la han llevado a elegir esta carrera. Además, está realizando prácticas en la propia universidad, lo que le permite ganar experiencia y aplicar lo que ha aprendido en sus clases.</p>
-        </div>
+        <h2>Historia</h2>
+        <p>Adrián se crió en la propia ciudad de Noctua, un lugar vibrante donde la vida siempre estuvo llena de lujo y glamour. Sus padres, millonarios exitosos que dirigen empresas dedicadas a la actuación y la producción cinematográfica por todo el mundo, le dieron una vida llena de comodidades, pero también de expectativas. Desde pequeño, Adrián estuvo rodeado de artistas, directores y actores de renombre, lo que lo hizo enamorarse del mundo del cine y el teatro. Creció bajo los focos de la industria, conociendo los secretos del detrás de las cámaras, y soñaba con un día ser el protagonista en lugar de solo ser espectador.</p>
+        
+        <p>Su infancia fue un torbellino de aventuras y momentos felices. Los pasillos de su casa siempre resonaban con risas y conversaciones sobre proyectos cinematográficos, mientras él pasaba el tiempo jugando, explorando y tomando clases de teatro desde una edad temprana. Aunque sus padres estaban muy ocupados con su exitosa carrera, siempre le dieron el apoyo necesario para desarrollar su talento y perseguir sus sueños. Era el niño que destacaba en las fiestas, el centro de atención con su carisma natural y su capacidad para hacer reír a todos a su alrededor.</p>
+        
+        <p>En el colegio y el instituto, Adrián era conocido como el chico popular, el que siempre tenía una sonrisa en el rostro y sabía cómo encajar en cualquier grupo. Su atractivo físico y su personalidad extrovertida lo convertían en el centro de la atención de todos. Los chicos querían ser sus amigos, mientras que las chicas soñaban con ser su pareja. Sin embargo, detrás de su actitud relajada y su vida social activa, Adrián tenía claro que, más allá de las fiestas y el glamour, su verdadera pasión era la actuación. Si bien disfrutaba de su popularidad, siempre sentía que estaba destinado a algo más grande.</p>
+    
+        <p>La vida en el instituto no siempre fue fácil para Adrián. A medida que se acercaba el final de sus años escolares, la presión de cumplir las expectativas sociales y académicas aumentaba. Adrián sabía que para alcanzar su sueño de ser actor debía comprometerse con sus estudios y preparar su futuro. Sin embargo, mantener su popularidad mientras se dedicaba a los estudios no fue tarea fácil. A pesar de las tentaciones de la vida social, se sumergió en el mundo del teatro, participando en obras escolares y realizando castings locales. A través de su esfuerzo y pasión, logró destacarse en la escena artística, recibiendo elogios tanto de profesores como de compañeros.</p>
+        
+        <p>Finalmente, después de años de sacrificio, esfuerzo y dedicación, Adrián logró lo que tanto había soñado: entró en la universidad para estudiar actuación. Este fue un logro monumental para él, ya que había trabajado incansablemente para conseguirlo. En su primer día en la universidad, sintió que estaba dando el primer paso hacia su sueño de convertirse en un actor reconocido. Estaba un paso más cerca de ser el protagonista de su propia historia. Ahora, rodeado de nuevos desafíos y oportunidades, Adrián sabía que su carrera estaba solo comenzando, pero la pasión que siempre lo había impulsado estaba más viva que nunca.</p>
+        
+        <p>Hoy en día, Adrián sigue luchando por su lugar en el mundo del espectáculo.</p>
+    </div>
         <div class="personalidad">
             <h2>Personalidad</h2>
-            <p>Bondadosa, Exloradora, Amigable, Creativa, Dedicada.</p>
+            <p>Alegre, Trabajador, Optimista, Distraido.</p>
         </div>
         <div class="habilidades">
             <h2>Datos</h2>
-            <p><strong>Maestra:</strong> Si el jugador usa esta habilidad en una tirada normal o de conquista, podrá escoger qué rasgo usar en la tirada independientemente del tema de conversación o la situación.</p>
-            <h2>Habilidades adquiridas</h2>
-            <textarea id="habilidades-adquiridas-elizabeth" rows="4" placeholder="Se irán viendo durante la partida"></textarea>
+            <textarea id="habilidades-adquiridas" rows="4" placeholder="Se irán viendo durante la partida"></textarea>
         </div>
         <div class="arbol-genealogico">
             <h2>Familiares y amigos</h2>
             <ul>
-                <li>Padre: Michael</li>
-                <li>Madre: Johana</li>
+                <li>Madre: Ophelia </li>
+                <li>Padre: stuart </li>
+                <li>Novia: Emma</li>>
             </ul>
         </div>
     </div>
-    <script src="elizabeth.js"></script>
+    <script src="adrian.js"></script>
     <script src="tiradas.js"></script>
     <script src="tiradas-master.js"></script>
 </body>
