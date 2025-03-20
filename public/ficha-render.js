@@ -207,3 +207,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // Evento para el botón "Guardar Habilidades"
     document.getElementById('habilidades-adquiridas').addEventListener('input', actualizarHabilidades);
 });
+//Ultima actu
