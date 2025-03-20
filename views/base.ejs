@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha de Rol</title>
-    <link rel="stylesheet" href="ficha.css">
+    <link rel="stylesheet" type="text/css" href="../public/ficha.css">
     <style>
         .dados {
             display: flex;
@@ -26,9 +26,9 @@
     </style>
 </head>
 <body>
-    <% if (personaje.videoFondo && personaje.videoFondo.url) { %>
+    <% if (personaje.videoFondo && personaje.videoFondo.length > 0) { %>
         <video class="video-background" autoplay muted loop>
-            <source src="/<%= personaje.videoFondo %>" type="video/mp4">
+            <source src="<%= personaje.videoFondo %>" type="video/mp4">
             Tu navegador no soporta el elemento de video.
         </video>
     <% } else { %>
@@ -39,8 +39,8 @@
         <div class="header">
             <h1>Nombre del Personaje: <%= personaje.nombrePersonaje %></h1>
 
-            <% if (personaje.imagenPersonaje && personaje.imagenPersonaje.url) { %>
-                <img src="/<%= personaje.imagenPersonaje %>" alt="Imagen de <%= personaje.nombrePersonaje %>" class="imagen-circular">
+            <% if (personaje.imagenPersonaje && personaje.imagenPersonaje.length > 0) { %>
+                <img src="<%= personaje.imagenPersonaje %>" alt="Imagen de <%= personaje.nombrePersonaje %>" class="imagen-circular">
             <% } else { %>
                 <p>No hay imagen disponible.</p>
             <% } %>
@@ -155,6 +155,7 @@
         <div class="habilidades-adquiridas">
             <h2>Habilidades adquiridas</h2>
             <textarea id="habilidades-adquiridas" rows="4" placeholder="Se irán viendo durante la partida"><%= personaje.habilidadesAdquiridas || '' %></textarea>
+            <button type="button" onclick="guardarHabilidades()">Guardar Habilidades</button>
         </div>
 
         <!-- Árbol Genealógico -->
@@ -171,9 +172,9 @@
             <% } %>
         </div>
     </div>
-
-    <script src="ficha.js"></script>
-    <script src="tiradas.js"></script>
-    <script src="tiradas-master.js"></script>
+    <script src="../public/ficha-render.js"></script>
+    <script src="/fichaModel.js"></script>
+    <script src="/tiradas.js"></script>
+    <script src="/tiradas-master.js"></script>
 </body>
 </html>

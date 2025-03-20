@@ -1,20 +1,49 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const multer = require('multer');
 const { connectDB , authenticateUser, actualizarTiradas, actualizarHabilidades } = require('./db');
 const { saveFicha, getFichas, getFichaPorNombre } = require('./fichaModel');
+const fs = require('fs');
 
 const app = express();
 const port = 3000;
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        if (file.fieldname === 'videoFondo') {
+            cb(null, 'vid');  // Guardar videos en la carpeta 'vid'
+        } else if (file.fieldname === 'imagenPersonaje') {
+            cb(null, 'img');  // Guardar imágenes en la carpeta 'img/fotos'
+        } else {
+            cb(new Error('Tipo de archivo no válido'));
+        }
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));  // Nombre único para el archivo
+    }
+});
+
+const upload = multer({ storage: storage });
+const archivoPath = path.join(__dirname, '/fichaModel.js');
+fs.access(archivoPath, fs.constants.F_OK, (err) => {
+    if (err) {
+        console.log(`${archivoPath} no existe.`);
+    } else {
+        console.log(`${archivoPath} existe.`);
+    }
+});
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use('/vid', express.static(path.join(__dirname, 'vid')));
+app.use('/img', express.static(path.join(__dirname, 'img')));
+app.use(express.static(path.join(__dirname, '/')));
 app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -31,17 +60,31 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.post('/crear-ficha', async (req, res) => {
+app.post('/crear-ficha', upload.fields([
+    { name: 'imagenPersonaje', maxCount: 1 },
+    { name: 'videoFondo', maxCount: 1 }
+]), async (req, res) => {
+    const fichaData = {
+        nombrePersonaje: req.body.nombrePersonaje,
+        carisma: req.body.carisma,
+        economia: req.body.economia,
+        torpeza: req.body.torpeza,
+        belleza: req.body.belleza,
+        social: req.body.social,
+        historia: req.body.historia,
+        personalidad: req.body.personalidad,
+        habilidadesAdquiridas: req.body.habilidadesAdquiridas,
+        miembrosArbol: JSON.parse(req.body.miembrosArbol),
+        habilidades: req.body.habilidades,
+        imagenPersonaje: req.files['imagenPersonaje'] ? '/img/' + req.files['imagenPersonaje'][0].filename : '',
+        videoFondo: req.files['videoFondo'] ? '/vid/' + req.files['videoFondo'][0].filename : ''
+    };
+
     try {
-        const fichaData = req.body;  // Recibimos los datos de la ficha desde el frontend
-
-        // Guardamos la ficha en la base de datos
-        const result = await saveFicha(fichaData);
-
-        // Respondemos al cliente con éxito
-        res.json({ success: true, message: 'Ficha creada con éxito', data: result });
+        await saveFicha(fichaData);
+        res.json({ success: true });
     } catch (error) {
-        res.json({ success: false, message: 'Error al guardar la ficha', error: error.message });
+        res.json({ success: false, message: error.message });
     }
 });
 
@@ -56,19 +99,39 @@ app.get('/getFichas', async (req, res) => {
 });
 
 app.get('/ficha/:nombrePersonaje', async (req, res) => {
-    const { nombrePersonaje } = req.params;  // Obtienes el nombre del personaje desde la URL
     try {
-        const ficha = await getFichaPorNombre(nombrePersonaje);  // Obtener ficha desde MongoDB
+        const { nombrePersonaje } = req.params;
+        
+        // Obtener una ficha por nombre desde MongoDB
+        const ficha = await getFichaPorNombre(nombrePersonaje);
 
-        if (ficha) {
-            // Renderizar la plantilla EJS y pasar los datos de la ficha
-            res.render('base', { personaje: ficha });  // 'base' es el nombre del archivo EJS
-        } else {
-            res.status(404).json({ message: 'Ficha no encontrada' });
+        if (!ficha) {
+            return res.status(404).send('Ficha no encontrada');
         }
+
+        // Renderiza la plantilla base.ejs y pasa la ficha individual
+        res.render('base', { personaje: ficha });
     } catch (error) {
         console.error('Error al obtener la ficha:', error);
-        res.status(500).json({ message: 'Error al obtener la ficha' });
+        res.status(500).send('Error al obtener la ficha');
+    }
+});
+
+// Ruta para obtener y renderizar todas las fichas
+app.get('/fichas', async (req, res) => {
+    try {
+        // Obtener todas las fichas desde MongoDB
+        const fichas = await getFichas();  // Devuelve todas las fichas
+
+        if (!fichas || fichas.length === 0) {
+            return res.status(404).send('No se encontraron fichas');
+        }
+
+        // Renderiza la plantilla fichas.ejs y pasa todas las fichas
+        res.render('fichas', { fichas });
+    } catch (error) {
+        console.error('Error al obtener las fichas:', error);
+        res.status(500).send('Error al obtener las fichas');
     }
 });
 
@@ -86,6 +149,26 @@ app.get('/ficha/:id', (req, res) => {
         // Renderizar la vista EJS con los datos del personaje
         res.render('ficha', { personaje });
     });
+});
+
+app.post('/upload', upload.fields([
+    { name: 'imagenPersonaje', maxCount: 1 },
+    { name: 'videoFondo', maxCount: 1 }
+]), (req, res) => {
+    const imagenUrl = req.files['imagenPersonaje'] ? `/img/fotos/${req.files['imagenPersonaje'][0].filename}` : null;
+    const videoUrl = req.files['videoFondo'] ? `/vid/${req.files['videoFondo'][0].filename}` : null;
+
+    // Guardar las URLs en la base de datos
+    const fichaData = {
+        nombrePersonaje: req.body.nombrePersonaje,
+        imagenPersonaje: imagenUrl,
+        videoFondo: videoUrl
+    };
+
+    // Llamar a tu función de base de datos para guardar los datos
+    saveFicha(fichaData)
+        .then(() => res.send('Ficha guardada con éxito'))
+        .catch(err => res.status(500).send('Error al guardar la ficha'));
 });
 
 app.post('/actualizar-tiradas', async (req, res) => {
@@ -256,6 +339,33 @@ app.post('/actualizar-caracteristica', async (req, res) => {
     } catch (error) {
         console.error('Error al actualizar la característica:', error);
         res.status(500).json({ success: false, message: 'Hubo un error al actualizar la característica.' });
+    }
+});
+
+app.get('/get-habilidades-y-caracteristicas/:username/:fichaId', async (req, res) => {
+    const { username, fichaId } = req.params;
+    try {
+        const ficha = await getFichaPorId(fichaId);  // Obtener la ficha por ID
+        if (ficha && ficha.username === username) {
+            res.json({
+                success: true,
+                habilidades_adquiridas: ficha.habilidadesAdquiridas || '',
+                caracteristicas: {
+                    carisma: ficha.carisma,
+                    economia: ficha.economia,
+                    torpeza: ficha.torpeza,
+                    belleza: ficha.belleza,
+                    social: ficha.social,
+                    historia: ficha.historia,
+                    personalidad: ficha.personalidad,
+                }
+            });
+        } else {
+            res.status(404).json({ success: false, message: 'Ficha o usuario no encontrado' });
+        }
+    } catch (error) {
+        console.error('Error al obtener habilidades y características:', error);
+        res.status(500).json({ success: false, message: 'Error al obtener habilidades y características' });
     }
 });
 

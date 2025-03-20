@@ -2,6 +2,7 @@ const { MongoClient } = require('mongodb');
 
 const uri = 'mongodb+srv://root:root@cluster0.nz9sp.mongodb.net/';
 const client = new MongoClient(uri);
+const collectionName = 'archivos';
 
 async function connectDB() {
     try {
@@ -153,6 +154,45 @@ async function actualizarCaracteristica(username, caracteristicas) {
     }
 }
 
+async function getArchivoPorNombre(nombreArchivo) {
+    try {
+        await connectToDatabase();
+        const database = client.db(dbName);
+        const collection = database.collection(collectionName);
+
+        // Buscar el archivo por nombre
+        console.log("Buscando en MongoDB por nombreArchivo:", nombreArchivo);
+        const archivo = await collection.findOne({ "nombreArchivo": nombreArchivo });
+
+        console.log("Resultado de la búsqueda:", archivo);
+        return archivo;
+    } catch (error) {
+        console.error('Error al obtener el archivo por nombre:', error);
+        throw error;
+    }
+}
+
+async function saveFileContentToFicha(fileName, nombrePersonaje) {
+    try {
+        // Leer el archivo JS
+        const filePath = path.join(__dirname, './', fileName);
+        const fileContent = fs.readFileSync(filePath, 'utf-8');
+
+        // Crear el objeto de la ficha con el contenido del archivo
+        const fichaData = {
+            nombrePersonaje: nombrePersonaje,
+            archivoJS: fileContent,  // Guardamos el contenido del archivo JS
+            fecha: new Date()
+        };
+
+        // Guardar la ficha en MongoDB (usando el método saveFicha que ya tienes)
+        const result = await saveFicha(fichaData); // Asumiendo que ya tienes la función `saveFicha`
+        console.log('Archivo JS guardado y asociado con la ficha:', result);
+
+    } catch (error) {
+        console.error('Error al guardar el archivo JS:', error);
+    }
+}
 
 async function closeDB() {
     try {
@@ -162,4 +202,4 @@ async function closeDB() {
     }
 }
 
-module.exports = {connectDB, authenticateUser, saveFicha, actualizarTiradas, getTiradasDeOtrosJugadores, actualizarHabilidades, actualizarCaracteristica };
+module.exports = {connectDB, authenticateUser, saveFicha, actualizarTiradas, getTiradasDeOtrosJugadores, actualizarHabilidades, actualizarCaracteristica, getArchivoPorNombre, saveFileContentToFicha };

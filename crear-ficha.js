@@ -27,38 +27,38 @@ document.getElementById('crear-ficha-form').addEventListener('submit', async fun
     const habilidadReflejos = document.getElementById('habilidad-reflejos').value;
     const habilidadCombate = document.getElementById('habilidad-combate').value;
 
-    // Crear un objeto para enviar al backend
-    const fichaData = {
-        nombrePersonaje,
-        imagenPersonaje,
-        videoFondo,
-        carisma,
-        economia,
-        torpeza,
-        belleza,
-        social,
-        historia,
-        personalidad,
-        habilidadesAdquiridas,
-        miembrosArbol,
-        habilidades: {
-            inteligencia: habilidadInteligencia,
-            formaFisica: habilidadFormaFisica,
-            habilidadZero,
-            sigilo: habilidadSigilo,
-            reflejos: habilidadReflejos,
-            combate: habilidadCombate
-        }
-    };
+    // Crear un FormData para enviar los datos al backend
+    const formData = new FormData();
 
-    // Enviar los datos al backend utilizando fetch
+    // Añadir todos los campos de texto
+    formData.append('nombrePersonaje', nombrePersonaje);
+    formData.append('carisma', carisma);
+    formData.append('economia', economia);
+    formData.append('torpeza', torpeza);
+    formData.append('belleza', belleza);
+    formData.append('social', social);
+    formData.append('historia', historia);
+    formData.append('personalidad', personalidad);
+    formData.append('habilidadesAdquiridas', habilidadesAdquiridas);
+    formData.append('miembrosArbol', JSON.stringify(miembrosArbol));  // Convertimos el array a JSON
+
+    // Añadir las habilidades
+    formData.append('habilidades[inteligencia]', habilidadInteligencia);
+    formData.append('habilidades[formaFisica]', habilidadFormaFisica);
+    formData.append('habilidades[habilidadZero]', habilidadZero);
+    formData.append('habilidades[sigilo]', habilidadSigilo);
+    formData.append('habilidades[reflejos]', habilidadReflejos);
+    formData.append('habilidades[combate]', habilidadCombate);
+
+    // Añadir los archivos
+    formData.append('imagenPersonaje', imagenPersonaje);
+    formData.append('videoFondo', videoFondo);
+
+    // Enviar los datos al backend utilizando fetch con FormData
     try {
         const response = await fetch('/crear-ficha', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(fichaData),
+            body: formData,  // Aquí enviamos el FormData en lugar del JSON
         });
 
         const result = await response.json();
