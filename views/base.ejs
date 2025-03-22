@@ -26,14 +26,22 @@
     </style>
 </head>
 <body>
-    <% if (personaje.videoFondo && personaje.videoFondo.length > 0) { %>
+    <% if (personaje.videoFondo && personaje.videoFondo.length > 0) { 
+    const ext = personaje.videoFondo.split('.').pop().toLowerCase();
+    if (ext === 'mp4' || ext === 'avi' || ext === 'mov' || ext === 'webm') { %>
+        <!-- Si es un video -->
         <video class="video-background" autoplay muted loop>
             <source src="<%= personaje.videoFondo %>" type="video/mp4">
             Tu navegador no soporta el elemento de video.
         </video>
-    <% } else { %>
-        <p>No hay video de fondo disponible.</p>
+    <% } else if (ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif') { %>
+        <!-- Si es una imagen -->
+        <img src="<%= personaje.videoFondo %>" alt="Fondo del personaje" class="video-background">
     <% } %>
+<% } else { %>
+    <p>No hay video o imagen de fondo disponible.</p>
+<% } %>
+
 
     <div class="ficha">
         <div class="header">

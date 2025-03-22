@@ -11,18 +11,21 @@ const port = 3000;
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        if (file.fieldname === 'videoFondo') {
+        const fileType = file.mimetype.split('/')[0]; // Esto determina el tipo de archivo (image o video)
+        
+        if (fileType === 'video') {
             cb(null, 'vid');  // Guardar videos en la carpeta 'vid'
-        } else if (file.fieldname === 'imagenPersonaje') {
-            cb(null, 'img');  // Guardar imágenes en la carpeta 'img/fotos'
+        } else if (fileType === 'image') {
+            cb(null, 'img');  // Guardar imágenes en la carpeta 'img'
         } else {
-            cb(new Error('Tipo de archivo no válido'));
+            cb(new Error('Tipo de archivo no válido'));  // Si no es ni imagen ni video
         }
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));  // Nombre único para el archivo
     }
 });
+
 
 const upload = multer({ storage: storage });
 const archivoPath = path.join(__dirname, '/fichaModel.js');
@@ -64,6 +67,24 @@ app.post('/crear-ficha', upload.fields([
     { name: 'imagenPersonaje', maxCount: 1 },
     { name: 'videoFondo', maxCount: 1 }
 ]), async (req, res) => {
+    let videoFondoUrl = '';
+    
+    // Verificar si se subió un archivo en 'videoFondo'
+    if (req.files['videoFondo']) {
+        const file = req.files['videoFondo'][0];
+        const ext = path.extname(file.originalname).toLowerCase(); // Obtener la extensión del archivo
+
+        // Si es un video o una imagen, generar la URL correspondiente
+        if (ext === '.mp4' || ext === '.avi' || ext === '.mov' || ext === '.webm') {
+            videoFondoUrl = '/vid/' + file.filename; // Es un video
+        } else if (ext === '.jpg' || ext === '.jpeg' || ext === '.png' || ext === '.gif') {
+            videoFondoUrl = '/img/' + file.filename; // Es una imagen
+        } else {
+            return res.status(400).json({ success: false, message: 'El archivo no es un video ni una imagen válida.' });
+        }
+    }
+
+    // Crear los datos de la ficha
     const fichaData = {
         nombrePersonaje: req.body.nombrePersonaje,
         carisma: req.body.carisma,
@@ -77,7 +98,7 @@ app.post('/crear-ficha', upload.fields([
         miembrosArbol: JSON.parse(req.body.miembrosArbol),
         habilidades: req.body.habilidades,
         imagenPersonaje: req.files['imagenPersonaje'] ? '/img/' + req.files['imagenPersonaje'][0].filename : '',
-        videoFondo: req.files['videoFondo'] ? '/vid/' + req.files['videoFondo'][0].filename : ''
+        videoFondo: videoFondoUrl // Asignar la URL de video o imagen al campo 'videoFondo'
     };
 
     try {
