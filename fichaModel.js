@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+/*const { MongoClient } = require('mongodb');
 const uri = 'mongodb+srv://root:root@cluster0.nz9sp.mongodb.net/';
 const client = new MongoClient(uri);
 
@@ -62,4 +62,4 @@ async function getFichaPorNombre(nombrePersonaje) {
 
 
 
-module.exports = { saveFicha, getFichas, getFichaPorNombre };
+module.exports = { saveFicha, getFichas, getFichaPorNombre };*/

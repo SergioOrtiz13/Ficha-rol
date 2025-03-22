@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const multer = require('multer');
 const { connectDB , authenticateUser, actualizarTiradas, actualizarHabilidades } = require('./db');
-const { saveFicha, getFichas, getFichaPorNombre } = require('./fichaModel');
+const { saveFicha, getFichas, getFichaPorNombre } = require('./db');
 const fs = require('fs');
 
 const app = express();

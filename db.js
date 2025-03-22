@@ -1,4 +1,7 @@
+// db.js
 const { MongoClient } = require('mongodb');
+const fs = require('fs');
+const path = require('path');
 
 const uri = 'mongodb+srv://root:root@cluster0.nz9sp.mongodb.net/';
 const client = new MongoClient(uri);
@@ -6,7 +9,6 @@ const collectionName = 'archivos';
 
 async function connectDB() {
     try {
-        // Conéctate directamente al cliente de MongoDB sin la necesidad de comprobar la conexión
         await client.connect();
         const database = client.db('Fichas');
         return database;
@@ -15,8 +17,6 @@ async function connectDB() {
         throw error;
     }
 }
-
-
 
 async function authenticateUser(username, password) {
     try {
@@ -34,40 +34,76 @@ async function authenticateUser(username, password) {
     }
 }
 
-async function saveFicha(fichaData) {
+// Funciones de manejo de fichas
+
+// Función para guardar una ficha y asociarla al usuario
+async function saveFicha(fichaData, username) {
     try {
         const database = await connectDB();
         const collection = database.collection('fichas');
 
+        // Agregar el username del usuario a la ficha
+        fichaData.usuario = username;
+
+        // Guardar la ficha en la base de datos
         const result = await collection.insertOne(fichaData);
-        return result.insertedId; 
+        
+        // Si la ficha se guarda correctamente, asociarla al usuario
+        const usuarioCollection = database.collection('usuario');
+        await usuarioCollection.updateOne(
+            { username: username },
+            { $push: { fichas: result.insertedId } } // Agregar el ID de la ficha al array "fichas" del usuario
+        );
+
+        return result.insertedId;
     } finally {
         await closeDB();
     }
 }
 
+
+// Obtener fichas de un usuario específico
+async function getFichas(username) {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('fichas');
+        const fichas = await collection.find({ usuario: username }).toArray(); // Filtra por el username
+        return fichas;
+    } catch (error) {
+        console.error('Error al obtener las fichas:', error);
+        throw error;
+    } finally {
+        await closeDB();
+    }
+}
+
+
+async function getFichaPorNombre(nombrePersonaje) {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('fichas');
+        const ficha = await collection.findOne({ "nombrePersonaje": nombrePersonaje });
+        return ficha;
+    } catch (error) {
+        console.error('Error al obtener la ficha por nombre:', error);
+        throw error;
+    } finally {
+        await closeDB();
+    }
+}
+
+// Funciones adicionales que ya tienes
+
 async function actualizarTiradas(username, nuevasTiradas) {
     try {
-        // Conectar a la base de datos
         const database = await connectDB();
         const collection = database.collection('usuario');
-        
-        // Actualizar las tiradas del usuario
         const result = await collection.updateOne(
-            { username: username },  // Buscar por el 'username' único
-            { $set: { tiradas: nuevasTiradas } } // Actualizar solo las tiradas
+            { username: username },
+            { $set: { tiradas: nuevasTiradas } }
         );
-
-        // Imprimir el resultado de la actualización para depuración
-        console.log('Resultado de la actualización:', result);
-
-        // Verifica que el resultado no sea undefined antes de acceder a sus propiedades
-        if (result && result.modifiedCount > 0) {
+        if (result.modifiedCount > 0) {
             console.log(`Las tiradas del usuario ${username} han sido actualizadas correctamente.`);
-        } else if (result && result.matchedCount > 0) {
-            console.log(`Las tiradas del usuario ${username} ya estaban actualizadas.`);
-        } else {
-            console.log(`No se encontró el usuario ${username} o no se hizo ninguna modificación.`);
         }
     } catch (error) {
         console.error('Error al actualizar las tiradas:', error);
@@ -76,124 +112,9 @@ async function actualizarTiradas(username, nuevasTiradas) {
     }
 }
 
-async function getTiradasDeOtrosJugadores(username) {
-    try {
-        const database = await connectDB();
-        const collection = database.collection('usuario');
+// Aquí podrías seguir integrando las demás funciones de actualización de habilidades, características, etc., de manera similar...
 
-        // Obtener todos los usuarios excepto el que se está logeando
-        const otrosJugadores = await collection.find({ username: { $ne: username } }).toArray();
-
-        // Mapear solo los datos de las tiradas y el nombre de los jugadores
-        const tiradasOtrosJugadores = otrosJugadores.map(usuario => ({
-            username: usuario.username,
-            tiradas: usuario.tiradas
-        }));
-
-        return tiradasOtrosJugadores;
-    } catch (error) {
-        console.error('Error al obtener las tiradas de otros jugadores:', error);
-        throw error;
-    } finally {
-        await closeDB();
-    }
-}
-
-async function actualizarHabilidades(username, habilidades_adquiridas) {
-    try {
-        const database = await connectDB();
-        const collection = database.collection('usuario');
-        
-        // Actualizar las habilidades adquiridas del usuario
-        const result = await collection.updateOne(
-            { username: username },  // Buscar por el username del usuario
-            { $set: { habilidadesAdquiridas: habilidades_adquiridas } } // Actualizar las habilidades
-        );
-
-        if (result.modifiedCount > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    } catch (error) {
-        console.error('Error al actualizar habilidades:', error);
-        throw error;
-    } finally {
-        await closeDB();
-    }
-}
-
-async function actualizarCaracteristica(username, caracteristicas) {
-    try {
-        // Verificar que los datos estén correctamente definidos antes de enviarlos
-        if (!username || !Array.isArray(caracteristicas) || caracteristicas.length === 0) {
-            console.error("Faltan datos:", { username, caracteristicas });
-            return;
-        }
-
-        const response = await fetch('http://localhost:3000/actualizar-caracteristica', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: username,
-                caracteristicas: caracteristicas  // Enviamos un array de características
-            })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-            console.log('Características actualizadas correctamente');
-        } else {
-            console.error('Error al actualizar las características:', data.message);
-        }
-    } catch (error) {
-        console.error('Error al hacer la solicitud:', error);
-    }
-}
-
-async function getArchivoPorNombre(nombreArchivo) {
-    try {
-        await connectToDatabase();
-        const database = client.db(dbName);
-        const collection = database.collection(collectionName);
-
-        // Buscar el archivo por nombre
-        console.log("Buscando en MongoDB por nombreArchivo:", nombreArchivo);
-        const archivo = await collection.findOne({ "nombreArchivo": nombreArchivo });
-
-        console.log("Resultado de la búsqueda:", archivo);
-        return archivo;
-    } catch (error) {
-        console.error('Error al obtener el archivo por nombre:', error);
-        throw error;
-    }
-}
-
-async function saveFileContentToFicha(fileName, nombrePersonaje) {
-    try {
-        // Leer el archivo JS
-        const filePath = path.join(__dirname, './', fileName);
-        const fileContent = fs.readFileSync(filePath, 'utf-8');
-
-        // Crear el objeto de la ficha con el contenido del archivo
-        const fichaData = {
-            nombrePersonaje: nombrePersonaje,
-            archivoJS: fileContent,  // Guardamos el contenido del archivo JS
-            fecha: new Date()
-        };
-
-        // Guardar la ficha en MongoDB (usando el método saveFicha que ya tienes)
-        const result = await saveFicha(fichaData); // Asumiendo que ya tienes la función `saveFicha`
-        console.log('Archivo JS guardado y asociado con la ficha:', result);
-
-    } catch (error) {
-        console.error('Error al guardar el archivo JS:', error);
-    }
-}
-
+// Función para cerrar la conexión a MongoDB
 async function closeDB() {
     try {
         await client.close();
@@ -202,4 +123,32 @@ async function closeDB() {
     }
 }
 
-module.exports = {connectDB, authenticateUser, saveFicha, actualizarTiradas, getTiradasDeOtrosJugadores, actualizarHabilidades, actualizarCaracteristica, getArchivoPorNombre, saveFileContentToFicha };
+// Función para guardar el contenido de un archivo JS dentro de una ficha
+async function saveFileContentToFicha(fileName, nombrePersonaje) {
+    try {
+        const filePath = path.join(__dirname, './', fileName);
+        const fileContent = fs.readFileSync(filePath, 'utf-8');
+
+        const fichaData = {
+            nombrePersonaje: nombrePersonaje,
+            archivoJS: fileContent,
+            fecha: new Date()
+        };
+
+        const result = await saveFicha(fichaData);
+        console.log('Archivo JS guardado y asociado con la ficha:', result);
+    } catch (error) {
+        console.error('Error al guardar el archivo JS:', error);
+    }
+}
+
+module.exports = {
+    connectDB,
+    authenticateUser,
+    saveFicha,
+    getFichas,
+    getFichaPorNombre,
+    actualizarTiradas,
+    saveFileContentToFicha,
+    closeDB
+};
