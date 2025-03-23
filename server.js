@@ -3,7 +3,7 @@ const { ObjectId } = require('mongodb');
 const bodyParser = require('body-parser');
 const path = require('path');
 const multer = require('multer');
-const { connectDB, authenticateUser, actualizarTiradas, getRedirectUrl } = require('./db');  // Usamos getRedirectUrl desde db.js
+const { connectDB, authenticateUser, actualizarTiradas, getRedirectUrl, actualizarFicha } = require('./db');  // Usamos getRedirectUrl desde db.js
 const { saveFicha, getFichas, getFichaPorNombre } = require('./db');
 const fs = require('fs');
 
@@ -261,6 +261,24 @@ app.get('/get-caracteristicas/:username', async (req, res) => {
     } catch (error) {
         console.error('Error al obtener las características:', error);
         res.status(500).json({ success: false, message: 'Error al obtener las características' });
+    }
+});
+
+//ultimo cambio hecho
+app.put('/actualizar-ficha/:id', async (req, res) => {
+    const { id } = req.params;
+    const fichaData = req.body;  // Los datos enviados desde el cliente
+
+    try {
+        const result = await actualizarFicha(id, fichaData);
+
+        if (result) {
+            res.json({ success: true });
+        } else {
+            res.json({ success: false, message: 'No se realizaron cambios en la base de datos' });
+        }
+    } catch (error) {
+        res.status(500).send('Error al actualizar la ficha');
     }
 });
 

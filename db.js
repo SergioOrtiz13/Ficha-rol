@@ -164,6 +164,27 @@ async function getRedirectUrl(username) {
     }
 }
 
+async function actualizarFicha(id, fichaData) {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('fichas');
+        
+        const updatedFicha = await collection.updateOne(
+            { _id: new ObjectId(id) },  // Buscar por ID de la ficha
+            {
+                $set: fichaData  // Actualizar con los datos recibidos
+            }
+        );
+
+        return updatedFicha.modifiedCount === 1;  // Devuelve true si se modificó la ficha
+    } catch (error) {
+        console.error('Error al actualizar la ficha:', error);
+        throw error;
+    } finally {
+        await closeDB();
+    }
+}
+
 async function closeDB() {
     try {
         await client.close();
@@ -181,5 +202,6 @@ module.exports = {
     actualizarTiradas,
     saveFileContentToFicha,
     getRedirectUrl,
+    actualizarFicha, //ultimo cambio hecho
     closeDB
 };
