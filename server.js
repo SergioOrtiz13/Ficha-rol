@@ -6,6 +6,7 @@ const multer = require('multer');
 const { connectDB, authenticateUser, actualizarTiradas, getRedirectUrl } = require('./db');  // Usamos getRedirectUrl desde db.js
 const { saveFicha, getFichas, getFichaPorNombre } = require('./db');
 const fs = require('fs');
+const io = socketIo(server);
 
 const app = express();
 const port = 3000;
@@ -262,6 +263,24 @@ app.get('/get-caracteristicas/:username', async (req, res) => {
         console.error('Error al obtener las características:', error);
         res.status(500).json({ success: false, message: 'Error al obtener las características' });
     }
+});
+
+io.on('connection', (socket) => {
+    console.log('Un usuario se ha conectado');
+
+    // Emite un evento cuando un cambio se realiza
+    socket.on('actualizar-ficha', (ficha) => {
+        io.emit('ficha-actualizada', ficha);  // Envía la ficha actualizada a todos los clientes
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Usuario desconectado');
+    });
+});
+
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    next();
 });
 
 app.listen(port, () => {
