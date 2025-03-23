@@ -26,6 +26,7 @@
     </style>
 </head>
 <body>
+    <input type="hidden" id="ficha-id" value="<%= personaje._id %>">
     <% if (personaje.videoFondo && personaje.videoFondo.length > 0) { 
     const ext = personaje.videoFondo.split('.').pop().toLowerCase();
     if (ext === 'mp4' || ext === 'avi' || ext === 'mov' || ext === 'webm') { %>
@@ -61,92 +62,86 @@
             <div id="tirada-otros-jugadores">Resultado de otros jugadores</div>
         </div>
 
-        <!-- Características -->
-        <div class="caracteristicas">
-            <h2>Características de Conquista</h2>
-            
-            <!-- Carisma -->
-            <div class="caracteristica">
-                <label>Carisma: <span id="carisma"><%= personaje.carisma || '0' %></span>*</label>
-                <button onclick="sumar('carisma')">+</button>
-                <button onclick="restar('carisma')">-</button>
-            </div>
+        <div class="caracteristica">
+            <label>Carisma: <span id="carisma"><%= personaje.carisma || '0' %></span>*</label>
+            <button id="carisma-sumar">+</button>
+            <button id="carisma-restar">-</button>
+        </div>
         
-            <!-- Economía -->
-            <div class="caracteristica">
-                <label>Economía: <span id="economia"><%= personaje.economia || '0' %></span>*</label>
-                <button onclick="sumar('economia')">+</button>
-                <button onclick="restar('economia')">-</button>
-            </div>
+        <!-- Economía -->
+        <div class="caracteristica">
+            <label>Economía: <span id="economia"><%= personaje.economia || '0' %></span>*</label>
+            <button id="economia-sumar">+</button>
+            <button id="economia-restar">-</button>
+        </div>
         
-            <!-- Torpeza -->
-            <div class="caracteristica">
-                <label>Torpeza: <span id="torpeza"><%= personaje.torpeza || '0' %></span>*</label>
-                <button onclick="sumar('torpeza')">+</button>
-                <button onclick="restar('torpeza')">-</button>
-            </div>
+        <!-- Torpeza -->
+        <div class="caracteristica">
+            <label>Torpeza: <span id="torpeza"><%= personaje.torpeza || '0' %></span>*</label>
+            <button id="torpeza-sumar">+</button>
+            <button id="torpeza-restar">-</button>
+        </div>
         
-            <!-- Belleza -->
-            <div class="caracteristica">
-                <label>Belleza: <span id="belleza"><%= personaje.belleza || '0' %></span>*</label>
-                <button onclick="sumar('belleza')">+</button>
-                <button onclick="restar('belleza')">-</button>
-            </div>
+        <!-- Belleza -->
+        <div class="caracteristica">
+            <label>Belleza: <span id="belleza"><%= personaje.belleza || '0' %></span>*</label>
+            <button id="belleza-sumar">+</button>
+            <button id="belleza-restar">-</button>
+        </div>
         
-            <!-- Social -->
-            <div class="caracteristica">
-                <label>Social: <span id="social"><%= personaje.social || '0' %></span>*</label>
-                <button onclick="sumar('social')">+</button>
-                <button onclick="restar('social')">-</button>
-            </div>
+        <!-- Social -->
+        <div class="caracteristica">
+            <label>Social: <span id="social"><%= personaje.social || '0' %></span>*</label>
+            <button id="social-sumar">+</button>
+            <button id="social-restar">-</button>
         </div>
         
         <!-- Habilidades -->
-        <div class="habilidades">
+        
             <h2>Habilidades</h2>
         
             <!-- Inteligencia -->
             <div class="caracteristica">
                 <label>Inteligencia: <span id="habilidad-inteligencia"><%= personaje.habilidades.inteligencia || '0' %></span>*</label>
-                <button onclick="sumar('habilidad-inteligencia')">+</button>
-                <button onclick="restar('habilidad-inteligencia')">-</button>
+                <button id="habilidad-inteligencia-sumar">+</button>
+                <button id="habilidad-inteligencia-restar">-</button>
             </div>
         
             <!-- Forma Física -->
             <div class="caracteristica">
                 <label>Forma Física: <span id="habilidad-forma-fisica"><%= personaje.habilidades.formaFisica || '0' %></span>*</label>
-                <button onclick="sumar('habilidad-forma-fisica')">+</button>
-                <button onclick="restar('habilidad-forma-fisica')">-</button>
+                <button id="habilidad-forma-fisica-sumar">+</button>
+                <button id="habilidad-forma-fisica-restar">-</button>
             </div>
         
             <!-- Habilidad Zero -->
             <div class="caracteristica">
                 <label>Habilidad Zero: <span id="habilidad-zero"><%= personaje.habilidades.habilidadZero || '0' %></span>*</label>
-                <button onclick="sumar('habilidad-zero')">+</button>
-                <button onclick="restar('habilidad-zero')">-</button>
+                <button id="habilidad-zero-sumar">+</button>
+                <button id="habilidad-zero-restar">-</button>
             </div>
         
             <!-- Sigilo -->
             <div class="caracteristica">
                 <label>Sigilo: <span id="habilidad-sigilo"><%= personaje.habilidades.sigilo || '0' %></span>*</label>
-                <button onclick="sumar('habilidad-sigilo')">+</button>
-                <button onclick="restar('habilidad-sigilo')">-</button>
+                <button id="habilidad-sigilo-sumar">+</button>
+                <button id="habilidad-sigilo-restar">-</button>
             </div>
         
             <!-- Reflejos -->
             <div class="caracteristica">
                 <label>Reflejos: <span id="habilidad-reflejos"><%= personaje.habilidades.reflejos || '0' %></span>*</label>
-                <button onclick="sumar('habilidad-reflejos')">+</button>
-                <button onclick="restar('habilidad-reflejos')">-</button>
+                <button id="habilidad-reflejos-sumar">+</button>
+                <button id="habilidad-reflejos-restar">-</button>
             </div>
         
             <!-- Combate -->
             <div class="caracteristica">
                 <label>Combate: <span id="habilidad-combate"><%= personaje.habilidades.combate || '0' %></span>*</label>
-                <button onclick="sumar('habilidad-combate')">+</button>
-                <button onclick="restar('habilidad-combate')">-</button>
+                <button id="habilidad-combate-sumar">+</button>
+                <button id="habilidad-combate-restar">-</button>
             </div>
-        </div>
+
 
         <!-- Historia -->
         <div class="historia">
@@ -181,7 +176,6 @@
         </div>
     </div>
     <script src="../public/ficha-render.js"></script>
-    <script src="/db.js"></script>
     <script src="/tiradas.js"></script>
     <script src="/tiradas-master.js"></script>
 </body>

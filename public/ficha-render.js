@@ -1,210 +1,198 @@
-function actualizarHabilidades() {
-    var habilidadesAdquiridas = document.getElementById('habilidades-adquiridas').value;
-    localStorage.setItem('habilidadesAdquiridas', habilidadesAdquiridas);
+function obtenerFichaId() {
+    // Asumimos que hay un elemento en la página con el ID 'ficha-id' que contiene el ID único de la ficha.
+    const fichaId = document.getElementById('ficha-id').value;
+    if (!fichaId) {
+        console.error('Error: El ID de la ficha no está disponible. El valor de ficha-id es:', fichaId);
+        alert('Ficha ID no disponible.');
+        return null;
+    }
+    console.log('Ficha ID:', fichaId);  // Esto nos muestra el ID obtenido.
+    return fichaId;
 }
 
-function cargarHabilidadesYCaracteristicas() {
-    var username = localStorage.getItem('username');
-    var fichaId = localStorage.getItem('fichaId');  // Obtener el ID de la ficha
-
-    if (!username || !fichaId) {
-        alert('Debes iniciar sesión y tener una ficha seleccionada para cargar las habilidades y características.');
-        return;
-    }
-
-    fetch(`/get-habilidades-y-caracteristicas/${username}/${fichaId}`)
-        .then(response => response.json())
-        .then(result => {
-            if (result.success) {
-                // Cargar habilidades adquiridas
-                document.getElementById('habilidades-adquiridas').value = result.habilidades_adquiridas || '';
-
-                // Cargar características
-                document.getElementById('carisma').textContent = result.caracteristicas.carisma || '0';
-                document.getElementById('economia').textContent = result.caracteristicas.economia || '0';
-                document.getElementById('torpeza').textContent = result.caracteristicas.torpeza || '0';
-                document.getElementById('belleza').textContent = result.caracteristicas.belleza || '0';
-                document.getElementById('social').textContent = result.caracteristicas.social || '0';
-                document.getElementById('historia').textContent = result.caracteristicas.historia || 'Sin historia';
-                document.getElementById('personalidad').textContent = result.caracteristicas.personalidad || 'Sin personalidad';
-
-                // Cargar imagen y video
-                document.getElementById('imagen-personaje').src = result.imagenPersonaje || '';
-                document.getElementById('video-fondo').src = result.videoFondo || '';
-            } else {
-                alert('No se encontraron las habilidades o características de la ficha.');
-            }
-        })
-        .catch(error => {
-            console.error('Error al cargar habilidades y características:', error);
-            alert('Hubo un error al cargar las habilidades y características');
-        });
-}
-
-function guardarHabilidades() {
-    var habilidadesAdquiridas = document.getElementById('habilidades-adquiridas').value.trim();
-
-    if (habilidadesAdquiridas === '') {
-        alert('Por favor, ingrese algunas habilidades antes de guardar.');
-        return;
-    }
-
-    const username = localStorage.getItem('username');
-    const fichaId = localStorage.getItem('fichaId');  // Obtener el ID de la ficha
-
-    if (!username || !fichaId) {
-        alert('Debes iniciar sesión antes de guardar las habilidades.');
-        return;
-    }
-
-    fetch('/actualizar-habilidades-render', {  // Usamos la nueva ruta
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            username: username,
-            fichaId: fichaId,  // Pasamos el ID de la ficha
-            habilidades_adquiridas: habilidadesAdquiridas,
-        }),
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            alert('Habilidades guardadas con éxito.');
-        } else {
-            alert('Hubo un error al guardar las habilidades: ' + result.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error al guardar habilidades:', error);
-        alert('Hubo un error al guardar las habilidades');
-    });
-}
-
-function actualizarCaracteristicasEnBaseDeDatos(caracteristica, valor) {
-    const username = localStorage.getItem('username');
-    const fichaId = localStorage.getItem('fichaId');  // Asegúrate de tener el id de la ficha
-
-    if (!username || !fichaId) {
-        alert('Debes iniciar sesión para actualizar las características.');
-        return;
-    }
+// Función para cargar las características desde el localStorage
+function cargarCaracteristicas() {
+    const fichaId = obtenerFichaId();
+    if (!fichaId) return;
 
     const caracteristicas = [
-        { nombre: 'carisma', valor: parseInt(document.getElementById('carisma').textContent) },
-        { nombre: 'economia', valor: parseInt(document.getElementById('economia').textContent) },
-        { nombre: 'torpeza', valor: parseInt(document.getElementById('torpeza').textContent) },
-        { nombre: 'belleza', valor: parseInt(document.getElementById('belleza').textContent) },
-        { nombre: 'social', valor: parseInt(document.getElementById('social').textContent) },
-        { nombre: 'habilidad-inteligencia', valor: parseInt(document.getElementById('habilidad-inteligencia').textContent) },
-        { nombre: 'habilidad-forma-fisica', valor: parseInt(document.getElementById('habilidad-forma-fisica').textContent) },
-        { nombre: 'habilidad-zero', valor: parseInt(document.getElementById('habilidad-zero').textContent) },
-        { nombre: 'habilidad-sigilo', valor: parseInt(document.getElementById('habilidad-sigilo').textContent) },
-        { nombre: 'habilidad-reflejos', valor: parseInt(document.getElementById('habilidad-reflejos').textContent) },
-        { nombre: 'habilidad-combate', valor: parseInt(document.getElementById('habilidad-combate').textContent) }
+        'carisma', 'economia', 'torpeza', 'belleza', 'social',
+        'habilidad-inteligencia', 'habilidad-forma-fisica', 'habilidad-zero',
+        'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate'
     ];
 
-    fetch('/actualizar-caracteristica', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            username: username,
-            fichaId: fichaId,  // Pasamos el id de la ficha
-            caracteristicas: caracteristicas,
-        }),
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (!result.success) {
-            alert('Hubo un error al actualizar las características.');
-        }
-    })
-    .catch(error => {
-        console.error('Error al actualizar la característica:', error);
-        alert('Hubo un error al actualizar la característica.');
-    });
-}
-
-function cargarCaracteristicas() {
-    const username = localStorage.getItem('username');
-    if (!username) {
-        alert('Debes iniciar sesión para cargar las características.');
-        return;
-    }
-
-    fetch(`/get-caracteristicas/${username}`)
-        .then(response => response.json())
-        .then(result => {
-            if (result.success && result.caracteristicas) {
-                const caracteristicas = result.caracteristicas;
-                // Asignar los valores de la base de datos a los elementos
-                for (const caracteristica of caracteristicas) {
-                    const elemento = document.getElementById(caracteristica.nombre);
-                    if (elemento) {
-                        // Actualizar el contenido del elemento
-                        elemento.textContent = caracteristica.valor;
-                        // También guardamos el valor actualizado en localStorage
-                        localStorage.setItem(caracteristica.nombre, caracteristica.valor);
-                    }
-                }
-            } else {
-                alert('Hubo un error al cargar las características.');
-            }
-        })
-        .catch(error => {
-            console.error('Error al cargar las características:', error);
-        });
-}
-
-function cargarDesdeLocalStorage() {
-    const caracteristicas = ['carisma', 'economia', 'torpeza', 'belleza', 'social', 'habilidad-inteligencia', 'habilidad-forma-fisica', 'habilidad-zero', 'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate'];
-
     caracteristicas.forEach(function(caracteristica) {
-        var valor = localStorage.getItem(caracteristica);
+        const valor = localStorage.getItem(`${fichaId}-${caracteristica}`);
         if (valor) {
             document.getElementById(caracteristica).textContent = valor;
         }
     });
 }
 
-// Sumar y restar valores de las características
+// Función para guardar las características en el localStorage
+function guardarCaracteristicas() {
+    const fichaId = obtenerFichaId();
+    if (!fichaId) return;
+
+    const caracteristicas = [
+        'carisma', 'economia', 'torpeza', 'belleza', 'social',
+        'habilidad-inteligencia', 'habilidad-forma-fisica', 'habilidad-zero',
+        'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate'
+    ];
+
+    caracteristicas.forEach(function(caracteristica) {
+        const valor = document.getElementById(caracteristica).textContent;
+        localStorage.setItem(`${fichaId}-${caracteristica}`, valor);
+    });
+}
+
 function sumar(caracteristica) {
-    var elemento = document.getElementById(caracteristica);
-    var valor = parseInt(elemento.textContent);
+    const fichaId = obtenerFichaId();
+    if (!fichaId) return;
+
+    const elemento = document.getElementById(caracteristica);
+    let valor = parseInt(elemento.textContent);
     valor += 1;
     elemento.textContent = valor;
 
-    // Guardar el valor en localStorage
-    localStorage.setItem(caracteristica, valor);
+    localStorage.setItem(`${fichaId}-${caracteristica}`, valor);
 
-    // Enviar el valor al servidor para actualizar la base de datos
-    actualizarCaracteristicasEnBaseDeDatos(caracteristica, valor);
+    // Enviar la actualización a la base de datos
+    actualizarCaracteristicasEnBaseDeDatos(fichaId);
 }
 
 function restar(caracteristica) {
-    var elemento = document.getElementById(caracteristica);
-    var valor = parseInt(elemento.textContent);
+    const fichaId = obtenerFichaId();
+    if (!fichaId) return;
+
+    const elemento = document.getElementById(caracteristica);
+    let valor = parseInt(elemento.textContent);
     if (valor > 0) {
         valor -= 1;
         elemento.textContent = valor;
 
-        // Guardar el valor en localStorage
-        localStorage.setItem(caracteristica, valor);
+        localStorage.setItem(`${fichaId}-${caracteristica}`, valor);
 
-        // Enviar el valor al servidor para actualizar la base de datos
-        actualizarCaracteristicasEnBaseDeDatos(caracteristica, valor);
+        // Enviar la actualización a la base de datos
+        actualizarCaracteristicasEnBaseDeDatos(fichaId);
+    }
+}
+
+function actualizarCaracteristicasEnBaseDeDatos(fichaId) {
+    const caracteristicas = [
+        'carisma', 'economia', 'torpeza', 'belleza', 'social',
+        'habilidad-inteligencia', 'habilidad-forma-fisica', 'habilidad-zero',
+        'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate'
+    ];
+
+    const datosActualizados = {};
+
+    caracteristicas.forEach(function(caracteristica) {
+        const valor = document.getElementById(caracteristica).textContent;
+        datosActualizados[caracteristica] = valor;
+    });
+
+    // Enviar los datos al servidor
+    fetch(`/actualizar-ficha/${fichaId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datosActualizados)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Ficha actualizada correctamente');
+        } else {
+            console.error('Error al actualizar la ficha');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function guardarHabilidades() {
+    const fichaId = obtenerFichaId();
+    if (!fichaId) return;
+
+    const habilidadesAdquiridas = document.getElementById('habilidades-adquiridas').value.trim();
+
+    if (habilidadesAdquiridas === '') {
+        alert('Por favor, ingrese algunas habilidades antes de guardar.');
+        return;
+    }
+
+    // Guardar las habilidades adquiridas en el localStorage
+    localStorage.setItem(`${fichaId}-habilidadesAdquiridas`, habilidadesAdquiridas);
+
+    // Enviar las habilidades adquiridas al servidor
+    actualizarHabilidadesEnBaseDeDatos(fichaId, habilidadesAdquiridas);
+}
+
+function actualizarHabilidadesEnBaseDeDatos(fichaId, habilidadesAdquiridas) {
+    // Enviar las habilidades adquiridas al servidor
+    fetch(`/actualizar-ficha/${fichaId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ habilidadesAdquiridas: habilidadesAdquiridas })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Habilidades actualizadas correctamente');
+        } else {
+            console.error('Error al actualizar habilidades');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+// Función para cargar las habilidades adquiridas desde el localStorage
+function cargarHabilidades() {
+    const fichaId = obtenerFichaId();
+    if (!fichaId) return;
+
+    const habilidadesAdquiridas = localStorage.getItem(`${fichaId}-habilidadesAdquiridas`);
+    if (habilidadesAdquiridas) {
+        document.getElementById('habilidades-adquiridas').value = habilidadesAdquiridas;
     }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    cargarHabilidadesYCaracteristicas();  // Cargar tanto habilidades como características
     cargarCaracteristicas();
-    cargarDesdeLocalStorage();
+    cargarHabilidades();
 
-    // Evento para el botón "Guardar Habilidades"
-    document.getElementById('habilidades-adquiridas').addEventListener('input', actualizarHabilidades);
+    // Asociar eventos de los botones
+    const caracteristicas = ['carisma', 'economia', 'torpeza', 'belleza', 'social', 
+                             'habilidad-inteligencia', 'habilidad-forma-fisica', 'habilidad-zero', 
+                             'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate'];
+                             
+
+    caracteristicas.forEach(function(caracteristica) {
+        document.getElementById(`${caracteristica}-sumar`).addEventListener('click', function() {
+            sumar(caracteristica);
+        });
+        document.getElementById(`${caracteristica}-restar`).addEventListener('click', function() {
+            restar(caracteristica);
+        });
+    });
+
+    document.getElementById('guardar-habilidades-btn').addEventListener('click', guardarHabilidades);
 });
-//Ultima actu
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Selecciona todos los elementos <p> dentro de .historia
+    var historiaElementos = document.querySelectorAll('.historia p');
+
+    // Itera sobre cada uno de los párrafos
+    historiaElementos.forEach(function(historiaElemento) {
+        // Reemplaza los saltos de línea (\n) por <br> en el contenido HTML de cada párrafo
+        historiaElemento.innerHTML = historiaElemento.innerHTML.replace(/\n/g, '<br>');
+    });
+});

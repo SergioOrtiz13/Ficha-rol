@@ -115,13 +115,7 @@ async function actualizarTiradas(username, nuevasTiradas) {
 // Aquí podrías seguir integrando las demás funciones de actualización de habilidades, características, etc., de manera similar...
 
 // Función para cerrar la conexión a MongoDB
-async function closeDB() {
-    try {
-        await client.close();
-    } catch (error) {
-        console.error('Error al cerrar la conexión a MongoDB:', error);
-    }
-}
+
 
 // Función para guardar el contenido de un archivo JS dentro de una ficha
 async function saveFileContentToFicha(fileName, nombrePersonaje) {
@@ -142,6 +136,42 @@ async function saveFileContentToFicha(fileName, nombrePersonaje) {
     }
 }
 
+async function getRedirectUrl(username) {
+    try {
+        const database = await connectDB();
+        const usuariosCollection = database.collection('usuario');
+        const usuario = await usuariosCollection.findOne({ username });
+
+        if (!usuario) {
+            throw new Error('Usuario no encontrado');
+        }
+
+        const redirectUrl = usuario.redirectUrl;
+
+        // Si el redirectUrl está presente, lo devolvemos
+        if (redirectUrl) {
+            return redirectUrl;
+        } else {
+            // Si no tiene redirectUrl, devolvemos una URL por defecto
+            return '/dashboard.html';  // Puede ser cualquier URL que desees como valor por defecto
+        }
+
+    } catch (error) {
+        console.error("Error al obtener el redirectUrl:", error);
+        return '/dashboard.html';  // URL por defecto en caso de error
+    } finally {
+        await client.close();
+    }
+}
+
+async function closeDB() {
+    try {
+        await client.close();
+    } catch (error) {
+        console.error('Error al cerrar la conexión a MongoDB:', error);
+    }
+}
+
 module.exports = {
     connectDB,
     authenticateUser,
@@ -150,5 +180,6 @@ module.exports = {
     getFichaPorNombre,
     actualizarTiradas,
     saveFileContentToFicha,
+    getRedirectUrl,
     closeDB
 };
