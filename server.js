@@ -198,26 +198,6 @@ app.put('/actualizar-ficha/:id', async (req, res) => {
     }
 });
 
-// Ruta para obtener las tiradas de un usuario
-app.get('/get-tiradas/:username', async (req, res) => {
-    const { username } = req.params;
-    try {
-        const database = await connectDB();
-        const collection = database.collection('usuario');
-        const user = await collection.findOne({ username });
-
-        if (user) {
-            res.json({ success: true, tiradas: user.tiradas || [] });
-        } else {
-            res.status(404).json({ success: false, message: 'Usuario no encontrado' });
-        }
-    } catch (error) {
-        console.error('Error al obtener las tiradas:', error);
-        res.status(500).json({ success: false, message: 'Error al obtener las tiradas' });
-    }
-});
-
-
 // Ruta para actualizar las habilidades adquiridas de un usuario
 app.post('/actualizar-tiradas', async (req, res) => {
     const { username, tiradas } = req.body;
