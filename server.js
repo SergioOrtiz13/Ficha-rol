@@ -74,6 +74,7 @@ app.post('/crear-ficha', upload.fields([
     { name: 'imagenPersonaje', maxCount: 1 },
     { name: 'videoFondo', maxCount: 1 }
 ]), async (req, res) => {
+    console.log(req.body); // Verifica los datos que llegan desde el cliente
     let videoFondoUrl = '';
 
     if (req.files['videoFondo']) {
@@ -105,10 +106,13 @@ app.post('/crear-ficha', upload.fields([
         videoFondo: videoFondoUrl
     };
 
+    console.log(fichaData); // Verifica que los datos sean correctos
+
     try {
         await saveFicha(fichaData);
         res.json({ success: true });
     } catch (error) {
+        console.error('Error al guardar la ficha:', error);
         res.json({ success: false, message: error.message });
     }
 });
@@ -173,27 +177,22 @@ app.get('/ficha/:id', async (req, res) => {
 });
 
 app.put('/actualizar-ficha/:id', async (req, res) => {
-    const { id } = req.params;
-    const fichaData = req.body;  // Los datos enviados desde el cliente
+    const { id } = req.params;  // Asegúrate de que `id` sea un ObjectId válido
+    const fichaData = req.body; // Los datos enviados desde el cliente
+
+    if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ success: false, message: 'ID inválido' });
+    }
 
     try {
-        const database = await connectDB();
-        const collection = database.collection('fichas');
+        const result = await actualizarFicha(id, fichaData);
 
-        const updatedFicha = await collection.updateOne(
-            { _id: new ObjectId(id) },  // Buscar por ID de ficha
-            {
-                $set: fichaData  // Actualizar con los datos recibidos
-            }
-        );
-
-        if (updatedFicha.modifiedCount === 1) {
+        if (result) {
             res.json({ success: true });
         } else {
             res.json({ success: false, message: 'No se realizaron cambios en la base de datos' });
         }
     } catch (error) {
-        console.error('Error al actualizar la ficha:', error);
         res.status(500).send('Error al actualizar la ficha');
     }
 });
