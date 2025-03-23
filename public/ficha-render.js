@@ -92,8 +92,8 @@ function actualizarCaracteristicasEnBaseDeDatos(fichaId) {
         datosActualizados[caracteristica] = valor;
     });
 
-    // Enviar los datos al servidor
-    fetch(`/actualizar-ficha/${fichaId}`, {
+    // Cambia la URL fetch(`/actualizar-ficha/${fichaId}` a la de tu aplicación en Render
+    fetch(`https://ficha-rol-1.onrender.com/actualizar-ficha/${fichaId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -132,8 +132,8 @@ function guardarHabilidades() {
 }
 
 function actualizarHabilidadesEnBaseDeDatos(fichaId, habilidadesAdquiridas) {
-    // Enviar las habilidades adquiridas al servidor
-    fetch(`/actualizar-ficha/${fichaId}`, {
+    // Cambia la URL a la de tu aplicación en Render
+    fetch(`https://ficha-rol-1.onrender.com/actualizar-ficha/${fichaId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

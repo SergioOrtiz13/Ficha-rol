@@ -9,7 +9,7 @@ const fs = require('fs');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Usa el puerto proporcionado por Render
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -283,6 +283,7 @@ app.put('/actualizar-ficha/:id', async (req, res) => {
     }
 });
 
+
 app.listen(port, '0.0.0.0', () => {
-    console.log(`Servidor corriendo en http://0.0.0.0:${port}`);
+    console.log(`Servidor corriendo en http://localhost:${port}`);
 });
