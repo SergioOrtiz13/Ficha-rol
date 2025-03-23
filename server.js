@@ -6,6 +6,7 @@ const multer = require('multer');
 const { connectDB, authenticateUser, actualizarTiradas, getRedirectUrl, actualizarFicha } = require('./db');  // Usamos getRedirectUrl desde db.js
 const { saveFicha, getFichas, getFichaPorNombre } = require('./db');
 const fs = require('fs');
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
@@ -47,6 +48,7 @@ app.use('/img', express.static(path.join(__dirname, 'img')));
 app.use(express.static(path.join(__dirname, '/')));
 app.use(express.static(path.join(__dirname)));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -281,6 +283,6 @@ app.put('/actualizar-ficha/:id', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Servidor corriendo en http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Servidor corriendo en http://0.0.0.0:${port}`);
 });
