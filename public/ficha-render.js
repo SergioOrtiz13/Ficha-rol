@@ -164,9 +164,56 @@ function cargarHabilidades() {
     }
 }
 
+function cargarTiradas() {
+    const fichaId = obtenerFichaId(); // Obtener el ID del usuario logueado
+    if (!fichaId) return;
+
+    // Llama a la API para obtener las tiradas
+    fetch(`/get-tiradas/${fichaId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const tiradas = data.tiradas;
+                // Muestra las tiradas del usuario logueado
+                document.getElementById('resultado-dados').textContent = `Resultado de tus dados: ${tiradas.join(', ')}`;
+            } else {
+                console.error('No se pudieron cargar las tiradas');
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener las tiradas:', error);
+        });
+}
+
+function cargarTiradasOtrosJugadores() {
+    // Suponiendo que tienes una lista de otros jugadores logueados en tu aplicación
+    // O podrías hacer una llamada para obtener los jugadores de la misma partida.
+    const jugadores = ['jugador1', 'jugador2', 'jugador3']; // Ejemplo, reemplaza con tus datos reales
+
+    jugadores.forEach(username => {
+        fetch(`/get-tiradas/${username}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const tiradas = data.tiradas;
+                    const div = document.createElement('div');
+                    div.textContent = `Resultado de ${username}: ${tiradas.join(', ')}`;
+                    document.getElementById('tirada-otros-jugadores').appendChild(div);
+                } else {
+                    console.error('No se pudieron cargar las tiradas de', username);
+                }
+            })
+            .catch(error => {
+                console.error('Error al obtener las tiradas:', error);
+            });
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     cargarCaracteristicas();
     cargarHabilidades();
+    cargarTiradas();
+    cargarTiradasOtrosJugadores();
 
     // Asociar eventos de los botones
     const caracteristicas = ['carisma', 'economia', 'torpeza', 'belleza', 'social', 
