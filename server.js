@@ -198,39 +198,47 @@ app.put('/actualizar-ficha/:id', async (req, res) => {
     }
 });
 
-app.post('/actualizar-tiradas/:fichaId', async (req, res) => {
-    const { fichaId } = req.params;
-    const { tiradas } = req.body;
-
-    // Guardar las tiradas en la base de datos
-    const result = await db.guardarTiradas(fichaId, tiradas);
-
-    if (result) {
-        res.json({ success: true });
-    } else {
-        res.status(500).json({ success: false, message: 'Error al guardar las tiradas' });
-    }
-});
-
 // Ruta para obtener las tiradas de un usuario
-app.get('/get-tiradas/:fichaId', async (req, res) => {
-    const { fichaId } = req.params;
-    const tiradas = await db.obtenerTiradas(fichaId);
+app.get('/get-tiradas/:username', async (req, res) => {
+    const { username } = req.params;
+    try {
+        const database = await connectDB();
+        const collection = database.collection('usuario');
+        const user = await collection.findOne({ username });
 
-    if (tiradas) {
-        res.json({ success: true, tiradas });
-    } else {
-        res.status(404).json({ success: false, message: 'Usuario no encontrado o sin tiradas' });
+        if (user) {
+            res.json({ success: true, tiradas: user.tiradas || [] });
+        } else {
+            res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+        }
+    } catch (error) {
+        console.error('Error al obtener las tiradas:', error);
+        res.status(500).json({ success: false, message: 'Error al obtener las tiradas' });
     }
 });
 
-// Ruta para obtener las tiradas de todos los jugadores
-app.get('/get-tiradas-otros-jugadores', async (req, res) => {
-    const tiradasDeTodos = await db.obtenerTiradasDeTodosLosJugadores();
 
-    res.json({ success: true, tiradas: tiradasDeTodos });
+// Ruta para actualizar las habilidades adquiridas de un usuario
+app.post('/actualizar-tiradas', async (req, res) => {
+    const { username, tiradas } = req.body;
+
+    if (!Array.isArray(tiradas)) {
+        return res.status(400).json({ success: false, message: 'Las tiradas deben ser un array.' });
+    }
+
+    try {
+        const result = await actualizarTiradas(username, tiradas);
+
+        if (result && result.matchedCount > 0) {
+            res.json({ success: true, message: 'Tiradas actualizadas correctamente.' });
+        } else {
+            res.status(404).json({ success: false, message: 'Usuario no encontrado.' });
+        }
+    } catch (error) {
+        console.error('Error al actualizar las tiradas:', error);
+        res.status(500).json({ success: false, message: 'Error al actualizar las tiradas.' });
+    }
 });
-
 
 // Ruta para obtener las habilidades adquiridas de un usuario
 app.get('/get-habilidades/:username', async (req, res) => {
