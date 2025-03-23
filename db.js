@@ -94,22 +94,40 @@ async function getFichaPorNombre(nombrePersonaje) {
 
 // Funciones adicionales que ya tienes
 
-async function actualizarTiradas(username, nuevasTiradas) {
-    try {
-        const database = await connectDB();
-        const collection = database.collection('usuario');
-        const result = await collection.updateOne(
-            { username: username },
-            { $set: { tiradas: nuevasTiradas } }
-        );
-        if (result.modifiedCount > 0) {
-            console.log(`Las tiradas del usuario ${username} han sido actualizadas correctamente.`);
-        }
-    } catch (error) {
-        console.error('Error al actualizar las tiradas:', error);
-    } finally {
-        await closeDB();
-    }
+async function obtenerTiradas(fichaId) {
+    const database = await connectDB();
+    const collection = database.collection('usuario');
+    const usuario = await collection.findOne({ _id: fichaId });
+
+    return usuario ? usuario.tiradas : [];  // Retorna las tiradas o un array vacío si no se encuentra al usuario
+}
+
+// Función para guardar las tiradas de un jugador
+async function guardarTiradas(fichaId, tiradas) {
+    const database = await connectDB();
+    const collection = database.collection('usuario');
+
+    const result = await collection.updateOne(
+        { _id: fichaId },  // Buscar al usuario por su ID
+        { $set: { tiradas } }  // Actualizar las tiradas del usuario
+    );
+
+    return result.modifiedCount > 0;  // Retorna true si las tiradas se guardaron correctamente
+}
+
+// Función para obtener las tiradas de todos los jugadores
+async function obtenerTiradasDeTodosLosJugadores() {
+    const database = await connectDB();
+    const collection = database.collection('usuario');
+    const usuarios = await collection.find({}).toArray();  // Obtener todos los usuarios
+
+    // Extraer las tiradas de todos los usuarios
+    const tiradasDeTodos = usuarios.map(usuario => ({
+        username: usuario.username,
+        tiradas: usuario.tiradas || []  // Si no tiene tiradas, se asigna un array vacío
+    }));
+
+    return tiradasDeTodos;  // Devuelve un array con el username y sus tiradas
 }
 
 // Aquí podrías seguir integrando las demás funciones de actualización de habilidades, características, etc., de manera similar...
@@ -178,7 +196,9 @@ module.exports = {
     saveFicha,
     getFichas,
     getFichaPorNombre,
-    actualizarTiradas,
+    obtenerTiradas,
+    obtenerTiradasDeTodosLosJugadores,
+    guardarTiradas,
     saveFileContentToFicha,
     getRedirectUrl,
     closeDB

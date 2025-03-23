@@ -164,17 +164,43 @@ function cargarHabilidades() {
     }
 }
 
+function cargarTiradasOtrosJugadores() {
+    fetch('/get-tiradas-otros-jugadores')  // Utilizamos la ruta del backend para obtener todas las tiradas
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const jugadoresTiradas = data.tiradas;
+
+                // Limpiar el contenedor de otras tiradas antes de agregar nuevas
+                const contenedorTiradas = document.getElementById('tirada-otros-jugadores');
+                contenedorTiradas.innerHTML = ''; // Limpiar contenido previo
+
+                jugadoresTiradas.forEach(jugador => {
+                    // Crear un div para cada jugador con sus tiradas
+                    const div = document.createElement('div');
+                    div.textContent = `Resultado de ${jugador.username}: ${jugador.tiradas.join(', ')}`;
+                    contenedorTiradas.appendChild(div);
+                });
+            } else {
+                console.error('No se pudieron cargar las tiradas de otros jugadores');
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener las tiradas de otros jugadores:', error);
+        });
+}
+
+// Función para cargar las tiradas del usuario logueado
 function cargarTiradas() {
-    const fichaId = obtenerFichaId(); // Obtener el ID del usuario logueado
+    const fichaId = obtenerFichaId();
     if (!fichaId) return;
 
-    // Llama a la API para obtener las tiradas
     fetch(`/get-tiradas/${fichaId}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 const tiradas = data.tiradas;
-                // Muestra las tiradas del usuario logueado
+                // Mostrar las tiradas del usuario logueado
                 document.getElementById('resultado-dados').textContent = `Resultado de tus dados: ${tiradas.join(', ')}`;
             } else {
                 console.error('No se pudieron cargar las tiradas');
@@ -185,27 +211,43 @@ function cargarTiradas() {
         });
 }
 
-function cargarTiradasOtrosJugadores() {
-    // Suponiendo que tienes una lista de otros jugadores logueados en tu aplicación
-    // O podrías hacer una llamada para obtener los jugadores de la misma partida.
-    const jugadores = ['jugador1', 'jugador2', 'jugador3']; // Ejemplo, reemplaza con tus datos reales
+// Función para manejar la lógica de tirar dados
+function tirarDados() {
+    const cantidadTiradas = 5; // Por ejemplo, 5 dados
+    let tiradas = [];
 
-    jugadores.forEach(username => {
-        fetch(`/get-tiradas/${username}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const tiradas = data.tiradas;
-                    const div = document.createElement('div');
-                    div.textContent = `Resultado de ${username}: ${tiradas.join(', ')}`;
-                    document.getElementById('tirada-otros-jugadores').appendChild(div);
-                } else {
-                    console.error('No se pudieron cargar las tiradas de', username);
-                }
-            })
-            .catch(error => {
-                console.error('Error al obtener las tiradas:', error);
-            });
+    // Genera las tiradas (valores entre 1 y 6)
+    for (let i = 0; i < cantidadTiradas; i++) {
+        tiradas.push(Math.floor(Math.random() * 6) + 1);
+    }
+
+    // Llamamos a la función para enviar estas tiradas al servidor
+    enviarTiradas(tiradas);
+}
+
+// Función para enviar las tiradas al servidor
+function enviarTiradas(tiradas) {
+    const fichaId = obtenerFichaId();
+    if (!fichaId) return;
+
+    fetch(`/actualizar-tiradas/${fichaId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tiradas: tiradas })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Mostrar las tiradas en el DOM
+            document.getElementById('resultado-dados').textContent = `Resultado de tus dados: ${tiradas.join(', ')}`;
+        } else {
+            console.error('Error al actualizar las tiradas');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
     });
 }
 
