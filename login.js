@@ -18,7 +18,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
         // Si es exitoso, almacena el token o username
         localStorage.setItem('token', result.token);  // Si usas token
         localStorage.setItem('username', username);  // O simplemente almacena el username
-        localStorage.setItem('role', result.role); 
+
         // Redirige según la URL proporcionada por el backend
         window.location.href = result.redirectUrl;
     } else {

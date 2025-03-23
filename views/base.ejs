@@ -176,45 +176,7 @@
         </div>
     </div>
     <script src="../public/ficha-render.js"></script>
-    <script src="../tiradas.js"></script>
-    <script src="../tiradas-master.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-<script>
-    const socket = io();  // Conectar al servidor de WebSocket
-
-    // Enviar evento cuando se actualice la ficha
-    document.getElementById('crear-ficha-form').addEventListener('submit', async function(event) {
-        event.preventDefault();
-
-        // Crear los datos de la ficha
-        const ficha = {
-            nombrePersonaje: document.getElementById('nombre-personaje').value,
-            historia: document.getElementById('historia').value,
-            // Aquí incluir el resto de los datos que estás enviando
-        };
-
-        // Emitir el evento de actualización
-        socket.emit('actualizar-ficha', ficha);
-
-        // Enviar la ficha al backend
-        const response = await fetch('/crear-ficha', {
-            method: 'POST',
-            body: formData,  // Enviar los datos como ya lo hacías
-        });
-
-        const result = await response.json();
-        if (result.success) {
-            alert('Ficha guardada correctamente');
-        } else {
-            alert('Error al guardar la ficha: ' + result.message);
-        }
-    });
-
-    // Escuchar eventos de actualización de ficha
-    socket.on('ficha-actualizada', (ficha) => {
-        console.log('Ficha actualizada: ', ficha);
-        // Aquí puedes actualizar la UI para reflejar los cambios
-    });
-</script>
+    <script src="/tiradas.js"></script>
+    <script src="/tiradas-master.js"></script>
 </body>
 </html>
