@@ -6,8 +6,11 @@ const multer = require('multer');
 const { connectDB, authenticateUser, actualizarTiradas, getRedirectUrl } = require('./db');  // Usamos getRedirectUrl desde db.js
 const { saveFicha, getFichas, getFichaPorNombre } = require('./db');
 const fs = require('fs');
-const io = socketIo(server);
+const http = require('http'); 
+const socketIo = require('socket.io'); 
 
+const server = http.createServer(app); // Crea el servidor HTTP con express
+const io = socketIo(server);
 const app = express();
 const port = 3000;
 
@@ -109,6 +112,7 @@ app.post('/crear-ficha', upload.fields([
     try {
         await saveFicha(fichaData);
         res.json({ success: true });
+        io.emit('ficha-actualizada', fichaData);
     } catch (error) {
         res.json({ success: false, message: error.message });
     }
@@ -118,6 +122,7 @@ app.get('/getFichas', async (req, res) => {
     try {
         const fichas = await getFichas(); 
         res.json(fichas);
+        io.emit('ficha-actualizada', fichaData);
     } catch (error) {
         console.error('Error al obtener las fichas:', error);
         res.status(500).json({ message: 'Error al obtener las fichas' });
@@ -128,6 +133,7 @@ app.get('/ficha/:nombrePersonaje', async (req, res) => {
     try {
         const { nombrePersonaje } = req.params;
         const ficha = await getFichaPorNombre(nombrePersonaje);
+        io.emit('ficha-actualizada', fichaData);
 
         if (!ficha) {
             return res.status(404).send('Ficha no encontrada');
@@ -144,6 +150,7 @@ app.get('/ficha/:nombrePersonaje', async (req, res) => {
 app.get('/fichas', async (req, res) => {
     try {
         const fichas = await getFichas();  // Devuelve todas las fichas
+        io.emit('ficha-actualizada', fichaData);
 
         if (!fichas || fichas.length === 0) {
             return res.status(404).send('No se encontraron fichas');
@@ -161,6 +168,7 @@ app.get('/ficha/:id', async (req, res) => {
 
     try {
         const ficha = await db.collection('fichas').findOne({ _id: new ObjectId(id) });
+        io.emit('ficha-actualizada', fichaData);
 
         if (!ficha) {
             return res.status(404).send('Ficha no encontrada');
@@ -180,6 +188,7 @@ app.put('/actualizar-ficha/:id', async (req, res) => {
     try {
         const database = await connectDB();
         const collection = database.collection('fichas');
+        io.emit('ficha-actualizada', fichaData);
 
         const updatedFicha = await collection.updateOne(
             { _id: new ObjectId(id) },  // Buscar por ID de ficha
@@ -209,6 +218,7 @@ app.post('/actualizar-tiradas', async (req, res) => {
 
     try {
         const result = await actualizarTiradas(username, tiradas);
+        io.emit('ficha-actualizada', fichaData);
 
         if (result && result.matchedCount > 0) {
             res.json({ success: true, message: 'Tiradas actualizadas correctamente.' });
@@ -229,7 +239,7 @@ app.get('/get-habilidades/:username', async (req, res) => {
         const database = await connectDB();
         const collection = database.collection('usuario');
         const user = await collection.findOne({ username });
-
+        io.emit('ficha-actualizada', fichaData);
         if (user) {
             console.log('Habilidades adquiridas:', user.habilidadesAdquiridas);
             res.json({ success: true, habilidades_adquiridas: user.habilidadesAdquiridas || '' });
@@ -251,7 +261,7 @@ app.get('/get-caracteristicas/:username', async (req, res) => {
         const database = await connectDB();
         const collection = database.collection('usuario');
         const user = await collection.findOne({ username });
-
+        io.emit('ficha-actualizada', fichaData);
         if (user) {
             console.log('Características del usuario:', user.caracteristicas);
             res.json({ success: true, caracteristicas: user.caracteristicas || '' });
@@ -268,9 +278,9 @@ app.get('/get-caracteristicas/:username', async (req, res) => {
 io.on('connection', (socket) => {
     console.log('Un usuario se ha conectado');
 
-    // Emite un evento cuando un cambio se realiza
+    // Ejemplo de cómo emitir un evento de actualización a todos los clientes
     socket.on('actualizar-ficha', (ficha) => {
-        io.emit('ficha-actualizada', ficha);  // Envía la ficha actualizada a todos los clientes
+        io.emit('ficha-actualizada', ficha); // Emite el evento a todos los clientes conectados
     });
 
     socket.on('disconnect', () => {
