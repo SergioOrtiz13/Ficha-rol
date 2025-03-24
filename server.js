@@ -3,13 +3,12 @@ const { ObjectId } = require('mongodb');
 const bodyParser = require('body-parser');
 const path = require('path');
 const multer = require('multer');
-const { connectDB, authenticateUser, actualizarTiradas, getRedirectUrl, actualizarFicha } = require('./db');  // Usamos getRedirectUrl desde db.js
+const { connectDB, authenticateUser, actualizarTiradas, getRedirectUrl } = require('./db');  // Usamos getRedirectUrl desde db.js
 const { saveFicha, getFichas, getFichaPorNombre } = require('./db');
 const fs = require('fs');
-const cors = require('cors');
 
 const app = express();
-const port = process.env.PORT || 3000; // Usa el puerto proporcionado por Render
+const port = 3000;
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -48,7 +47,6 @@ app.use('/img', express.static(path.join(__dirname, 'img')));
 app.use(express.static(path.join(__dirname, '/')));
 app.use(express.static(path.join(__dirname)));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -76,7 +74,6 @@ app.post('/crear-ficha', upload.fields([
     { name: 'imagenPersonaje', maxCount: 1 },
     { name: 'videoFondo', maxCount: 1 }
 ]), async (req, res) => {
-    console.log(req.body); // Verifica los datos que llegan desde el cliente
     let videoFondoUrl = '';
 
     if (req.files['videoFondo']) {
@@ -108,13 +105,10 @@ app.post('/crear-ficha', upload.fields([
         videoFondo: videoFondoUrl
     };
 
-    console.log(fichaData); // Verifica que los datos sean correctos
-
     try {
         await saveFicha(fichaData);
         res.json({ success: true });
     } catch (error) {
-        console.error('Error al guardar la ficha:', error);
         res.json({ success: false, message: error.message });
     }
 });
@@ -179,22 +173,27 @@ app.get('/ficha/:id', async (req, res) => {
 });
 
 app.put('/actualizar-ficha/:id', async (req, res) => {
-    const { id } = req.params;  // Asegúrate de que `id` sea un ObjectId válido
-    const fichaData = req.body; // Los datos enviados desde el cliente
-
-    if (!ObjectId.isValid(id)) {
-        return res.status(400).json({ success: false, message: 'ID inválido' });
-    }
+    const { id } = req.params;
+    const fichaData = req.body;  // Los datos enviados desde el cliente
 
     try {
-        const result = await actualizarFicha(id, fichaData);
+        const database = await connectDB();
+        const collection = database.collection('fichas');
 
-        if (result) {
+        const updatedFicha = await collection.updateOne(
+            { _id: new ObjectId(id) },  // Buscar por ID de ficha
+            {
+                $set: fichaData  // Actualizar con los datos recibidos
+            }
+        );
+
+        if (updatedFicha.modifiedCount === 1) {
             res.json({ success: true });
         } else {
             res.json({ success: false, message: 'No se realizaron cambios en la base de datos' });
         }
     } catch (error) {
+        console.error('Error al actualizar la ficha:', error);
         res.status(500).send('Error al actualizar la ficha');
     }
 });
@@ -265,25 +264,6 @@ app.get('/get-caracteristicas/:username', async (req, res) => {
     }
 });
 
-//ultimo cambio hecho
-app.put('/actualizar-ficha/:id', async (req, res) => {
-    const { id } = req.params;
-    const fichaData = req.body;  // Los datos enviados desde el cliente
-
-    try {
-        const result = await actualizarFicha(id, fichaData);
-
-        if (result) {
-            res.json({ success: true });
-        } else {
-            res.json({ success: false, message: 'No se realizaron cambios en la base de datos' });
-        }
-    } catch (error) {
-        res.status(500).send('Error al actualizar la ficha');
-    }
-});
-
-
-app.listen(port, '0.0.0.0', () => {
+app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);
 });
