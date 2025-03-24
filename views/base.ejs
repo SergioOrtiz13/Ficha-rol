@@ -175,37 +175,6 @@
             <% } %>
         </div>
     </div>
-    <script>
-        // Conexión al WebSocket en el frontend
-        const socket = io.connect('/');  // Conéctate al servidor WebSocket
-    
-        // Enviar eventos de actualización a través del WebSocket cuando se modifique una característica
-        function emitirActualizacion(fichaId, caracteristica, valor) {
-            socket.emit('actualizar-ficha', { fichaId, caracteristica, valor });
-        }
-    
-        // Escuchar por actualizaciones de otras conexiones (jugadores) y actualizar la UI
-        socket.on('actualizar-ficha', (data) => {
-            const { fichaId, caracteristica, valor } = data;
-            if (document.getElementById(caracteristica) && fichaId === document.getElementById('ficha-id').value) {
-                document.getElementById(caracteristica).textContent = valor;
-            }
-        });
-    </script>
-    <script>
-        // Emitir actualizaciones de habilidades adquiridas
-        function emitirActualizacionHabilidades(fichaId, habilidadesAdquiridas) {
-            socket.emit('actualizar-habilidades', { fichaId, habilidadesAdquiridas });
-        }
-    
-        // Escuchar por actualizaciones de habilidades adquiridas de otros jugadores
-        socket.on('actualizar-habilidades', (data) => {
-            const { fichaId, habilidadesAdquiridas } = data;
-            if (document.getElementById('ficha-id').value === fichaId) {
-                document.getElementById('habilidades-adquiridas').value = habilidadesAdquiridas;
-            }
-        });
-    </script>
     <script src="../public/ficha-render.js"></script>
     <script src="/tiradas.js"></script>
     <script src="/tiradas-master.js"></script>

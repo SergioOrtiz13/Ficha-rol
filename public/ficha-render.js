@@ -57,9 +57,6 @@ function sumar(caracteristica) {
 
     localStorage.setItem(`${fichaId}-${caracteristica}`, valor);
 
-    // Emitir el cambio a través del WebSocket
-    emitirActualizacion(fichaId, caracteristica, valor);
-
     // Enviar la actualización a la base de datos
     actualizarCaracteristicasEnBaseDeDatos(fichaId);
 }
@@ -75,9 +72,6 @@ function restar(caracteristica) {
         elemento.textContent = valor;
 
         localStorage.setItem(`${fichaId}-${caracteristica}`, valor);
-
-        // Emitir el cambio a través del WebSocket
-        emitirActualizacion(fichaId, caracteristica, valor);
 
         // Enviar la actualización a la base de datos
         actualizarCaracteristicasEnBaseDeDatos(fichaId);
@@ -132,9 +126,6 @@ function guardarHabilidades() {
 
     // Guardar las habilidades adquiridas en el localStorage
     localStorage.setItem(`${fichaId}-habilidadesAdquiridas`, habilidadesAdquiridas);
-
-    // Emitir el cambio de habilidades adquiridas a través del WebSocket
-    emitirActualizacionHabilidades(fichaId, habilidadesAdquiridas);
 
     // Enviar las habilidades adquiridas al servidor
     actualizarHabilidadesEnBaseDeDatos(fichaId, habilidadesAdquiridas);

@@ -6,12 +6,8 @@ const multer = require('multer');
 const { connectDB, authenticateUser, actualizarTiradas, getRedirectUrl } = require('./db');  // Usamos getRedirectUrl desde db.js
 const { saveFicha, getFichas, getFichaPorNombre } = require('./db');
 const fs = require('fs');
-const WebSocket = require('ws');
-const http = require('http')
 
 const app = express();
-const server = http.createServer(app); 
-const wss = new WebSocket.Server({ server });
 const port = 3000;
 
 const storage = multer.diskStorage({
@@ -40,18 +36,6 @@ fs.access(archivoPath, fs.constants.F_OK, (err) => {
         console.log(`${archivoPath} existe.`);
     }
 });
-
-wss.on('connection', (ws) => {
-    console.log('Nuevo cliente conectado');
-    
-    ws.on('message', (message) => {
-        console.log('Mensaje recibido: ' + message);
-    });
-
-    // Aquí podrías emitir mensajes cuando los datos cambian
-    ws.send(JSON.stringify({ message: 'Datos actualizados' }));
-});
-
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); 
@@ -171,7 +155,7 @@ app.get('/fichas', async (req, res) => {
     }
 });
 
-app.get('/ficha/:_id', async (req, res) => {
+app.get('/ficha/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -188,7 +172,7 @@ app.get('/ficha/:_id', async (req, res) => {
     }
 });
 
-app.put('/actualizar-ficha/:_id', async (req, res) => {
+app.put('/actualizar-ficha/:id', async (req, res) => {
     const { id } = req.params;
     const fichaData = req.body;  // Los datos enviados desde el cliente
 
