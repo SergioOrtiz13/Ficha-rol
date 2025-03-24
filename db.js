@@ -1,4 +1,3 @@
-// db.js
 const { MongoClient } = require('mongodb');
 const fs = require('fs');
 const path = require('path');
@@ -34,7 +33,44 @@ async function authenticateUser(username, password) {
     }
 }
 
-// Funciones de manejo de fichas
+// Función para guardar o actualizar características en la base de datos
+async function actualizarCaracteristicas(fichaId, caracteristicas) {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('fichas');
+        const result = await collection.updateOne(
+            { _id: fichaId },
+            { $set: { caracteristicas: caracteristicas } }
+        );
+        return result.modifiedCount > 0;
+    } catch (error) {
+        console.error('Error al actualizar características:', error);
+        throw error;
+    } finally {
+        await closeDB();
+    }
+}
+
+// Función para obtener las características de una ficha
+async function obtenerCaracteristicas(fichaId) {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('fichas');
+        const ficha = await collection.findOne({ _id: fichaId });
+
+        if (ficha && ficha.caracteristicas) {
+            return ficha.caracteristicas;
+        } else {
+            console.error('Ficha no encontrada o sin características.');
+            return null;
+        }
+    } catch (error) {
+        console.error('Error al obtener las características:', error);
+        throw error;
+    } finally {
+        await closeDB();
+    }
+}
 
 // Función para guardar una ficha y asociarla al usuario
 async function saveFicha(fichaData, username) {
@@ -61,23 +97,7 @@ async function saveFicha(fichaData, username) {
     }
 }
 
-
-// Obtener fichas de un usuario específico
-async function getFichas(username) {
-    try {
-        const database = await connectDB();
-        const collection = database.collection('fichas');
-        const fichas = await collection.find({ usuario: username }).toArray(); // Filtra por el username
-        return fichas;
-    } catch (error) {
-        console.error('Error al obtener las fichas:', error);
-        throw error;
-    } finally {
-        await closeDB();
-    }
-}
-
-
+// Función para obtener una ficha por nombre de personaje
 async function getFichaPorNombre(nombrePersonaje) {
     try {
         const database = await connectDB();
@@ -92,47 +112,18 @@ async function getFichaPorNombre(nombrePersonaje) {
     }
 }
 
-// Funciones adicionales que ya tienes
-
-async function actualizarTiradas(username, nuevasTiradas) {
+// Función para obtener todas las fichas de un usuario específico
+async function getFichas(username) {
     try {
         const database = await connectDB();
-        const collection = database.collection('usuario');
-        const result = await collection.updateOne(
-            { username: username },
-            { $set: { tiradas: nuevasTiradas } }
-        );
-        if (result.modifiedCount > 0) {
-            console.log(`Las tiradas del usuario ${username} han sido actualizadas correctamente.`);
-        }
+        const collection = database.collection('fichas');
+        const fichas = await collection.find({ usuario: username }).toArray(); // Filtra por el username
+        return fichas;
     } catch (error) {
-        console.error('Error al actualizar las tiradas:', error);
+        console.error('Error al obtener las fichas:', error);
+        throw error;
     } finally {
         await closeDB();
-    }
-}
-
-// Aquí podrías seguir integrando las demás funciones de actualización de habilidades, características, etc., de manera similar...
-
-// Función para cerrar la conexión a MongoDB
-
-
-// Función para guardar el contenido de un archivo JS dentro de una ficha
-async function saveFileContentToFicha(fileName, nombrePersonaje) {
-    try {
-        const filePath = path.join(__dirname, './', fileName);
-        const fileContent = fs.readFileSync(filePath, 'utf-8');
-
-        const fichaData = {
-            nombrePersonaje: nombrePersonaje,
-            archivoJS: fileContent,
-            fecha: new Date()
-        };
-
-        const result = await saveFicha(fichaData);
-        console.log('Archivo JS guardado y asociado con la ficha:', result);
-    } catch (error) {
-        console.error('Error al guardar el archivo JS:', error);
     }
 }
 
@@ -178,8 +169,8 @@ module.exports = {
     saveFicha,
     getFichas,
     getFichaPorNombre,
-    actualizarTiradas,
-    saveFileContentToFicha,
+    actualizarCaracteristicas,
+    obtenerCaracteristicas,
     getRedirectUrl,
     closeDB
 };

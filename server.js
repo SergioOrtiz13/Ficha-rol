@@ -57,13 +57,8 @@ app.post('/login', async (req, res) => {
     const isAuthenticated = await authenticateUser(username, password);
 
     if (isAuthenticated) {
-        // Aquí llamamos a la función getRedirectUrl desde db.js para obtener la URL de redirección
-        const redirectUrl = await getRedirectUrl(username);  // Esta función devuelve la URL correcta
-
-        // Aquí generamos un token (si lo estás utilizando), o puedes eliminarlo si no es necesario
-        const token = 'some-jwt-token';  // Aquí deberías usar un generador de tokens real (JWT)
-
-        // Responder con el redirectUrl y token para que el cliente lo use
+        const redirectUrl = await getRedirectUrl(username);
+        const token = 'some-jwt-token';
         res.json({ success: true, redirectUrl, token });
     } else {
         res.json({ success: false, message: 'Usuario o contraseña incorrectos.' });
@@ -139,7 +134,6 @@ app.get('/ficha/:nombrePersonaje', async (req, res) => {
     }
 });
 
-// Ruta para obtener todas las fichas
 app.get('/fichas', async (req, res) => {
     try {
         const fichas = await getFichas();  // Devuelve todas las fichas
@@ -198,7 +192,6 @@ app.put('/actualizar-ficha/:id', async (req, res) => {
     }
 });
 
-// Ruta para actualizar las habilidades adquiridas de un usuario
 app.post('/actualizar-tiradas', async (req, res) => {
     const { username, tiradas } = req.body;
 
@@ -220,7 +213,6 @@ app.post('/actualizar-tiradas', async (req, res) => {
     }
 });
 
-// Ruta para obtener las habilidades adquiridas de un usuario
 app.get('/get-habilidades/:username', async (req, res) => {
     const { username } = req.params;
 
@@ -242,7 +234,6 @@ app.get('/get-habilidades/:username', async (req, res) => {
     }
 });
 
-// Ruta para obtener las características de un usuario
 app.get('/get-caracteristicas/:username', async (req, res) => {
     const { username } = req.params;
 
