@@ -111,14 +111,31 @@ function actualizarCaracteristicasEnBaseDeDatos(fichaId) {
         'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate'
     ];
 
-    const datosActualizados = {};
+    const datosActualizados = {
+        habilidades: {}  // Aquí es donde guardamos las habilidades
+    };
 
+    // Recopilamos todas las características para actualizarlas
     caracteristicas.forEach(function(caracteristica) {
         const valor = document.getElementById(caracteristica).textContent;
-        datosActualizados[caracteristica] = valor;
+        
+        // Si la característica es una habilidad, la agregamos a `habilidades`
+        if (caracteristica.startsWith('habilidad')) {
+            // Mapeo de los nombres de las habilidades para coincidir con las claves en la base de datos
+            let habilidad = caracteristica.replace('habilidad-', '');  // Creamos el nombre de la habilidad
+            if (habilidad === 'forma-fisica') {
+                habilidad = 'formaFisica';  // Aseguramos que coincida con la base de datos
+            }
+            if (habilidad === 'zero') {
+                habilidad = 'habilidadZero';  // Aseguramos que coincida con la base de datos
+            }
+            datosActualizados.habilidades[habilidad] = valor;  // Asignamos el valor
+        } else {
+            datosActualizados[caracteristica] = valor;  // Para las demás características
+        }
     });
 
-    // Enviar los datos al servidor para actualizar la base de datos
+    // Ahora enviamos todos los datos al servidor
     fetch(`/actualizar-ficha/${fichaId}`, {
         method: 'PUT',
         headers: {

@@ -168,7 +168,22 @@ app.get('/ficha/:id', async (req, res) => {
 
 app.put('/actualizar-ficha/:id', async (req, res) => {
     const { id } = req.params;
-    const fichaData = req.body;  // Los datos enviados desde el cliente
+    let fichaData = req.body;  // Los datos enviados desde el cliente
+
+    // Lista de propiedades permitidas para la actualización
+    const allowedFields = [
+        'carisma', 'economia', 'torpeza', 'belleza', 'social', 'habilidades', 
+        'historia', 'personalidad', 'habilidadesAdquiridas', 'miembrosArbol', 
+        'imagenPersonaje', 'videoFondo'
+    ];
+
+    // Filtramos los datos para solo permitir los campos válidos
+    const filteredFichaData = Object.keys(fichaData)
+        .filter(key => allowedFields.includes(key))
+        .reduce((obj, key) => {
+            obj[key] = fichaData[key];
+            return obj;
+        }, {});
 
     try {
         const database = await connectDB();
@@ -177,7 +192,7 @@ app.put('/actualizar-ficha/:id', async (req, res) => {
         const updatedFicha = await collection.updateOne(
             { _id: new ObjectId(id) },  // Buscar por ID de ficha
             {
-                $set: fichaData  // Actualizar con los datos recibidos
+                $set: filteredFichaData  // Solo actualizar los campos permitidos
             }
         );
 
