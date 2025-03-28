@@ -107,7 +107,7 @@ body {
 }
 
 .resultado-tirada {
-    display: flex;
+    /*display: flex;*/
     justify-content: space-between; /* Alinea los divs en la misma línea horizontal */
     gap: 20px; /* Espacio entre los divs */
     margin-top: 20px;
