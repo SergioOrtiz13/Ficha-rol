@@ -127,6 +127,40 @@ async function getFichas(username) {
     }
 }
 
+async function guardarTirada(username, resultado) {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('tiradas');
+        
+        // Guarda la tirada
+        const result = await collection.insertOne({
+            username: username,  // Asegúrate de que username esté bien definido
+            resultado: resultado,  // Asegúrate de que el resultado tenga el formato esperado
+            fecha: new Date()  // Fecha de la tirada
+        });
+
+        return result.insertedId; // Devuelve el ID de la nueva tirada
+    } catch (error) {
+        console.error('Error al guardar la tirada:', error);
+        throw error;
+    }
+}
+
+
+async function getTiradas(username) {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('tiradas');
+        const tiradas = await collection.find({ username }).toArray();  // Asegúrate de que el campo 'username' esté presente en todos los documentos
+        return tiradas;
+    } catch (error) {
+        console.error('Error al obtener las tiradas:', error);
+        throw error;
+    }
+}
+
+
+
 async function getRedirectUrl(username) {
     try {
         const database = await connectDB();
@@ -171,6 +205,8 @@ module.exports = {
     getFichaPorNombre,
     actualizarCaracteristicas,
     obtenerCaracteristicas,
+    guardarTirada,
+    getTiradas,
     getRedirectUrl,
     closeDB
 };

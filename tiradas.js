@@ -1,3 +1,26 @@
+// Función para recuperar las tiradas previas del usuario
+function recuperarTiradas(username) {
+    fetch(`/tiradas/${username}`)
+        .then(response => response.json())
+        .then(tiradas => {
+            const resultadoDadosDiv = document.getElementById('resultado-dados');
+            resultadoDadosDiv.innerHTML = '';  // Limpiar el contenido previo
+
+            if (tiradas.length === 0) {
+                resultadoDadosDiv.innerHTML = '<p>No tienes tiradas previas.</p>';
+            } else {
+                // Solo mostramos la última tirada
+                const ultimaTirada = tiradas[0];  // La más reciente está al principio de la lista
+                const tiradaDiv = document.createElement('div');
+                tiradaDiv.textContent = `${ultimaTirada.resultado.join(', ')}`;
+                resultadoDadosDiv.appendChild(tiradaDiv);
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener las tiradas:', error);
+        });
+}
+
 // Función para tirar los dados y actualizar el resultado del jugador actual
 function tirarDadosJugador() {
     var resultados = [];
@@ -5,63 +28,56 @@ function tirarDadosJugador() {
         resultados.push(Math.floor(Math.random() * 6) + 1);
     }
 
-    // Actualizar el resultado para el jugador actual
-    document.getElementById('resultado-dados').textContent = 'Resultados de tus dados: ' + resultados.join(', ');
+    // Mostrar el resultado en el frontend
+    document.getElementById('resultado-dados').textContent = ' ' + resultados.join(', ');
 
-    // Guardar los resultados en localStorage para sincronización con otras pestañas
+    // Guardar los resultados en localStorage
     localStorage.setItem('resultadosTiradaJugador', JSON.stringify(resultados));
-}
 
-// Función para tirar los dados y actualizar el resultado de los otros jugadores
-function tirarDadosOtrosJugadores() {
-    var resultados = [];
-    for (var i = 0; i < 3; i++) {
-        resultados.push(Math.floor(Math.random() * 6) + 1);
+    // Obtener el username desde el localStorage
+    const username = localStorage.getItem('username');
+
+    if (username) {
+        // Guardar la nueva tirada en la base de datos
+        guardarTiradaEnBD(username, resultados);
+
+        // Actualizar las tiradas previas del usuario
+        recuperarTiradas(username);
     }
-
-    // Actualizar el resultado para los otros jugadores
-    document.getElementById('tirada-otros-jugadores').textContent = 'Resultado de otros jugadores: ' + resultados.join(', ');
-
-    // Guardar los resultados en localStorage para sincronización con otras pestañas
-    localStorage.setItem('resultadosTiradaOtrosJugadores', JSON.stringify(resultados));
 }
 
-// Función para actualizar la sección de "Resultado de otros jugadores"
-function actualizarResultadoOtrosJugadores(resultados) {
-    document.getElementById('tirada-otros-jugadores').textContent = 'Resultado de otros jugadores: ' + resultados.join(', ');
+// Función para guardar la tirada en la base de datos
+function guardarTiradaEnBD(username, resultados) {
+    fetch('/guardar-tirada', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: username,  // Siempre usas el username correcto
+            resultados: resultados
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Tirada guardada correctamente:', data.message);
+        } else {
+            console.log('Error al guardar la tirada:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error al conectar con el servidor:', error);
+    });
 }
 
-// Función para actualizar la sección de "Tus Dados"
-function actualizarResultadoJugador(resultados) {
-    document.getElementById('resultado-dados').textContent = 'Resultados de tus dados: ' + resultados.join(', ');
-}
-
-// Al cargar la página, verificamos si ya hay resultados en localStorage
+// Al cargar la página, recuperamos el username desde localStorage y las tiradas previas
 document.addEventListener('DOMContentLoaded', function () {
-    const resultadosJugador = JSON.parse(localStorage.getItem('resultadosTiradaJugador'));
-    const resultadosOtros = JSON.parse(localStorage.getItem('resultadosTiradaOtrosJugadores'));
-
-    if (resultadosJugador) {
-        actualizarResultadoJugador(resultadosJugador);
-    }
-
-    if (resultadosOtros) {
-        actualizarResultadoOtrosJugadores(resultadosOtros);
-    }
-});
-
-// Escuchar cambios en localStorage para actualizar los resultados en otras pestañas
-window.addEventListener('storage', function (evento) {
-    if (evento.key === 'resultadosTiradaJugador') {
-        const resultados = JSON.parse(evento.newValue);
-        if (resultados) {
-            actualizarResultadoJugador(resultados);
-        }
-    }
-    if (evento.key === 'resultadosTiradaOtrosJugadores') {
-        const resultados = JSON.parse(evento.newValue);
-        if (resultados) {
-            actualizarResultadoOtrosJugadores(resultados);
-        }
+    const username = localStorage.getItem('username');  // Obtener el username desde localStorage
+    if (username) {
+        // Recuperar y mostrar las tiradas previas
+        recuperarTiradas(username);
+    } else {
+        console.error('No se encontró el nombre de usuario en localStorage');
     }
 });

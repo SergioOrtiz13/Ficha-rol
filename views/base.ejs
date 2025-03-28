@@ -56,11 +56,15 @@
         </div>
 
         
-        <button onclick="tirarDadosOtrosJugadores()">Tirar Dados</button>
-        <div class="resultado-tirada">
-            <div id="resultado-dados">Resultado de tus dados</div>
-            <div id="tirada-otros-jugadores">Resultado de otros jugadores</div>
+        <button onclick="tirarDadosJugador()">Tirar Dados</button>
+            <div class="resultado-tirada">
+                <div id="username"></div> <!-- Nombre de usuario -->
+                <div id="resultado-dados">
+        <!-- Aquí se mostrarán las tiradas previas -->
+            </div>
+            <!--<div id="resultado-dados">Resultado de tus dados</div>-->
         </div>
+
 
         <div class="caracteristica">
             <label>Carisma: <span id="carisma"><%= personaje.carisma || '0' %></span>*</label>

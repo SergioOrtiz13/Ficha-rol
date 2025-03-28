@@ -207,24 +207,73 @@ app.put('/actualizar-ficha/:id', async (req, res) => {
     }
 });
 
-app.post('/actualizar-tiradas', async (req, res) => {
-    const { username, tiradas } = req.body;
+app.post('/guardar-tirada', async (req, res) => {
+    const { username, resultados } = req.body;
 
-    if (!Array.isArray(tiradas)) {
-        return res.status(400).json({ success: false, message: 'Las tiradas deben ser un array.' });
+    if (!Array.isArray(resultados)) {
+        return res.status(400).json({ success: false, message: 'Los resultados deben ser un array.' });
     }
 
     try {
-        const result = await actualizarTiradas(username, tiradas);
+        const database = await connectDB();
+        const tiradasCollection = database.collection('tiradas');
+        const usuarioCollection = database.collection('usuario');
 
-        if (result && result.matchedCount > 0) {
-            res.json({ success: true, message: 'Tiradas actualizadas correctamente.' });
-        } else {
-            res.status(404).json({ success: false, message: 'Usuario no encontrado.' });
+        // Buscar el usuario en la colección 'usuario' para obtener el username
+        const usuario = await usuarioCollection.findOne({ username });
+
+        if (!usuario) {
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado.' });
         }
+
+        // Si el usuario existe, obtenemos su nombre y almacenamos la tirada
+        const nuevaTirada = {
+            username: usuario.username,  // Aquí se asegura que el username es correcto
+            resultado: resultados,
+            fecha: new Date()
+        };
+
+        // Verificar cuántas tiradas tiene el usuario
+        const tiradas = await tiradasCollection.find({ username: usuario.username }).toArray();
+
+        // Si el usuario tiene 3 tiradas, eliminamos la más antigua
+        if (tiradas.length >= 3) {
+            const tiradaMasAntigua = tiradas[tiradas.length - 1]; // La última tirada es la más antigua
+            await tiradasCollection.deleteOne({ _id: tiradaMasAntigua._id });
+        }
+
+        // Guardamos la nueva tirada
+        await tiradasCollection.insertOne(nuevaTirada);
+        res.status(200).json({ success: true, message: 'Tirada guardada correctamente.' });
     } catch (error) {
-        console.error('Error al actualizar las tiradas:', error);
-        res.status(500).json({ success: false, message: 'Error al actualizar las tiradas.' });
+        console.error('Error al guardar la tirada:', error);
+        res.status(500).json({ success: false, message: 'Error al guardar la tirada.' });
+    }
+});
+
+app.get('/tiradas/:username', async (req, res) => {
+    const { username } = req.params;
+
+    try {
+        // Recuperamos las tres últimas tiradas, ordenadas por fecha descendente
+        const database = await connectDB();
+        const collection = database.collection('tiradas');
+        
+        // Recuperar las tiradas más recientes (máximo 3) ordenadas por fecha descendente
+        const tiradas = await collection.find({ username }).sort({ fecha: -1 }).limit(3).toArray();
+
+        // Convertir las tiradas para eliminar cualquier referencia cíclica (como `_id`, etc.)
+        const tiradasSimplificadas = tiradas.map(tirada => {
+            return {
+                resultado: tirada.resultado,
+                fecha: tirada.fecha
+            };
+        });
+
+        res.status(200).json(tiradasSimplificadas);
+    } catch (error) {
+        console.error('Error al obtener las tiradas:', error);
+        res.status(500).json({ success: false, message: 'Error al obtener las tiradas.' });
     }
 });
 
