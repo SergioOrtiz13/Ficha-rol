@@ -131,20 +131,29 @@ async function guardarTirada(username, resultado) {
     try {
         const database = await connectDB();
         const collection = database.collection('tiradas');
-        
-        // Guarda la tirada
-        const result = await collection.insertOne({
-            username: username,  // Asegúrate de que username esté bien definido
-            resultado: resultado,  // Asegúrate de que el resultado tenga el formato esperado
-            fecha: new Date()  // Fecha de la tirada
+
+        // Guardar nueva tirada
+        await collection.insertOne({
+            username: username,
+            resultado: resultado,
+            fecha: new Date()
         });
 
-        return result.insertedId; // Devuelve el ID de la nueva tirada
+        // Mantener solo las 3 últimas
+        const tiradas = await collection.find({ username }).sort({ fecha: -1 }).toArray();
+
+        if (tiradas.length > 3) {
+            const idsAEliminar = tiradas.slice(3).map(t => t._id);
+            await collection.deleteMany({ _id: { $in: idsAEliminar } });
+        }
+
+        return true;
     } catch (error) {
         console.error('Error al guardar la tirada:', error);
         throw error;
     }
 }
+
 
 
 async function getTiradas(username) {

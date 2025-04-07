@@ -6,7 +6,7 @@ const multer = require('multer');
 const { connectDB, authenticateUser, actualizarTiradas, getRedirectUrl } = require('./db');  // Usamos getRedirectUrl desde db.js
 const { saveFicha, getFichas, getFichaPorNombre } = require('./db');
 const fs = require('fs');
-
+const Tirada = require('./models/tirada');
 const app = express();
 const port = 3000;
 
@@ -253,27 +253,18 @@ app.post('/guardar-tirada', async (req, res) => {
 
 app.get('/tiradas/:username', async (req, res) => {
     const { username } = req.params;
-
     try {
-        // Recuperamos las tres últimas tiradas, ordenadas por fecha descendente
         const database = await connectDB();
         const collection = database.collection('tiradas');
-        
-        // Recuperar las tiradas más recientes (máximo 3) ordenadas por fecha descendente
-        const tiradas = await collection.find({ username }).sort({ fecha: -1 }).limit(3).toArray();
 
-        // Convertir las tiradas para eliminar cualquier referencia cíclica (como `_id`, etc.)
-        const tiradasSimplificadas = tiradas.map(tirada => {
-            return {
-                resultado: tirada.resultado,
-                fecha: tirada.fecha
-            };
-        });
+        const tiradas = await collection.find({ username })
+            .sort({ fecha: -1 }) // La más reciente primero
+            .toArray();
 
-        res.status(200).json(tiradasSimplificadas);
+        res.json(tiradas);
     } catch (error) {
-        console.error('Error al obtener las tiradas:', error);
-        res.status(500).json({ success: false, message: 'Error al obtener las tiradas.' });
+        console.error('Error al obtener tiradas:', error);
+        res.status(500).json({ error: 'Error al obtener tiradas' });
     }
 });
 

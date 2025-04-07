@@ -4,15 +4,14 @@ function recuperarTiradas(username) {
         .then(response => response.json())
         .then(tiradas => {
             const resultadoDadosDiv = document.getElementById('resultado-dados');
-            resultadoDadosDiv.innerHTML = '';  // Limpiar el contenido previo
+            resultadoDadosDiv.innerHTML = ''; // Limpiar
 
             if (tiradas.length === 0) {
                 resultadoDadosDiv.innerHTML = '<p>No tienes tiradas previas.</p>';
             } else {
-                // Solo mostramos la última tirada
-                const ultimaTirada = tiradas[0];  // La más reciente está al principio de la lista
+                const ultima = tiradas[0]; // la más reciente
                 const tiradaDiv = document.createElement('div');
-                tiradaDiv.textContent = `${ultimaTirada.resultado.join(', ')}`;
+                tiradaDiv.textContent = `Usuario: ${username} - Tirada: ${ultima.resultado.join(', ')}`;
                 resultadoDadosDiv.appendChild(tiradaDiv);
             }
         })
@@ -76,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const username = localStorage.getItem('username');  // Obtener el username desde localStorage
     if (username) {
         // Recuperar y mostrar las tiradas previas
+        guardarTiradaEnBD(username, resultados);
         recuperarTiradas(username);
     } else {
         console.error('No se encontró el nombre de usuario en localStorage');

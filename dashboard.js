@@ -1,22 +1,44 @@
 function cargarFichasDinamicas() {
-    fetch('/getFichas')  // Llamada al servidor para obtener las fichas desde la base de datos
-        .then(response => response.json())
-        .then(fichas => {
-            const fichasGrid = document.querySelector('.fichas-grid');
-            
-            // Itera sobre las fichas obtenidas y agrega los enlaces dinámicamente
-            fichas.forEach(ficha => {
-                // Verifica si ya existe un enlace para la ficha
-                if (!document.querySelector(`a[href="ficha-${ficha.nombrePersonaje}.html"]`)) {
-                    // Crear el nuevo enlace para la ficha
-                    const enlaceFicha = document.createElement('a');
-                    enlaceFicha.href = `/ficha/${ficha.nombrePersonaje}`;  // Cambié esto para usar la URL correcta
-                    enlaceFicha.textContent = `Ficha de ${ficha.nombrePersonaje}`;
+    // Obtener el token JWT del localStorage (o de donde lo tengas almacenado)
+    const token = localStorage.getItem('token');
 
-                    // Añadir el enlace al contenedor de fichas
-                    fichasGrid.appendChild(enlaceFicha);
-                }
-            });
+    if (!token) {
+        console.error('No se encontró el token de autenticación');
+        return;  // Si no hay token, no hacer la solicitud
+    }
+
+    fetch('/getFichas', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,  // Enviar el token en la cabecera Authorization
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener las fichas: ' + response.statusText);
+            }
+            return response.json();  // Si la respuesta es exitosa, convertirla a JSON
+        })
+        .then(fichas => {
+            if (Array.isArray(fichas)) {  // Verificar que fichas sea un array
+                const fichasGrid = document.querySelector('.fichas-grid');
+                
+                // Itera sobre las fichas obtenidas y agrega los enlaces dinámicamente
+                fichas.forEach(ficha => {
+                    // Verifica si ya existe un enlace para la ficha
+                    if (!document.querySelector(`a[href="ficha-${ficha.nombrePersonaje}.html"]`)) {
+                        // Crear el nuevo enlace para la ficha
+                        const enlaceFicha = document.createElement('a');
+                        enlaceFicha.href = `/ficha/${ficha.nombrePersonaje}`;  // URL correcta para la ficha
+                        enlaceFicha.textContent = `Ficha de ${ficha.nombrePersonaje}`;
+
+                        // Añadir el enlace al contenedor de fichas
+                        fichasGrid.appendChild(enlaceFicha);
+                    }
+                });
+            } else {
+                console.error('La respuesta no es un array:', fichas);
+            }
         })
         .catch(error => console.error('Error al cargar las fichas dinámicas:', error));
 }
