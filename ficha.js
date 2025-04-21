@@ -14,7 +14,6 @@ function cargarHabilidades() {
         .then(response => response.json())
         .then(result => {
             if (result.success) {
-                // Asegúrate de que el campo 'habilidades_adquiridas' esté presente
                 document.getElementById('habilidades-adquiridas').value = result.habilidades_adquiridas || '';
             } else {
                 alert('No se encontraron las habilidades del usuario.');
@@ -41,7 +40,6 @@ function guardarHabilidades() {
         return;
     }
 
-    // Enviar las habilidades al servidor
     fetch('/actualizar-habilidades', {
         method: 'POST',
         headers: {
@@ -72,10 +70,8 @@ function sumar(caracteristica) {
     valor += 1;
     elemento.textContent = valor;
 
-    // Guardar el valor en localStorage
     localStorage.setItem(caracteristica, valor);
 
-    // Enviar el valor al servidor para actualizar la base de datos
     actualizarCaracteristicasEnBaseDeDatos(caracteristica, valor);
 }
 
@@ -86,10 +82,8 @@ function restar(caracteristica) {
         valor -= 1;
         elemento.textContent = valor;
 
-        // Guardar el valor en localStorage
         localStorage.setItem(caracteristica, valor);
 
-        // Enviar el valor al servidor para actualizar la base de datos
         actualizarCaracteristicasEnBaseDeDatos(caracteristica, valor);
     }
 }
@@ -102,7 +96,6 @@ function actualizarCaracteristicasEnBaseDeDatos(caracteristica, valor) {
         return;
     }
 
-    // Crear un array de características para enviar todas juntas
     const caracteristicas = [
         { nombre: 'carisma', valor: parseInt(document.getElementById('carisma').textContent) },
         { nombre: 'economia', valor: parseInt(document.getElementById('economia').textContent) },
@@ -151,13 +144,10 @@ function cargarCaracteristicas() {
         .then(result => {
             if (result.success && result.caracteristicas) {
                 const caracteristicas = result.caracteristicas;
-                // Asignar los valores de la base de datos a los elementos
                 for (const caracteristica of caracteristicas) {
                     const elemento = document.getElementById(caracteristica.nombre);
                     if (elemento) {
-                        // Actualizar el contenido del elemento
                         elemento.textContent = caracteristica.valor;
-                        // También guardamos el valor actualizado en localStorage
                         localStorage.setItem(caracteristica.nombre, caracteristica.valor);
                     }
                 }
@@ -188,7 +178,6 @@ document.addEventListener('DOMContentLoaded', function() {
     cargarDesdeLocalStorage();
     cargarHabilidades();
 
-    // Evento para el botón "Guardar Habilidades"
     document.getElementById('guardar-habilidades-btn').addEventListener('click', guardarHabilidades);
     document.getElementById('habilidades-adquiridas').addEventListener('input', actualizarHabilidades);
 });

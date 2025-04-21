@@ -1,50 +1,72 @@
 const express = require('express');
-const { ObjectId } = require('mongodb');
+const { ObjectId, Admin } = require('mongodb');
 const bodyParser = require('body-parser');
 const path = require('path');
 const multer = require('multer');
-const { connectDB, authenticateUser, actualizarTiradas, getRedirectUrl } = require('./db');  // Usamos getRedirectUrl desde db.js
-const { saveFicha, getFichas, getFichaPorNombre } = require('./db');
 const fs = require('fs');
+const jwt = require('jsonwebtoken');
+
+const { connectDB, authenticateUser, actualizarTiradas, getRedirectUrl } = require('./db');
+const { saveFicha, getFichas, getFichaPorNombre } = require('./db');
 const Tirada = require('./models/tirada');
+
 const app = express();
 const port = 3000;
+const JWT_SECRET = 'Roleplay';
 
+function generarToken(usuario) {
+    const payload = {
+        username: usuario.username,
+        role: usuario.role,Admin  // Asegúrate de incluir el rol
+    };
+
+    // Generar el token con una clave secreta y un tiempo de expiración
+    const token = jwt.sign(payload, JWT_SECRET);
+    return token;
+}
+
+function verificarToken(req, res, next) {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        return res.status(403).json({ success: false, message: 'Token no proporcionado' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        return res.status(401).json({ success: false, message: 'Token inválido' });
+    }
+}
+
+// Multer configuración
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const fileType = file.mimetype.split('/')[0]; // Esto determina el tipo de archivo (image o video)
-        
-        if (fileType === 'video') {
-            cb(null, 'vid');  // Guardar videos en la carpeta 'vid'
-        } else if (fileType === 'image') {
-            cb(null, 'img');  // Guardar imágenes en la carpeta 'img'
-        } else {
-            cb(new Error('Tipo de archivo no válido'));  // Si no es ni imagen ni video
-        }
+        const fileType = file.mimetype.split('/')[0];
+        if (fileType === 'video') cb(null, 'vid');
+        else if (fileType === 'image') cb(null, 'img');
+        else cb(new Error('Tipo de archivo no válido'));
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));  // Nombre único para el archivo
+        cb(null, Date.now() + path.extname(file.originalname));
     }
 });
-
 const upload = multer({ storage: storage });
 const archivoPath = path.join(__dirname, '/fichaModel.js');
 fs.access(archivoPath, fs.constants.F_OK, (err) => {
-    if (err) {
-        console.log(`${archivoPath} no existe.`);
-    } else {
-        console.log(`${archivoPath} existe.`);
-    }
+    if (err) console.log(`${archivoPath} no existe.`);
+    else console.log(`${archivoPath} existe.`);
 });
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views')); 
+app.set('views', path.join(__dirname, 'views'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/vid', express.static(path.join(__dirname, 'vid')));
 app.use('/img', express.static(path.join(__dirname, 'img')));
-app.use(express.static(path.join(__dirname, '/')));
 app.use(express.static(path.join(__dirname)));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -56,16 +78,27 @@ app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     const isAuthenticated = await authenticateUser(username, password);
 
-    if (isAuthenticated) {
-        const redirectUrl = await getRedirectUrl(username);
-        const token = 'some-jwt-token';
-        res.json({ success: true, redirectUrl, token });
-    } else {
-        res.json({ success: false, message: 'Usuario o contraseña incorrectos.' });
+if (isAuthenticated) {
+    const database = await connectDB();
+    const user = await database.collection('usuario').findOne({ username });
+
+    if (!user) {
+        return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
     }
+
+    const redirectUrl = await getRedirectUrl(username);
+    const token = jwt.sign(
+        { username: user.username, role: user.role || 'user' }, // Incluye el role en el token
+        JWT_SECRET,
+        { expiresIn: '1h' }
+    );
+
+    res.json({ success: true, redirectUrl, token });
+}
 });
 
-app.post('/crear-ficha', upload.fields([
+// Crear ficha protegida con token
+app.post('/crear-ficha', verificarToken, upload.fields([
     { name: 'imagenPersonaje', maxCount: 1 },
     { name: 'videoFondo', maxCount: 1 }
 ]), async (req, res) => {
@@ -75,12 +108,12 @@ app.post('/crear-ficha', upload.fields([
         const file = req.files['videoFondo'][0];
         const ext = path.extname(file.originalname).toLowerCase();
 
-        if (ext === '.mp4' || ext === '.avi' || ext === '.mov' || ext === '.webm') {
+        if (['.mp4', '.avi', '.mov', '.webm'].includes(ext)) {
             videoFondoUrl = '/vid/' + file.filename;
-        } else if (ext === '.jpg' || ext === '.jpeg' || ext === '.png' || ext === '.gif') {
+        } else if (['.jpg', '.jpeg', '.png', '.gif'].includes(ext)) {
             videoFondoUrl = '/img/' + file.filename;
         } else {
-            return res.status(400).json({ success: false, message: 'El archivo no es un video ni una imagen válida.' });
+            return res.status(400).json({ success: false, message: 'El archivo no es válido.' });
         }
     }
 
@@ -91,13 +124,14 @@ app.post('/crear-ficha', upload.fields([
         torpeza: req.body.torpeza,
         belleza: req.body.belleza,
         social: req.body.social,
-        habilidades: req.body.habilidades, 
+        habilidades: req.body.habilidades,
         historia: req.body.historia,
         personalidad: req.body.personalidad,
         habilidadesAdquiridas: req.body.habilidadesAdquiridas,
         miembrosArbol: JSON.parse(req.body.miembrosArbol),
         imagenPersonaje: req.files['imagenPersonaje'] ? '/img/' + req.files['imagenPersonaje'][0].filename : '',
-        videoFondo: videoFondoUrl
+        videoFondo: videoFondoUrl,
+        creadoPor: req.user.username // <-- Aquí se asocia la ficha al usuario autenticado
     };
 
     try {
@@ -109,9 +143,31 @@ app.post('/crear-ficha', upload.fields([
 });
 
 app.get('/getFichas', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];  // Obtener token del header
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+
     try {
-        const fichas = await getFichas(); 
-        res.json(fichas);
+        const decoded = jwt.verify(token, JWT_SECRET);  // Verificar el token
+        const username = decoded.username;  // Obtener el username desde el token
+        const role = decoded.role;  // Obtener el rol del usuario desde el token (ej: "admin")
+
+        console.log(`Token verificado. Usuario: ${username}, Rol: ${role}`);
+
+        const database = await connectDB();
+        const collection = database.collection('fichas');
+
+        let fichas;
+
+        // Si el usuario es admin, obtén todas las fichas, si no, solo las suyas
+        if (role === 'admin') {
+            fichas = await collection.find({}).toArray();  // Obtener todas las fichas
+        } else {
+            fichas = await collection.find({ creadoPor: username }).toArray();  // Solo fichas creadas por el usuario
+        }
+
+        res.json(fichas);  // Enviar las fichas encontradas
     } catch (error) {
         console.error('Error al obtener las fichas:', error);
         res.status(500).json({ message: 'Error al obtener las fichas' });

@@ -79,13 +79,18 @@ document.getElementById('crear-ficha-form').addEventListener('submit', async fun
 
     // Enviar los datos al backend utilizando fetch con FormData
     try {
+        const token = localStorage.getItem('token'); // <-- Asegúrate de haber guardado el token al iniciar sesión
+    
         const response = await fetch('/crear-ficha', {
             method: 'POST',
-            body: formData,  // Aquí enviamos el FormData en lugar del JSON
+            headers: {
+                Authorization: `Bearer ${token}` // <-- Aquí se añade el token
+            },
+            body: formData
         });
-
+    
         const result = await response.json();
-        
+    
         if (result.success) {
             alert('Ficha guardada correctamente');
             // Redirigir o realizar alguna otra acción

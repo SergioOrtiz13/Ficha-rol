@@ -1,3 +1,4 @@
+//db.js
 const { MongoClient } = require('mongodb');
 const fs = require('fs');
 const path = require('path');
@@ -77,9 +78,6 @@ async function saveFicha(fichaData, username) {
     try {
         const database = await connectDB();
         const collection = database.collection('fichas');
-
-        // Agregar el username del usuario a la ficha
-        fichaData.usuario = username;
 
         // Guardar la ficha en la base de datos
         const result = await collection.insertOne(fichaData);
