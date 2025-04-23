@@ -1,3 +1,4 @@
+//server.js
 const express = require('express');
 const { ObjectId, Admin } = require('mongodb');
 const bodyParser = require('body-parser');
@@ -21,16 +22,7 @@ const io = require('socket.io')(http, {
 const port = 3000;
 const JWT_SECRET = 'Roleplay';
 
-function generarToken(usuario) {
-    const payload = {
-        username: usuario.username,
-        role: usuario.role,Admin  // Asegúrate de incluir el rol
-    };
 
-    // Generar el token con una clave secreta y un tiempo de expiración
-    const token = jwt.sign(payload, JWT_SECRET);
-    return token;
-}
 
 function verificarToken(req, res, next) {
     const token = req.headers.authorization?.split(' ')[1];
@@ -97,7 +89,7 @@ if (isAuthenticated) {
     const token = jwt.sign(
         { username: user.username, role: user.role || 'user' }, // Incluye el role en el token
         JWT_SECRET,
-        { expiresIn: '1h' }
+        { }
     );
 
     res.json({ success: true, redirectUrl, token });

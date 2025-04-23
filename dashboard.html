@@ -13,16 +13,6 @@
     </video>
     <div class="dashboard-container">
         <h1>Dashboard</h1>
-        <!--<div class="dados-container">
-            <h2>Tirada de Dados</h2>
-            <div class="dados">
-                <div class="user-datos"></div>
-              <img src="img/dices/dado1.png" alt="Dado 1" class="dado" id="dado1">
-              <img src="img/dices/dado2.png" alt="Dado 2" class="dado" id="dado2">
-              <img src="img/dices/dado3.png" alt="Dado 3" class="dado" id="dado3">
-              <ul id="resultados"></ul>
-            </div>
-          </div> -->
           
         <div class="user-fichas">
             <h2>Fichas de personajes</h2>
@@ -35,15 +25,17 @@
         </div>
     </div>
     <div class="dashboard-container1">
-        <h1>Datos</h1>
+        <h1>Opciones</h1>
         <div class="user-datos"></div>
-        <h2>Historia</h2>
-        <div class="fichas-grid">
-            <!--<a href="historia.html">Historia</a>
-            <a href="fotos.html">Galeria</a>-->
+        <div class="fichas-grid-opciones">
+            <div class="admin-links" id="admin-links" style="display: none;">
+                <a href="historia.html" class="boton-enlace">Historia</a>
+                <a href="fotos.html" class="boton-enlace">Galería</a>
+            </div>
             <button onclick="window.location.href='crear-ficha.html'">Crear Nueva Ficha</button>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jwt-decode/3.1.2/jwt-decode.min.js"></script>
     <script src="dashboard.js"></script>
 </body>
 </html>

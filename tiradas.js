@@ -8,16 +8,17 @@ function recuperarTiradas(username) {
             if (tiradas.length === 0) {
                 resultadoDadosDiv.innerHTML = '<p>No tienes tiradas previas.</p>';
             } else {
-                const ultima = tiradas[0]; 
-                const tiradaDiv = document.createElement('div');
-                tiradaDiv.textContent = `Usuario: ${username} - Tirada: ${ultima.resultado.join(', ')}`;
-                resultadoDadosDiv.appendChild(tiradaDiv);
+                const ultimaTirada = tiradas[0];
+                const item = document.createElement('p');
+                item.textContent = `Usuario: ${username} - Última tirada: ${ultimaTirada.resultado.join(', ')}`;
+                resultadoDadosDiv.appendChild(item);
             }
         })
         .catch(error => {
             console.error('Error al obtener las tiradas:', error);
         });
 }
+
 
 function tirarDadosJugador() {
     var resultados = [];
@@ -91,11 +92,28 @@ function mostrarUltimasTiradasGlobales() {
 document.addEventListener('DOMContentLoaded', function () {
     const username = localStorage.getItem('username'); 
     if (username) {
-        guardarTiradaEnBD(username, resultados);
         recuperarTiradas(username);
         mostrarUltimasTiradasGlobales();
     } else {
         console.error('No se encontró el nombre de usuario en localStorage');
+    }
+});
+
+const socket = io(); // Se conecta automáticamente al servidor
+
+socket.on('tiradaRecibida', (data) => {
+    const { username, resultado } = data;
+
+    // Actualizar el nombre de usuario en algún sitio del DOM (si lo tienes)
+    const usernameSpan = document.getElementById('username');
+    if (usernameSpan) {
+        usernameSpan.textContent = username;
+    }
+
+    // Mostrar el último resultado recibido
+    const resultadoContenedor = document.getElementById('resultado-dados');
+    if (resultadoContenedor) {
+        resultadoContenedor.textContent = resultado.join(', ');
     }
 });
 

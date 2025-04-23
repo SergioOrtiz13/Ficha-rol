@@ -1,3 +1,4 @@
+//dashboard.js
 function cargarFichasDinamicas() {
     // Obtener el token JWT del localStorage (o de donde lo tengas almacenado)
     const token = localStorage.getItem('token');
@@ -43,9 +44,39 @@ function cargarFichasDinamicas() {
         .catch(error => console.error('Error al cargar las fichas dinámicas:', error));
 }
 
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        console.error('Token inválido:', e);
+        return null;
+    }
+}
+
+function verificarRolYMostrarEnlaces() {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+        const decodedToken = parseJwt(token);
+
+        if (decodedToken && decodedToken.role === 'admin') {
+            document.getElementById('admin-links').style.display = 'block';
+        } else {
+            document.getElementById('admin-links').style.display = 'none';
+        }
+    }
+}
+
+
 // Llama a la función cuando se carga la página
 window.onload = function() {
-    cargarFichasDinamicas();
+    cargarFichasDinamicas();  // Cargar las fichas dinámicas
+    verificarRolYMostrarEnlaces();  // Verificar el rol y mostrar los enlaces correspondientes
 };
 
 
@@ -83,3 +114,10 @@ document.querySelector('.dados').addEventListener('click', () => {
     const dados = document.querySelectorAll('.dado');
     dados.forEach(dado => tirarDado(dado));
 });
+document.addEventListener('DOMContentLoaded', () => {
+    const boton = document.querySelector('.fichas-grid-opciones button');
+    if (boton) {
+      boton.classList.add('boton-enlace');
+    }
+  });
+  
