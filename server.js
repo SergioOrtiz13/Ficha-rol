@@ -6,11 +6,18 @@ const multer = require('multer');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 
+
 const { connectDB, authenticateUser, actualizarTiradas, getRedirectUrl } = require('./db');
 const { saveFicha, getFichas, getFichaPorNombre } = require('./db');
 const Tirada = require('./models/tirada');
 
 const app = express();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http, {
+    cors: {
+        origin: '*'
+    }
+});
 const port = 3000;
 const JWT_SECRET = 'Roleplay';
 
@@ -301,6 +308,10 @@ app.post('/guardar-tirada', async (req, res) => {
         // Guardamos la nueva tirada
         await tiradasCollection.insertOne(nuevaTirada);
         res.status(200).json({ success: true, message: 'Tirada guardada correctamente.' });
+        io.emit('tiradaRecibida', {
+            username: usuario.username,
+            resultado: resultados
+        });
     } catch (error) {
         console.error('Error al guardar la tirada:', error);
         res.status(500).json({ success: false, message: 'Error al guardar la tirada.' });
@@ -366,6 +377,25 @@ app.get('/get-caracteristicas/:username', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
+io.on('connection', (socket) => {
+    console.log('Cliente conectado');
+
+    socket.on('nuevaTirada', async (data) => {
+        const { username, resultado } = data;
+
+        // Guardar en la base de datos
+        try {
+            await guardarTirada(data);
+            console.log(`Tirada guardada para ${username}`);
+        } catch (error) {
+            console.error('Error al guardar la tirada:', error);
+        }
+
+        // Emitir solo la última tirada de cada usuario
+        io.emit('tiradaRecibida', { username, resultado });
+    });
+});
+
+http.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);
 });

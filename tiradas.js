@@ -98,3 +98,4 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('No se encontró el nombre de usuario en localStorage');
     }
 });
+

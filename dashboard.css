@@ -72,26 +72,29 @@ button:focus {
     outline: none;
 }
 
-#resultado-dados,
-#tirada-otros-jugadores {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 48%; /* Ambos divs ocupan el 48% del espacio disponible */
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-    margin-bottom: 10px;
-}
+.dados-container {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .dados img.dado {
+    width: 80px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .dados img.dado:hover {
+    transform: scale(1.1);
+  }
 
-/* Estilo específico para los divs */
-#resultado-dados {
-    border: 2px solid #00ffdd; /* Estilo específico para el div de resultados */
-}
-
-#tirada-otros-jugadores {
-    border: 2px solid #ff00ff; /* Estilo específico para el div de otros jugadores */
+  .dado.girando {
+    transform: rotate(360deg);
+    transition: transform 0.5s ease;
 }
 
 @media (max-width: 768px) {

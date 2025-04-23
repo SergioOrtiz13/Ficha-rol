@@ -70,3 +70,16 @@ function inicializarFicha() {
     document.body.appendChild(script);
 }
 
+function tirarDado(dado) {
+    const resultado = Math.floor(Math.random() * 6) + 1;
+    dado.src = `img/dices/dado${resultado}.png`;
+
+    // Opcional: animación simple
+    dado.classList.add('girando');
+    setTimeout(() => dado.classList.remove('girando'), 500);
+}
+
+document.querySelector('.dados').addEventListener('click', () => {
+    const dados = document.querySelectorAll('.dado');
+    dados.forEach(dado => tirarDado(dado));
+});
