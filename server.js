@@ -89,7 +89,7 @@ if (isAuthenticated) {
     const token = jwt.sign(
         { username: user.username, role: user.role || 'user' }, // Incluye el role en el token
         JWT_SECRET,
-        { }
+        { expiresIn: '100y' }
     );
 
     res.json({ success: true, redirectUrl, token });
