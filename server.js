@@ -317,7 +317,7 @@ app.get('/tiradas/:username', async (req, res) => {
         const collection = database.collection('tiradas');
 
         const tiradas = await collection.find({ username })
-            .sort({ fecha: -1 }) // La más reciente primero
+            .sort({ fecha: -1 }) 
             .toArray();
 
         res.json(tiradas);
