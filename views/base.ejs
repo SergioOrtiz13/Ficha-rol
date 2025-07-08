@@ -48,6 +48,13 @@
         <div class="header">
             <h1>Nombre del Personaje: <%= personaje.nombrePersonaje %></h1>
 
+            <div>
+  <span id="vida-actual"><%= personaje.pv || 12 %></span> / <span id="vida-maxima"><%= personaje.pvMax || 12 %></span>
+  <button id="vida-sumar">+</button>
+  <button id="vida-restar">-</button>
+</div>
+
+
             <% if (personaje.imagenPersonaje && personaje.imagenPersonaje.length > 0) { %>
                 <img src="<%= personaje.imagenPersonaje %>" alt="Imagen de <%= personaje.nombrePersonaje %>" class="imagen-circular">
             <% } else { %>
@@ -158,6 +165,19 @@
             <h2>Personalidad</h2>
             <p><%= personaje.personalidad || 'Personalidad no disponible.' %></p>
         </div>
+
+            <div id="corazones-container" style="margin-top: 20px; display: flex; gap: 50px; font-family: Arial, sans-serif;">
+  <div>
+    <div>Crush</div>
+    <div id="corazones-crush" class="corazones" data-actual="<%= personaje.crush || 0 %>" data-tipo="crush"></div>
+  </div>
+  <div>
+    <div>Arista</div>
+    <div id="corazones-arista" class="corazones" data-actual="<%= personaje.aristas || 0 %>" data-tipo="aristas"></div>
+  </div>
+</div>
+
+
 
         <div class="habilidades">
             <h2>Datos</h2>

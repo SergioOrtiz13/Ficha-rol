@@ -229,7 +229,7 @@ app.put('/actualizar-ficha/:id', async (req, res) => {
     const allowedFields = [
         'carisma', 'economia', 'torpeza', 'belleza', 'social', 'habilidades', 
         'historia', 'personalidad', 'habilidadesAdquiridas', 'miembrosArbol', 
-        'imagenPersonaje', 'videoFondo'
+        'imagenPersonaje', 'videoFondo', 'crush', 'aristas', 'pv'
     ];
 
     // Filtramos los datos para solo permitir los campos válidos

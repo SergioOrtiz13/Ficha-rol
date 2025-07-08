@@ -207,6 +207,111 @@ function cargarHabilidades() {
         });
 }
 
+function pintarCorazones(idContenedor) {
+  const contenedor = document.getElementById(idContenedor);
+  if (!contenedor) return;
+
+  const tipo = contenedor.dataset.tipo;
+  let actual = parseInt(contenedor.dataset.actual) || 0;
+  const max = 5;
+
+  contenedor.innerHTML = '';
+
+  for (let i = 1; i <= max; i++) {
+    const span = document.createElement('span');
+    span.classList.add('corazon');
+    if (i <= actual) span.classList.add('activo');
+    span.textContent = '♥'; // o '❤' si prefieres
+
+    span.addEventListener('click', () => {
+      actual = (i === actual) ? i - 1 : i;
+      contenedor.dataset.actual = actual;
+      pintarCorazones(idContenedor);
+      actualizarCorazonesEnBD(tipo, actual);
+    });
+
+    contenedor.appendChild(span);
+  }
+}
+
+function actualizarCorazonesEnBD(tipo, valor) {
+  const fichaId = obtenerFichaId();
+  if (!fichaId) return;
+
+  const data = {};
+  data[tipo] = String(valor); // ✅ Forzamos string
+
+  fetch(`/actualizar-ficha/${fichaId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(resp => {
+    console.log('Respuesta del servidor:', resp);  // Te ayudará a ver si realmente tuvo éxito
+    if (resp.success) {
+      console.log(`${tipo} actualizado a ${valor}`);
+    } else {
+      console.error(`Error al actualizar ${tipo}:`, resp.message || 'desconocido');
+    }
+  })
+  .catch(console.error);
+}
+
+
+function actualizarPV(nuevoValor) {
+  const fichaId = obtenerFichaId();
+  if (!fichaId) return;
+
+  fetch(`/actualizar-ficha/${fichaId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pv: String(nuevoValor) }) // ✅ Forzamos string
+  })
+  .then(res => res.json())
+  .then(resp => {
+    console.log('Respuesta al actualizar PV:', resp);
+    if (!resp.success) {
+      console.error('Error al actualizar PV:', resp.message || 'desconocido');
+    }
+  })
+  .catch(console.error);
+}
+
+function actualizarBarraVida(actual, max) {
+    const barra = document.getElementById('barra-vida'); // Ajusta el id según tu HTML
+    if (!barra) return;
+    const porcentaje = (actual / max) * 100;
+    barra.style.width = porcentaje + '%';
+}
+
+
+document.getElementById('vida-sumar').addEventListener('click', () => {
+    let pv = parseInt(document.getElementById('vida-actual').textContent);
+    const pvMax = parseInt(document.getElementById('vida-maxima').textContent);
+    if (pv < pvMax) {
+        pv += 1;
+        document.getElementById('vida-actual').textContent = pv;  // actualizar texto primero
+        actualizarBarraVida(pv, pvMax);
+        actualizarPV(pv);
+    }
+});
+
+
+
+document.getElementById('vida-restar').addEventListener('click', () => {
+    let pv = parseInt(document.getElementById('vida-actual').textContent);
+    const pvMax = parseInt(document.getElementById('vida-maxima').textContent); // <--- Aquí agregas esto
+    if (pv > 0) {
+        pv -= 1;
+        actualizarPV(pv);
+        document.getElementById('vida-actual').textContent = pv;
+        actualizarBarraVida(pv, pvMax);
+    }
+});
+
+
+
 // Cargar las características y habilidades cuando la página se haya cargado
 document.addEventListener('DOMContentLoaded', function() {
     cargarCaracteristicas();
@@ -236,4 +341,14 @@ document.addEventListener('DOMContentLoaded', function() {
     historiaElementos.forEach(function(historiaElemento) {
         historiaElemento.innerHTML = historiaElemento.innerHTML.replace(/\n/g, '<br>');
     });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  pintarCorazones('corazones-crush');
+  pintarCorazones('corazones-arista');
+
+  // Ya tenías esto para la barra de vida:
+  const vidaMax = parseInt(document.getElementById('vida-maxima').textContent);
+  const vidaActual = parseInt(document.getElementById('vida-actual').textContent);
+  actualizarBarraVida(vidaActual, vidaMax);
 });
