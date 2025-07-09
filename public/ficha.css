@@ -73,6 +73,38 @@ body {
     background-color: #0045e6;
 }
 
+.nombre-vida {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    color: #ffffff;
+}
+
+.nombre-vida h1 {
+    margin: 0;
+}
+
+.vida-personaje {
+    margin-top: 8px;
+    font-size: 1.2em;
+    color: #00ff55;
+}
+
+.vida-personaje button {
+    margin-left: 5px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #00ffdd;
+    color: #0d0d0d;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.vida-personaje button:hover {
+    background-color: #0045e6;
+}
+
+
 .corazones {
   display: flex;
   gap: 5px;
