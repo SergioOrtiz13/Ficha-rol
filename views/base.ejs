@@ -154,6 +154,27 @@
     <button id="habilidad-combate-restar">-</button>
 </div>
 
+<!-- Subterfugio -->
+<div class="caracteristica">
+    <label>Subterfugio: <span id="habilidad-subterfugio"><%= personaje.habilidades.subterfugio || '0' %></span>*</label>
+    <button id="habilidad-subterfugio-sumar">+</button>
+    <button id="habilidad-subterfugio-restar">-</button>
+</div>
+
+<!-- Percepción -->
+<div class="caracteristica">
+    <label>Percepción: <span id="habilidad-percepcion"><%= personaje.habilidades.percepcion || '0' %></span>*</label>
+    <button id="habilidad-percepcion-sumar">+</button>
+    <button id="habilidad-percepcion-restar">-</button>
+</div>
+
+<!-- Juego de Manos -->
+<div class="caracteristica">
+    <label>Juego de Manos: <span id="habilidad-juegoDeManos"><%= personaje.habilidades.juegoManos || '0' %></span>*</label>
+    <button id="habilidad-juegoDeManos-sumar">+</button>
+    <button id="habilidad-juegoDeManos-restar">-</button>
+</div>
+
 
         <!-- Historia -->
         <div class="historia">
@@ -171,10 +192,12 @@
             
   <div>
     <div>Crush</div>
+    <!--imagen cursh-->
     <div id="corazones-crush" class="corazones" data-actual="<%= personaje.crush || 0 %>" data-tipo="crush"></div>
   </div>
   <div>
     <div>Arista</div>
+    <!--imagen arista-->
     <div id="corazones-arista" class="corazones" data-actual="<%= personaje.aristas || 0 %>" data-tipo="aristas"></div>
   </div>
 </div>

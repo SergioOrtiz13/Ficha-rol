@@ -106,10 +106,11 @@ function restar(caracteristica) {
 // Función para actualizar las características en la base de datos
 function actualizarCaracteristicasEnBaseDeDatos(fichaId) {
     const caracteristicas = [
-        'carisma', 'economia', 'torpeza', 'belleza', 'social',
-        'habilidad-inteligencia', 'habilidad-forma-fisica', 'habilidad-zero',
-        'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate'
-    ];
+  'carisma', 'economia', 'torpeza', 'belleza', 'social',
+  'habilidad-inteligencia', 'habilidad-forma-fisica', 'habilidad-zero',
+  'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate',
+  'habilidad-percepcion', 'habilidad-subterfugio', 'habilidad-juegoDeManos'
+];
 
     const datosActualizados = {
         habilidades: {}  // Aquí es donde guardamos las habilidades
@@ -320,7 +321,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asociar eventos de los botones de sumar y restar características
     const caracteristicas = ['carisma', 'economia', 'torpeza', 'belleza', 'social', 
                              'habilidad-inteligencia', 'habilidad-forma-fisica', 'habilidad-zero', 
-                             'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate'];
+                             'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate', 
+                             'habilidad-percepcion', 'habilidad-subterfugio', 'habilidad-juegoDeManos'];
                              
     caracteristicas.forEach(function(caracteristica) {
         document.getElementById(`${caracteristica}-sumar`).addEventListener('click', function() {
