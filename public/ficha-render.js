@@ -109,7 +109,8 @@ function actualizarCaracteristicasEnBaseDeDatos(fichaId) {
   'carisma', 'economia', 'torpeza', 'belleza', 'social',
   'habilidad-inteligencia', 'habilidad-forma-fisica', 'habilidad-zero',
   'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate',
-  'habilidad-percepcion', 'habilidad-subterfugio', 'habilidad-juegoDeManos'
+  'habilidad-percepcion', 'habilidad-subterfugio', 'habilidad-juegoDeManos', 
+  'habilidad-Voluntad'
 ];
 
     const datosActualizados = {
@@ -322,7 +323,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const caracteristicas = ['carisma', 'economia', 'torpeza', 'belleza', 'social', 
                              'habilidad-inteligencia', 'habilidad-forma-fisica', 'habilidad-zero', 
                              'habilidad-sigilo', 'habilidad-reflejos', 'habilidad-combate', 
-                             'habilidad-percepcion', 'habilidad-subterfugio', 'habilidad-juegoDeManos'];
+                             'habilidad-percepcion', 'habilidad-subterfugio', 'habilidad-juegoDeManos',
+                            'habilidad-Voluntad'];
                              
     caracteristicas.forEach(function(caracteristica) {
         document.getElementById(`${caracteristica}-sumar`).addEventListener('click', function() {
