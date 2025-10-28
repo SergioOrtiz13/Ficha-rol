@@ -356,3 +356,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const vidaActual = parseInt(document.getElementById('vida-actual').textContent);
   actualizarBarraVida(vidaActual, vidaMax);
 });
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const imgDefecto = document.getElementById('imagen-por-defecto');
+    const galeria = document.getElementById('galeria-imagenes');
+    const token = localStorage.getItem('token'); // Ajusta según cómo guardes tu JWT
+
+    imgDefecto.addEventListener('click', async () => {
+        galeria.style.display = 'flex';
+
+        const res = await fetch('/getFichas', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const fichas = await res.json();
+
+        galeria.innerHTML = '';
+
+        fichas.forEach(ficha => {
+            if (ficha.imagenPersonaje) {
+                const img = document.createElement('img');
+                img.src = ficha.imagenPersonaje;
+                img.style.width = '100px';
+                img.style.height = '100px';
+                img.style.cursor = 'pointer';
+                img.style.borderRadius = '50%';
+
+                img.addEventListener('click', () => {
+                    // Cambiar solo la imagen por defecto
+                    imgDefecto.src = ficha.imagenPersonaje;
+
+                    // Ocultar galería después de seleccionar
+                    galeria.style.display = 'none';
+                });
+
+                galeria.appendChild(img);
+            }
+        });
+    });
+});

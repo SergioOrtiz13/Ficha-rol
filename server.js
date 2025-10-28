@@ -369,6 +369,32 @@ app.get('/get-caracteristicas/:username', async (req, res) => {
     }
 });
 
+// Actualizar la imagenPorDefecto de todas las fichas
+app.put('/actualizar-imagen-por-defecto', async (req, res) => {
+    try {
+        const { nuevaImagen } = req.body;
+
+        if (!nuevaImagen) {
+            return res.status(400).json({ success: false, message: 'No se proporcionó la imagen' });
+        }
+
+        const database = await connectDB();
+        const collection = database.collection('fichas');
+
+        const result = await collection.updateMany({}, { $set: { imagenPorDefecto: nuevaImagen } });
+
+        // Emitir evento a todos los clientes conectados
+        console.log('🔁 Emitiendo imagenPorDefectoActualizada:', nuevaImagen);
+        io.emit('imagenPorDefectoActualizada', { nuevaImagen });
+
+        return res.json({ success: true, modifiedCount: result.modifiedCount });
+    } catch (error) {
+        console.error('Error al actualizar la imagen por defecto:', error);
+        return res.status(500).json({ success: false, message: 'Error en el servidor' });
+    }
+});
+
+
 io.on('connection', (socket) => {
     console.log('Cliente conectado');
 

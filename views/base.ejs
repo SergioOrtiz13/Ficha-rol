@@ -60,6 +60,48 @@
     <% } else { %>
         <p>No hay imagen disponible.</p>
     <% } %>
+
+    <!-- Imagen por defecto -->
+    <!-- Imagen por defecto -->
+<img 
+    src="<%= personaje.imagenPorDefecto && personaje.imagenPorDefecto.length > 0 ? personaje.imagenPorDefecto : '/img/default.jpg' %>" 
+    alt="Personaje por defecto" 
+    class="imagen-circular" 
+    id="imagen-por-defecto" 
+    style="cursor:pointer;">
+
+
+<!-- Modal para seleccionar imagen -->
+<div id="modal-galeria" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+    justify-content:center;
+    align-items:center;
+    z-index:1000;
+">
+    <div style="
+        background:#fff;
+        padding:20px;
+        border-radius:10px;
+        max-width:80%;
+        max-height:80%;
+        overflow:auto;
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+        justify-content:center;
+    " id="galeria-imagenes">
+        <!-- Las imágenes se insertan dinámicamente aquí -->
+    </div>
+</div>
+
+
+
 </div>
 
 
@@ -248,5 +290,142 @@
     <script src="../public/ficha-render.js"></script>
     <script src="/tiradas.js"></script>
     <script src="/tiradas-master.js"></script>
+    <script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const imgDefecto = document.getElementById('imagen-por-defecto');
+    const modal = document.getElementById('modal-galeria');
+    const galeria = document.getElementById('galeria-imagenes');
+    const token = localStorage.getItem('token'); // Ajusta según cómo guardes tu JWT
+
+    // Abrir modal al hacer click en la imagen por defecto
+    imgDefecto.addEventListener('click', async () => {
+        modal.style.display = 'flex';
+        galeria.innerHTML = '';
+
+        // Obtener todas las fichas
+        const res = await fetch('/getFichas', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const fichas = await res.json();
+
+        fichas.forEach(ficha => {
+            if (ficha.imagenPersonaje) {
+                const img = document.createElement('img');
+                img.src = ficha.imagenPersonaje;
+                img.style.width = '100px';
+                img.style.height = '100px';
+                img.style.cursor = 'pointer';
+                img.style.borderRadius = '50%';
+                img.style.border = '2px solid #ccc';
+                img.addEventListener('mouseover', () => img.style.border = '2px solid #007BFF');
+                img.addEventListener('mouseout', () => img.style.border = '2px solid #ccc');
+
+       img.addEventListener('click', async () => {
+    const rutaImagen = ficha.imagenPersonaje.startsWith('/img/')
+        ? ficha.imagenPersonaje
+        : '/img/' + ficha.imagenPersonaje.split('/').pop();
+
+    // Cambiar la imagen en la página
+    imgDefecto.src = rutaImagen;
+    modal.style.display = 'none';
+
+    // Guardar la imagenPorDefecto en todas las fichas
+    await fetch('/actualizar-imagen-por-defecto', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nuevaImagen: rutaImagen })
+    });
+});
+
+
+                galeria.appendChild(img);
+            }
+        });
+    });
+
+    // Cerrar modal al hacer click fuera de la galería
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const imgDefecto = document.getElementById('imagen-por-defecto');
+    const modal = document.getElementById('modal-galeria');
+    const galeria = document.getElementById('galeria-imagenes');
+    const token = localStorage.getItem('token');
+    const socket = io();
+
+    // Confirmar conexión
+    socket.on('connect', () => console.log('✅ Socket conectado:', socket.id));
+    socket.on('connect_error', err => console.error('❌ Error de conexión socket:', err));
+
+    // ESCUCHAR cambios de imagen en tiempo real
+    socket.on('imagenPorDefectoActualizada', data => {
+        if (!data || !data.nuevaImagen) return;
+        console.log('📸 Imagen por defecto actualizada en tiempo real:', data.nuevaImagen);
+
+        const nuevaRuta = data.nuevaImagen + '?t=' + Date.now();
+        imgDefecto.src = nuevaRuta;
+        imgDefecto.style.transition = 'opacity 0.3s';
+        imgDefecto.style.opacity = '0.4';
+        setTimeout(() => imgDefecto.style.opacity = '1', 300);
+    });
+
+    // --- MODAL DE SELECCIÓN ---
+    imgDefecto.addEventListener('click', async () => {
+        modal.style.display = 'flex';
+        galeria.innerHTML = '';
+
+        const res = await fetch('/getFichas', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const fichas = await res.json();
+
+        fichas.forEach(ficha => {
+            if (ficha.imagenPersonaje) {
+                const img = document.createElement('img');
+                img.src = ficha.imagenPersonaje;
+                Object.assign(img.style, {
+                    width: '100px',
+                    height: '100px',
+                    borderRadius: '50%',
+                    cursor: 'pointer',
+                    border: '2px solid #ccc'
+                });
+
+                img.addEventListener('mouseover', () => img.style.border = '2px solid #007BFF');
+                img.addEventListener('mouseout', () => img.style.border = '2px solid #ccc');
+
+                img.addEventListener('click', async () => {
+                    const rutaImagen = ficha.imagenPersonaje.startsWith('/img/')
+                        ? ficha.imagenPersonaje
+                        : '/img/' + ficha.imagenPersonaje.split('/').pop();
+
+                    imgDefecto.src = rutaImagen;
+                    modal.style.display = 'none';
+
+                    console.log('📝 Guardando nueva imagen por defecto:', rutaImagen);
+                    const response = await fetch('/actualizar-imagen-por-defecto', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nuevaImagen: rutaImagen })
+                    });
+                    const result = await response.json();
+                    console.log('📤 Respuesta del servidor:', result);
+                });
+
+                galeria.appendChild(img);
+            }
+        });
+    });
+
+    modal.addEventListener('click', e => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
+});
+</script>
+
 </body>
 </html>
