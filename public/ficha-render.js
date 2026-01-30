@@ -287,6 +287,47 @@ function actualizarBarraVida(actual, max) {
     barra.style.width = porcentaje + '%';
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const dineroSpan = document.getElementById('dinero-cantidad');
+    const btnSumar = document.getElementById('dinero-sumar');
+    const btnRestar = document.getElementById('dinero-restar');
+    const fichaId = document.getElementById('ficha-id')?.value;
+
+    if (!dineroSpan || !fichaId) return;
+
+    const STEP = 0.5;
+
+    function getValor() {
+        return parseFloat(dineroSpan.textContent) || 0;
+    }
+
+    async function setValor(nuevoValor) {
+        if (nuevoValor < 0) nuevoValor = 0;
+
+        dineroSpan.textContent = nuevoValor;
+
+        try {
+            await fetch(`/actualizar-dinero/${fichaId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ dinero: nuevoValor })
+            });
+        } catch (err) {
+            console.error('Error guardando dinero:', err);
+        }
+    }
+
+    btnSumar.addEventListener('click', () => {
+        setValor(getValor() + STEP);
+    });
+
+    btnRestar.addEventListener('click', () => {
+        setValor(getValor() - STEP);
+    });
+});
+
 
 document.getElementById('vida-sumar').addEventListener('click', () => {
     let pv = parseInt(document.getElementById('vida-actual').textContent);
@@ -357,3 +398,33 @@ document.addEventListener('DOMContentLoaded', () => {
   actualizarBarraVida(vidaActual, vidaMax);
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const fichaId = document.getElementById('ficha-id').value;
+    const dineroSpan = document.getElementById('dinero-cantidad');
+    const btnSumar = document.getElementById('dinero-sumar');
+    const btnRestar = document.getElementById('dinero-restar');
+
+    let dinero = parseFloat(dineroSpan.textContent) || 0;
+
+    const guardarDinero = async () => {
+        await fetch(`/actualizar-ficha/${fichaId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ dinero })
+        });
+    };
+
+    btnSumar.addEventListener('click', async () => {
+        dinero += 0.5;
+        dineroSpan.textContent = dinero;
+        await guardarDinero();
+    });
+
+    btnRestar.addEventListener('click', async () => {
+        dinero -= 0.5;
+        dineroSpan.textContent = dinero;
+        await guardarDinero();
+    });
+});

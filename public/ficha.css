@@ -183,6 +183,39 @@ body {
     border: 2px solid #ff00ff; /* Estilo específico para el div de otros jugadores */
 }
 
+#habilidades-adquiridas {
+    transition: all 0.3s ease;
+    height: 80px;
+}
+
+#habilidades-adquiridas:focus {
+    height: 400px;
+}
+.dinero {
+    margin-top: 20px;
+}
+
+.dinero-control button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #00ffdd;
+    color: #0d0d0d;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.dinero-control button:hover {
+    background-color: #0045e6;
+}
+
+
+.dinero-emoji {
+    font-size: 1.5em;
+}
+
+
 /* Responsividad: Ajustes para pantallas pequeñas */
 @media (max-width: 768px) {
     .ficha {

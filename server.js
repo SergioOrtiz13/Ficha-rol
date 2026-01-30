@@ -229,7 +229,7 @@ app.put('/actualizar-ficha/:id', async (req, res) => {
     const allowedFields = [
         'carisma', 'economia', 'torpeza', 'belleza', 'social', 'habilidades', 
         'historia', 'personalidad', 'habilidadesAdquiridas', 'miembrosArbol', 
-        'imagenPersonaje', 'videoFondo', 'crush', 'aristas', 'pv'
+        'imagenPersonaje', 'videoFondo', 'crush', 'aristas', 'pv', 'dinero'
     ];
 
     // Filtramos los datos para solo permitir los campos válidos
@@ -391,6 +391,30 @@ app.put('/actualizar-imagen-por-defecto', async (req, res) => {
     } catch (error) {
         console.error('Error al actualizar la imagen por defecto:', error);
         return res.status(500).json({ success: false, message: 'Error en el servidor' });
+    }
+});
+
+app.put('/actualizar-dinero/:id', async (req, res) => {
+    const { id } = req.params;
+    const { dinero } = req.body;
+
+    if (dinero === undefined) {
+        return res.status(400).json({ success: false, message: 'Dinero no proporcionado' });
+    }
+
+    try {
+        const database = await connectDB();
+        const collection = database.collection('fichas');
+
+        const result = await collection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { dinero: parseFloat(dinero) } }
+        );
+
+        res.json({ success: true, modifiedCount: result.modifiedCount });
+    } catch (error) {
+        console.error('Error al actualizar dinero:', error);
+        res.status(500).json({ success: false, message: 'Error al actualizar dinero' });
     }
 });
 

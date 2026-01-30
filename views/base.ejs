@@ -62,7 +62,7 @@
     <% } %>
 
     <!-- Imagen por defecto -->
-    <!-- Imagen por defecto -->
+
 <img 
     src="<%= personaje.imagenPorDefecto && personaje.imagenPorDefecto.length > 0 ? personaje.imagenPorDefecto : '/img/default.jpg' %>" 
     alt="Personaje por defecto" 
@@ -249,13 +249,21 @@
     <div id="corazones-arista" class="corazones" data-actual="<%= personaje.aristas || 0 %>" data-tipo="aristas"></div>
   </div>
 </div>
-
-
+<!-- Dinero -->
+<div class="dinero">
+    <h2>Dinero</h2>
+    <div class="dinero-control">
+        <span class="dinero-emoji">💰</span>
+        <span id="dinero-cantidad"><%= typeof personaje.dinero === 'number' ? personaje.dinero : 0 %></span>
+        <button id="dinero-sumar">+</button>
+        <button id="dinero-restar">-</button>
+    </div>
+</div>
 
         <div class="habilidades">
             <h2>Datos</h2>
             <textarea id="habilidades-adquiridas" rows="4" placeholder="Se irán viendo durante la partida"><%= personaje.habilidadesAdquiridas || '' %></textarea>
-            <button type="button" onclick="guardarHabilidades()">Guardar Habilidades</button>
+            <button type="button" onclick="guardarHabilidades()">Guardar datos</button>
         </div>
 
         <!-- Árbol Genealógico -->
