@@ -53,6 +53,9 @@
             <button id="vida-sumar">+</button>
             <button id="vida-restar">-</button>
         </div>
+        <div class="armadura-personaje">
+    🛡️ <span><%= personaje.armadura || 7 %></span>
+</div>
     </div>
 
     <% if (personaje.imagenPersonaje && personaje.imagenPersonaje.length > 0) { %>
@@ -107,6 +110,7 @@
 
         
         <button onclick="tirarDadosJugador()">Tirar Dados</button>
+        <button onclick="mostrarUltimasTiradasGlobales()">Ver historial global</button>
             <div class="resultado-tirada">
                 <div id="username"></div> <!-- Nombre de usuario -->
                 <div id="resultado-dados">

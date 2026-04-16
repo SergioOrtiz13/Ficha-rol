@@ -130,7 +130,8 @@ app.post('/crear-ficha', verificarToken, upload.fields([
         miembrosArbol: JSON.parse(req.body.miembrosArbol),
         imagenPersonaje: req.files['imagenPersonaje'] ? '/img/' + req.files['imagenPersonaje'][0].filename : '',
         videoFondo: videoFondoUrl,
-        creadoPor: req.user.username // <-- Aquí se asocia la ficha al usuario autenticado
+        creadoPor: req.user.username, // <-- Aquí se asocia la ficha al usuario autenticado
+        armadura: "7"
     };
 
     try {
@@ -310,6 +311,36 @@ app.post('/guardar-tirada', async (req, res) => {
     }
 });
 
+app.get('/tiradas', async (req, res) => {
+    try {
+        const database = await connectDB();
+        const collection = database.collection('tiradas');
+
+        const tiradas = await collection
+            .find({})
+            .sort({ fecha: -1 })
+            .toArray();
+
+        const resultado = {};
+
+        tiradas.forEach(t => {
+            if (!resultado[t.username]) {
+                resultado[t.username] = [];
+            }
+
+            if (resultado[t.username].length < 3) {
+                resultado[t.username].push(t);
+            }
+        });
+
+        res.json(resultado);
+
+    } catch (error) {
+        console.error('Error al obtener tiradas globales:', error);
+        res.status(500).json({ error: 'Error al obtener tiradas' });
+    }
+});
+
 app.get('/tiradas/:username', async (req, res) => {
     const { username } = req.params;
     try {
@@ -326,6 +357,8 @@ app.get('/tiradas/:username', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener tiradas' });
     }
 });
+
+
 
 app.get('/get-habilidades/:username', async (req, res) => {
     const { username } = req.params;

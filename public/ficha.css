@@ -210,6 +210,11 @@ body {
     background-color: #0045e6;
 }
 
+.armadura-personaje {
+    font-size: 18px;
+    margin-top: 5px;
+    color: #ccc;
+}
 
 .dinero-emoji {
     font-size: 1.5em;

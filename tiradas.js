@@ -66,23 +66,30 @@ function guardarTiradaEnBD(username, resultados) {
 function mostrarUltimasTiradasGlobales() {
     fetch('/tiradas')
         .then(response => response.json())
-        .then(tiradas => {
+        .then(data => {
             const resultadoDiv = document.getElementById('resultado-dados');
-            resultadoDiv.innerHTML = '<h3>Últimas tiradas:</h3>';
+            resultadoDiv.innerHTML = '<h3>Últimas tiradas globales:</h3>';
 
-            if (tiradas.length === 0) {
+            if (!data || Object.keys(data).length === 0) {
                 resultadoDiv.innerHTML += '<p>No hay tiradas aún.</p>';
                 return;
             }
 
-            const lista = document.createElement('ul');
-            tiradas.forEach(t => {
-                const item = document.createElement('li');
-                item.textContent = `${t._id}: ${t.ultimaTirada.join(', ')}`;
-                lista.appendChild(item);
-            });
+            Object.keys(data).forEach(username => {
+                const userDiv = document.createElement('div');
+                userDiv.innerHTML = `<strong>${username}</strong>`;
 
-            resultadoDiv.appendChild(lista);
+                const lista = document.createElement('ul');
+
+                data[username].forEach(tirada => {
+                    const item = document.createElement('li');
+                    item.textContent = tirada.resultado.join(', ');
+                    lista.appendChild(item);
+                });
+
+                userDiv.appendChild(lista);
+                resultadoDiv.appendChild(userDiv);
+            });
         })
         .catch(error => {
             console.error('Error al obtener tiradas globales:', error);
