@@ -68,6 +68,7 @@ app.use('/vid', express.static(path.join(__dirname, 'vid')));
 app.use('/img', express.static(path.join(__dirname, 'img')));
 app.use(express.static(path.join(__dirname)));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/music', express.static(path.join(__dirname, 'music')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -402,6 +403,26 @@ app.get('/get-caracteristicas/:username', async (req, res) => {
     }
 });
 
+app.get('/music-list', (req, res) => {
+    const musicDir = path.join(__dirname, 'music');
+
+    fs.readdir(musicDir, (err, files) => {
+        if (err) {
+            return res.status(500).json({ error: 'No se pudo leer la carpeta music' });
+        }
+
+        // filtramos solo audios
+        const songs = files.filter(file =>
+            file.endsWith('.mp3') ||
+            file.endsWith('.wav') ||
+            file.endsWith('.ogg')
+        );
+
+        res.json(songs);
+    });
+});
+
+
 // Actualizar la imagenPorDefecto de todas las fichas
 app.put('/actualizar-imagen-por-defecto', async (req, res) => {
     try {
@@ -473,4 +494,16 @@ io.on('connection', (socket) => {
 
 http.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);
+});
+
+io.on('connection', (socket) => {
+
+    socket.on('playMusic', (data) => {
+        io.emit('playMusic', data);
+    });
+
+    socket.on('stopMusic', () => {
+        io.emit('stopMusic');
+    });
+
 });

@@ -68,7 +68,7 @@ function mostrarUltimasTiradasGlobales() {
         .then(response => response.json())
         .then(data => {
             const resultadoDiv = document.getElementById('resultado-dados');
-            resultadoDiv.innerHTML = '<h3>Últimas tiradas globales:</h3>';
+            resultadoDiv.innerHTML = '<h3></h3>';
 
             if (!data || Object.keys(data).length === 0) {
                 resultadoDiv.innerHTML += '<p>No hay tiradas aún.</p>';
