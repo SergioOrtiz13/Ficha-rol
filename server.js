@@ -42,12 +42,29 @@ function verificarToken(req, res, next) {
 
 // Multer configuración
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const fileType = file.mimetype.split('/')[0];
-        if (fileType === 'video') cb(null, 'vid');
-        else if (fileType === 'image') cb(null, 'img');
-        else cb(new Error('Tipo de archivo no válido'));
-    },
+destination: (req, file, cb) => {
+
+    const fileType = file.mimetype.split('/')[0];
+
+    if (fileType === 'video') {
+
+        cb(null, 'vid');
+
+    } else if (fileType === 'image') {
+
+        cb(null, 'img');
+
+    } else if (fileType === 'audio') {
+
+        cb(null, 'music/movile');
+
+    } else {
+
+        cb(new Error('Tipo de archivo no válido'));
+
+    }
+
+},
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
     }
@@ -422,6 +439,286 @@ app.get('/music-list', (req, res) => {
     });
 });
 
+app.get('/contacts/:id', verificarToken, async (req, res) => {
+    try {
+        const db = await connectDB();
+        const collection = db.collection('fichas');
+
+        const ficha = await collection.findOne({
+            _id: new ObjectId(req.params.id)
+        });
+
+        if (!ficha) return res.status(404).json([]);
+
+        res.json(ficha.contacts || []);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json([]);
+    }
+});
+
+app.post('/contacts/:id/add', verificarToken, async (req, res) => {
+    const { name } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ error: 'Nombre requerido' });
+    }
+
+    try {
+        const db = await connectDB();
+        const fichas = db.collection('fichas');
+
+        const personaje = await fichas.findOne({
+            nombrePersonaje: name
+        });
+
+        const contact = personaje
+            ? {
+                name: personaje.nombrePersonaje,
+                isCharacter: true,
+                image: personaje.imagenPersonaje || ''
+            }
+            : {
+                name,
+                isCharacter: false,
+                image: ''
+            };
+
+        // 🔥 PASO 1: asegurar que contacts existe
+        await fichas.updateOne(
+            { _id: new ObjectId(req.params.id) },
+            {
+                $setOnInsert: { contacts: [] }
+            },
+            { upsert: false }
+        );
+
+        // 🔥 PASO 2: evitar duplicados correctamente
+        const result = await fichas.updateOne(
+            {
+                _id: new ObjectId(req.params.id),
+                "contacts.name": { $ne: name }
+            },
+            {
+                $push: { contacts: contact }
+            }
+        );
+
+        return res.json({
+            success: true,
+            modified: result.modifiedCount,
+            contact
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error al añadir contacto' });
+    }
+});
+
+
+app.post('/contacts/:id/delete', verificarToken, async (req, res) => {
+    const { name } = req.body;
+
+    try {
+        const db = await connectDB();
+        const collection = db.collection('fichas');
+
+        await collection.updateOne(
+            { _id: new ObjectId(req.params.id) },
+            {
+                $pull: {
+                    contacts: { name }
+                }
+            }
+        );
+
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error al borrar contacto' });
+    }
+});
+
+app.get('/messages/:from/:to', async (req, res) => {
+
+    const { from, to } = req.params;
+
+    try {
+
+        const db = await connectDB();
+
+        const messages = await db.collection('chats')
+            .find({
+                $or: [
+                    {
+                        from: from,
+                        to: to
+                    },
+                    {
+                        from: to,
+                        to: from
+                    }
+                ]
+            })
+            .sort({ createdAt: 1 })
+            .toArray();
+
+        res.json(messages);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json([]);
+    }
+});
+
+app.get('/chat-list/:personaje', async (req, res) => {
+
+    const { personaje } = req.params;
+
+    try {
+
+        const db = await connectDB();
+
+        const messages = await db.collection('chats')
+            .find({
+                $or: [
+                    { from: personaje },
+                    { to: personaje }
+                ]
+            })
+            .sort({ createdAt: -1 })
+            .toArray();
+
+        const uniqueChats = [];
+
+        messages.forEach(msg => {
+
+            const otherUser =
+                msg.from === personaje
+                    ? msg.to
+                    : msg.from;
+
+            const exists = uniqueChats.find(
+                c => c.name === otherUser
+            );
+
+            if (!exists) {
+
+                uniqueChats.push({
+                    name: otherUser,
+                    isCharacter: false,
+                    image: '',
+                    unknown: true
+                });
+            }
+        });
+
+        res.json(uniqueChats);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json([]);
+    }
+});
+
+app.post('/upload-chat-image',upload.single('image'), async (req, res) => {
+
+        try {
+
+            if (!req.file) {
+                return res.status(400).json({
+                    success:false
+                });
+            }
+
+            res.json({
+                success:true,
+                image:'/img/' + req.file.filename
+            });
+
+        } catch(err) {
+
+            console.error(err);
+
+            res.status(500).json({
+                success:false
+            });
+        }
+});
+
+app.post('/upload-music/:id',upload.single('music'),async (req, res) => {
+
+        try {
+
+            const db = await connectDB();
+
+            const { id } = req.params;
+
+            if (!req.file) {
+
+                return res.status(400).json({
+                    success:false
+                });
+
+            }
+
+            const musicData = {
+
+                name:req.file.originalname,
+
+                url:'/music/' + req.file.filename
+
+            };
+
+            await db.collection('fichas').updateOne(
+                { _id:new ObjectId(id) },
+                {
+                    $push:{
+                        musicas:musicData
+                    }
+                }
+            );
+
+            res.json({
+                success:true,
+                music:musicData
+            });
+
+        } catch(err) {
+
+            console.error(err);
+
+            res.status(500).json({
+                success:false
+            });
+        }
+    }
+);
+
+app.get('/music/:id', async (req,res) => {
+
+    try {
+
+        const db = await connectDB();
+
+        const ficha = await db.collection('fichas').findOne({
+            _id:new ObjectId(req.params.id)
+        });
+
+        res.json(ficha.musicas || []);
+
+    } catch(err) {
+
+        console.error(err);
+
+        res.status(500).json([]);
+    }
+});
 
 // Actualizar la imagenPorDefecto de todas las fichas
 app.put('/actualizar-imagen-por-defecto', async (req, res) => {
@@ -445,6 +742,134 @@ app.put('/actualizar-imagen-por-defecto', async (req, res) => {
     } catch (error) {
         console.error('Error al actualizar la imagen por defecto:', error);
         return res.status(500).json({ success: false, message: 'Error en el servidor' });
+    }
+});
+
+app.put('/guardar-phone-settings/:id', upload.single('image'), async (req, res) => {
+
+    try {
+
+        const { id } = req.params;
+
+        const db = await connectDB();
+
+        const updateData = {
+            phoneBackgroundColor: req.body.phoneBackgroundColor || "#111111"
+        };
+
+        // 👉 SI SUBES IMAGEN → activas imagen y borras color visual
+        if (req.file) {
+
+            updateData.phoneBackgroundImage = '/img/' + req.file.filename;
+            updateData.phoneBackgroundMode = "image";
+
+        } else {
+
+            // 👉 SI NO HAY IMAGEN → borras la anterior
+            updateData.phoneBackgroundImage = "";
+            updateData.phoneBackgroundMode = "color";
+        }
+
+        await db.collection('fichas').updateOne(
+            { _id: new ObjectId(id) },
+            { $set: updateData }
+        );
+
+        res.json({ success: true });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false });
+    }
+});
+
+app.get('/phone-settings/:id', async (req, res) => {
+
+    try {
+
+        const db = await connectDB();
+
+        const ficha = await db.collection('fichas').findOne({
+            _id: new ObjectId(req.params.id)
+        });
+
+        // 🔥 AUTO-INICIALIZAR si no existen
+        const update = {};
+
+        if (!ficha.phoneBackgroundMode) {
+            update.phoneBackgroundMode = 'color';
+        }
+
+        if (!ficha.phoneBackgroundColor) {
+            update.phoneBackgroundColor = '#111111';
+        }
+
+        if (!ficha.phoneBackgroundImage) {
+            update.phoneBackgroundImage = '';
+        }
+
+        if (Object.keys(update).length > 0) {
+
+            await db.collection('fichas').updateOne(
+                { _id: new ObjectId(req.params.id) },
+                { $set: update }
+            );
+        }
+
+        res.json({
+            phoneBackgroundMode: ficha.phoneBackgroundMode || 'color',
+            phoneBackgroundColor: ficha.phoneBackgroundColor ?? null,
+            phoneBackgroundImage: ficha.phoneBackgroundImage || ''
+        });
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json({});
+    }
+});
+
+app.get('/ficha-by-id/:id', async (req, res) => {
+
+    try {
+
+        const db = await connectDB();
+
+        const ficha = await db.collection('fichas').findOne({
+            _id: new ObjectId(req.params.id)
+        });
+
+        res.json(ficha);
+
+    } catch (err) {
+
+        console.error(err);
+
+        res.status(500).json(null);
+    }
+});
+
+app.get('/gallery/:personaje', async (req,res) => {
+
+    try {
+
+        const db = await connectDB();
+
+        const images = await db.collection('gallery')
+            .find({
+                owner:req.params.personaje
+            })
+            .sort({ createdAt:-1 })
+            .toArray();
+
+        res.json(images);
+
+    } catch(err) {
+
+        console.error(err);
+
+        res.status(500).json([]);
     }
 });
 
@@ -474,29 +899,64 @@ app.put('/actualizar-dinero/:id', async (req, res) => {
 
 
 io.on('connection', (socket) => {
+
     console.log('Cliente conectado');
 
+    // ======================
+    // CHAT
+    // ======================
+
+socket.on('sendMessage', async (data) => {
+
+    try {
+
+        const db = await connectDB();
+
+        const message = {
+            from: data.from,
+            to: data.to,
+            text: data.text || '',
+            image: data.image || '',
+            createdAt: new Date()
+        };
+
+        await db.collection('chats').insertOne(message);
+
+        if (data.image) {
+
+    await db.collection('gallery').insertOne({
+        owner: data.to,
+        from: data.from,
+        image: data.image,
+        createdAt: new Date()
+    });
+}
+
+        io.emit('newMessage', message);
+
+    } catch (err) {
+
+        console.error(err);
+    }
+});
+
+    // ======================
+    // TIRADAS
+    // ======================
+
     socket.on('nuevaTirada', async (data) => {
+
         const { username, resultado } = data;
 
-        // Guardar en la base de datos
-        try {
-            await guardarTirada(data);
-            console.log(`Tirada guardada para ${username}`);
-        } catch (error) {
-            console.error('Error al guardar la tirada:', error);
-        }
-
-        // Emitir solo la última tirada de cada usuario
-        io.emit('tiradaRecibida', { username, resultado });
+        io.emit('tiradaRecibida', {
+            username,
+            resultado
+        });
     });
-});
 
-http.listen(port, () => {
-    console.log(`Servidor corriendo en http://localhost:${port}`);
-});
-
-io.on('connection', (socket) => {
+    // ======================
+    // MUSIC
+    // ======================
 
     socket.on('playMusic', (data) => {
         io.emit('playMusic', data);
@@ -506,4 +966,8 @@ io.on('connection', (socket) => {
         io.emit('stopMusic');
     });
 
+});
+
+http.listen(port, () => {
+    console.log(`Servidor corriendo en http://localhost:${port}`);
 });

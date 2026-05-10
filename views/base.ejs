@@ -25,7 +25,7 @@
         }
     </style>
 </head>
-<body>
+<b>
     <div id="music-control" style="position:absolute; top:10px; right:10px; font-size:30px; cursor:pointer;">
     🎵
 </div>
@@ -54,6 +54,7 @@
 </div>
 
     <input type="hidden" id="ficha-id" value="<%= personaje._id %>">
+    <input type="hidden" id="personaje-name" value="<%= personaje.nombrePersonaje %>">
     <% if (personaje.videoFondo && personaje.videoFondo.length > 0) { 
     const ext = personaje.videoFondo.split('.').pop().toLowerCase();
     if (ext === 'mp4' || ext === 'avi' || ext === 'mov' || ext === 'webm') { %>
@@ -76,6 +77,13 @@
         <div class="header">
     <div class="nombre-vida">
         <h1>Nombre del Personaje: <%= personaje.nombrePersonaje %></h1>
+    <div class="phone-inline" id="phone-icon">
+
+        <img src="/img/phone/xipha_open.png" alt="Teléfono">
+
+        <div id="chat-notification"></div>
+
+    </div>
         <div class="vida-personaje">
             ❤️ <span id="vida-actual"><%= personaje.pv || 12 %></span> / <span id="vida-maxima"><%= personaje.pvMax || 12 %></span>
             <button id="vida-sumar">+</button>
@@ -100,6 +108,7 @@
     class="imagen-circular" 
     id="imagen-por-defecto" 
     style="cursor:pointer;">
+<!-- Imagen del teléfono -->
 
 
 <!-- Modal para seleccionar imagen -->
@@ -130,7 +139,324 @@
         <!-- Las imágenes se insertan dinámicamente aquí -->
     </div>
 </div>
+<div id="phone-modal" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+    justify-content:center;
+    align-items:center;
+    z-index:10000;
+">
+    <div style="
+    width:280px;
+    height:500px;
+    background:#111111;
+    border-radius:25px;
 
+    position:relative;
+    overflow:hidden;
+
+    padding:20px;
+    padding-bottom:70px;
+
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:15px;
+
+    align-content:flex-start;
+    justify-items:center;
+
+    box-sizing:border-box;
+    color:white;
+    ">
+
+        <!-- ICONOS -->
+        <div class="app-icon" id="open-gallery">🖼️<br>Galería</div>
+        <div class="app-icon" id="open-music">🎵<br>Música</div>
+        <div class="app-icon" id="open-chat">💬<br>Chat</div>
+        <div class="app-icon" id="open-contacts">📒<br>Contactos</div>
+        <div class="app-icon" id="open-settings">⚙️<br>Ajustes</div>
+        
+        <div id="contacts-app" style="
+    display:none;
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:calc(100% - 60px);
+    background:#0f0f0f;
+    padding:15px;
+    box-sizing:border-box;
+    color:white;
+    flex-direction:column;
+">
+
+    <!-- HEADER -->
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3>📞 Contactos</h3>
+    </div>
+
+    <!-- INPUT para añadir contacto -->
+    <div style="margin-top:10px;">
+        <input id="contact-input" placeholder="Nombre personaje..."
+            style="width:94%; padding:8px; border-radius:8px; border:none;">
+        <button id="add-contact" style="width:100%; margin-top:5px;">Añadir</button>
+    </div>
+
+    <!-- LISTA -->
+    <div id="contacts-list" style="
+        margin-top:10px;
+        overflow-y:auto;
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        gap:8px;
+    "></div>
+
+</div>
+
+<div id="chat-app" style="
+    display:none;
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:calc(100% - 60px);
+    background:#111;
+    color:white;
+    flex-direction:column;
+    padding:10px;
+    box-sizing:border-box;
+">
+
+    <!-- HEADER -->
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:10px;
+    ">
+        <span id="chat-name">Chat</span>
+    </div>
+
+    <!-- MENSAJES -->
+<!-- MENSAJES / CONTENEDOR DE GALERÍA -->
+<div id="chat-messages" style="
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden; /* Prohibir scroll horizontal */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    box-sizing: border-box; /* Asegura que el padding se quede dentro del 100% */
+"></div>
+    
+
+    <!-- INPUT -->
+<div id="chat-input-container" style="
+    display:none;
+    gap:5px;
+    margin-top:10px;
+    align-items:center;
+    width:100%;
+    box-sizing:border-box;
+">
+        <input
+            id="chat-input"
+            placeholder="Mensaje..."
+            style="
+                flex:1;
+            min-width:0;
+            border:none;
+            border-radius:10px;
+            padding:10px;
+            "
+        >
+
+        <input
+    type="file"
+    id="chat-image-input"
+    accept="image/*"
+    style="display:none;"
+>
+
+<button id="send-image-btn">
+    📷
+</button>
+
+        <button id="send-message" style="
+    flex-shrink:0;
+    padding:10px 14px;
+    border-radius:10px;
+    white-space:nowrap;
+">
+            Enviar
+        </button>
+    </div>
+</div>
+
+<!-- APP MUSICA -->
+<div id="music-app" style="
+    display:none;
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:calc(100% - 60px);
+    background:#111;
+    color:white;
+    padding:15px;
+    box-sizing:border-box;
+    flex-direction:column;
+">
+
+    <h3 style="text-align:center;">🎵 Música</h3>
+
+    <!-- BUSCADOR -->
+<input
+    type="text"
+    id="music-search"
+    placeholder="Buscar canción..."
+    style="
+        width:100%;
+        padding:8px;
+        margin-bottom:10px;
+        border:none;
+        border-radius:10px;
+        background:#222;
+        color:white;
+        box-sizing:border-box;
+    "
+>
+
+    <!-- SUBIR MUSICA -->
+    <input 
+        type="file" 
+        id="music-upload" 
+        accept="audio/*" 
+        multiple
+        style="
+            margin-bottom:15px;
+        "
+    >
+
+    <!-- NOMBRE CANCION -->
+    <div id="current-song" style="
+        text-align:center;
+        margin-bottom:10px;
+        font-size:14px;
+        color:#ccc;
+    ">
+        Ninguna canción
+    </div>
+
+    <!-- BARRA PROGRESO -->
+    <input 
+        type="range"
+        id="music-progress"
+        value="0"
+        min="0"
+        max="100"
+        style="
+            width:100%;
+            margin-bottom:10px;
+        "
+    >
+
+    <!-- TIEMPOS -->
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        font-size:12px;
+        color:#aaa;
+        margin-bottom:15px;
+    ">
+        <span id="current-time">0:00</span>
+        <span id="duration-time">0:00</span>
+    </div>
+
+    <!-- CONTROLES -->
+    <div style="
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:20px;
+        margin-bottom:20px;
+    ">
+
+        <button id="prev-song">⏮️</button>
+
+        <button id="play-pause">▶️</button>
+
+        <button id="next-song">⏭️</button>
+
+    </div>
+
+    <!-- LIBRERIA -->
+    <div id="music-library" style="
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+        overflow-y:auto;
+        flex:1;
+    "></div>
+
+</div>
+
+<div id="chat-contacts-list" style="
+    overflow-y:auto;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+"></div>
+    <!-- FOOTER MOVIL -->
+<div id="phone-footer" style="
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:60px;
+    background:#000;
+    border-top:1px solid #333;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    border-bottom-left-radius:25px;
+    border-bottom-right-radius:25px;
+">
+
+    <!-- BOTON ATRAS -->
+    <button id="phone-back-btn" style="
+        background:none;
+        border:none;
+        color:white;
+        font-size:28px;
+        cursor:pointer;
+    ">
+        ◀
+    </button>
+
+    <!-- BOTON CERRAR -->
+    <button id="phone-home-btn" style="
+        background:none;
+        border:none;
+        color:white;
+        font-size:28px;
+        cursor:pointer;
+    ">
+        ⏻
+    </button>
+
+</div>
+    </div>
+
+</div>
 
 
 </div>
@@ -295,7 +621,7 @@
         <div class="habilidades">
             <h2>Datos</h2>
             <textarea id="habilidades-adquiridas" rows="4" placeholder="Se irán viendo durante la partida"><%= personaje.habilidadesAdquiridas || '' %></textarea>
-            <button type="button" onclick="guardarHabilidades()">Guardar datos</button>
+            <button id="guardar-habilidades-btn" type="button">Guardar datos</button>
         </div>
 
         <!-- Árbol Genealógico -->
@@ -312,6 +638,27 @@
             <% } %>
         </div>
     </div>
+    <div id="image-viewer" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.9);
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+">
+<img id="image-viewer-img" style="
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain; /* Mantiene la proporción original */
+        box-shadow: 0 0 20px black;
+    ">
+</div>
+
+
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <!--<script>
     const socket = io(); // Se conecta automáticamente al servidor
@@ -331,6 +678,7 @@
     <script src="/tiradas.js"></script>
     <script src="/tiradas-master.js"></script>
     <script src="/public/musiRol.js"></script>
+    <script src="/public/movile.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const imgDefecto = document.getElementById('imagen-por-defecto');
@@ -408,6 +756,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
-
+<script src="../public/settings.js"></script>
 </body>
 </html>
