@@ -966,6 +966,59 @@ socket.on('sendMessage', async (data) => {
         io.emit('stopMusic');
     });
 
+    const activeCalls = new Map(); 
+// key: callId, value: {from, to, status}
+
+socket.on('startCall', (data) => {
+    const callId = `${data.from}_${data.to}_${Date.now()}`;
+
+    activeCalls.set(callId, {
+        from: data.from,
+        to: data.to,
+        status: 'calling'
+    });
+
+    io.emit('incomingCall', {
+        callId,
+        from: data.from,
+        to: data.to
+    });
+});
+
+socket.on('acceptCall', (data) => {
+    const call = activeCalls.get(data.callId);
+    if (!call) return;
+
+    call.status = 'active';
+
+    io.emit('callAccepted', {
+        callId: data.callId,
+        from: call.from,
+        to: call.to
+    });
+});
+
+socket.on('rejectCall', (data) => {
+    activeCalls.delete(data.callId);
+
+    io.emit('callRejected', data);
+});
+
+socket.on('endCall', (data) => {
+    activeCalls.delete(data.callId);
+
+    io.emit('callEnded', data);
+});
+
+// ======================
+// CHAT TEMPORAL EN LLAMADA
+// ======================
+socket.on('callMessage', (data) => {
+    // NO DB
+
+    io.emit('callMessage', data);
+});
+
 });
 
 http.listen(port, () => {

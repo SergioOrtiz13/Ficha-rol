@@ -179,6 +179,7 @@
         <div class="app-icon" id="open-music">🎵<br>Música</div>
         <div class="app-icon" id="open-chat">💬<br>Chat</div>
         <div class="app-icon" id="open-contacts">📒<br>Contactos</div>
+        <div class="app-icon" id="open-calls">📞<br>Llamadas</div>
         <div class="app-icon" id="open-settings">⚙️<br>Ajustes</div>
         
         <div id="contacts-app" style="
@@ -218,6 +219,33 @@
     "></div>
 
 </div>
+
+
+    <div id="calls-app" style="
+    display:none;
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:calc(100% - 60px);
+    background:#0f0f0f;
+    padding:15px;
+    box-sizing:border-box;
+    color:white;
+    flex-direction:column;
+">
+    <h3>📞 Llamadas</h3>
+
+    <div id="calls-list" style="
+        margin-top:10px;
+        overflow-y:auto;
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        gap:8px;
+    "></div>
+</div>
+
 
 <div id="chat-app" style="
     display:none;
@@ -679,6 +707,7 @@
     <script src="/tiradas-master.js"></script>
     <script src="/public/musiRol.js"></script>
     <script src="/public/movile.js"></script>
+    <script src="/public/telefono.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const imgDefecto = document.getElementById('imagen-por-defecto');
