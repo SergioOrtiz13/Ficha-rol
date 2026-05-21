@@ -217,7 +217,7 @@ messages.forEach(msg => {
 
         div.innerHTML = `
             <img
-                src="${msg.image}"
+                src="${msg.image}?t=${Date.now()}"
                 style="
                     max-width:150px;
                     border-radius:10px;
@@ -489,7 +489,7 @@ const isCurrentChat =
 
     div.innerHTML = `
         <img
-            src="${msg.image}"
+            src="${msg.image}?t=${Date.now()}"
             style="
                 max-width:150px;
                 border-radius:10px;
